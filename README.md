@@ -22,7 +22,7 @@ Home Assistant; confirm the download there, then restart and reconnect NuHeat.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
 3. Open **NuHeat Beta**, enable **Show beta versions** in its menu if needed,
-   and select **v0.1.0b3** in the download/version dialog. Download it.
+   and select **v0.1.0b4** in the download/version dialog once published. Download it.
    Keep your existing NuHeat entry and enable it if
    disabled, then restart Home Assistant.
 4. In a **desktop browser**, open Settings > Devices & services > NuHeat and
@@ -89,9 +89,9 @@ Removing redundant entries is an irreversible boundary.
 
 **Known v0.1.0b3 issue:** opening setup before NuHeat starts can report missing
 application credentials. Existing users should enable their original entry and
-restart HA before reconnecting. A correction on `main` registers the client when
+restart HA before reconnecting. The v0.1.0b4 candidate registers the client when
 the setup flow opens too; it is not included in the unchanged v0.1.0b3 tag.
-Fresh installs should wait for a release containing that correction. Do not
+Fresh installs should use v0.1.0b4 once published. Do not
 delete an existing entry to work around this message.
 
 To undo completed migration, restore the **complete pre-migration backup** with

@@ -1,4 +1,4 @@
-# Authentication in beta 0.1.0b3
+# Authentication in beta 0.1.0b4
 
 This unofficial beta intentionally includes the temporary shared community OAuth
 registration in `community_oauth.py`. On integration startup, it registers that
@@ -8,9 +8,9 @@ Users do not need to register a developer application or enter client credential
 
 The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
 Opening setup first can report missing credentials. Existing users can enable
-their existing entry and restart before reconnecting. The audited correction on
-`main` also registers the client before the setup flow checks for providers;
-fresh installs should use a future release containing that correction.
+their existing entry and restart before reconnecting. The v0.1.0b4 candidate
+also registers the client before the setup flow checks for providers;
+fresh installs should use v0.1.0b4 once published.
 
 Each user still signs in to their own NuHeat account on Chemelex's login page.
 The shared client registration is not an account password or a shared account

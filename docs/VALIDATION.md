@@ -1,13 +1,26 @@
-# Validation record: beta 0.1.0b3 and unreleased audit corrections
+# Validation record: beta 0.1.0b4 candidate and v0.1.0b3 audit
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
-the immutable published tag from corrections on `main`. The final merged Core
+the immutable v0.1.0b3 tag from the v0.1.0b4 candidate on `main`. The final merged Core
 release remains a future verification target.
+
+## v0.1.0b4 release candidate
+
+The manifest version is `0.1.0b4`. Compared with audited commit
+`90842666ccf03ea9450b9ad13f065ddd8dac8ae5`, preparation changes only that version
+and version-specific documentation. Integration logic, client registration,
+OAuth behavior, migration safeguards, config-entry version and Core handoff
+are unchanged. No v0.1.0b4 release or tag is created by this preparation.
+
+The existing suite passes **161 tests, 1 skipped**; the persistence scenario was
+exercised separately in the audit. Lint and the gated `tools/package.py --release`
+validation also pass. The generated package is local only. GitHub Actions must
+pass on the final preparation commit before it is considered ready to publish.
 
 ## Published release and readiness audit
 
 `v0.1.0b3` points to `7173b6a62da2c3667ea6b87539a79e870524dd48`.
-The manifest version is `0.1.0b3`, domain is `nuheat`, minimum HA is 2026.10.2,
+That tag's manifest version is `0.1.0b3`, domain is `nuheat`, minimum HA is 2026.10.2,
 and runtime dependency is `chemelex-nuheat==0.1.1`. The stable version feed still
 reported HA 2026.10.2 at audit time. Both the version-commit and tag CI runs
 passed. No release assets were attached; the source archive is sufficient for
@@ -30,9 +43,9 @@ Separate synthetic processes also passed legacy seed, corrected beta migration,
 restart and matching-Core replay after this correction. Both tagged and corrected
 source passed local packaging. No package was uploaded.
 
-The corrections have not been released. The v0.1.0b3 tag and release are untouched;
-publish a separately versioned v0.1.0b4 after its final CI passes before broad
-community sharing, particularly to new installations.
+The corrections are included in the v0.1.0b4 candidate but have not been released.
+The v0.1.0b3 tag and release are untouched. Publish v0.1.0b4 after its final CI
+passes before broad community sharing, particularly to new installations.
 
 ## Source and changes
 
@@ -43,7 +56,7 @@ are in `provenance.json`. Config entry version remains **3**.
 Migration, registry transfer and account identity are the PR implementation.
 Beta changes are HACS metadata, English translations, stable climate property
 names, community-client import into standard Application Credentials and guarded
-automatic Core handoff. The unreleased correction also imports the same client
+automatic Core handoff. The v0.1.0b4 candidate also imports the same client
 before a setup flow needs it.
 Packaging checks the original integration code except these documented changes.
 
