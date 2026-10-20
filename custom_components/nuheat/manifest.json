@@ -23,6 +23,6 @@
   "requirements": [
     "chemelex-nuheat==0.1.1"
   ],
-  "version": "0.1.0b2",
+  "version": "0.1.0b3",
   "issue_tracker": "https://github.com/kilo-WATT/nuheat-hacs-beta/issues"
 }
