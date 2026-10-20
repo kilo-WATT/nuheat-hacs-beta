@@ -16,21 +16,30 @@ used a Signature thermostat; broader hardware coverage is not claimed.
 [![Open your Home Assistant and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=kilo-WATT&repository=nuheat-hacs-beta&category=integration)
 
 HACS must already be installed. The button opens the repository in your own
-Home Assistant; confirm the download there, then restart and reconnect NuHeat.
+Home Assistant; it does **not** select a release for you. Follow the version
+selection and verification steps below before restarting or reconnecting NuHeat.
 
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**, enable **Show beta versions** in its menu if needed,
-   and select **v0.1.0b4** in the download/version dialog once published. Download it.
-   Keep your existing NuHeat entry and enable it if
-   disabled, then restart Home Assistant.
-4. In a **desktop browser**, open Settings > Devices & services > NuHeat and
+3. Open **NuHeat Beta** and **enable Show beta versions**. This is required
+   because the beta releases are GitHub prereleases.
+4. In the download/version dialog, explicitly select the **latest tagged beta
+   release**, currently **v0.1.0b4**, then download it. **Do not select `main`.**
+   If the tag is missing, refresh the repository information and check beta
+   visibility rather than downloading the branch.
+5. Verify that **HACS's installed version** shows the selected release tag,
+   such as **v0.1.0b4**, rather than `main` or a short commit hash such as
+   `a813aac`. The integration's own version number alone is not sufficient:
+   a branch download can contain the same version. If HACS still shows a hash,
+   follow [Switch from a branch install](#switch-from-a-branch-install).
+6. Keep your existing NuHeat entry, enable it if disabled, and restart Home
+   Assistant. In a **desktop browser**, open Settings > Devices & services > NuHeat and
    follow the existing entry's **Reauthenticate / Reconnect NuHeat** prompt.
    Sign in to your own NuHeat account and complete the return to Home Assistant.
    Do not delete and re-add the integration. New users can add NuHeat from
    Devices & services instead.
-5. Verify your existing entity IDs, dashboards and automations. Restart HA once
+7. Verify your existing entity IDs, dashboards and automations. Restart HA once
    more and confirm the thermostat remains available without another login.
 
 The beta registers its community OAuth client automatically; users do not need
@@ -56,11 +65,27 @@ The shared client registration is not added to Core or the API library.
 
 ## Upgrade
 
-Back up, download the HACS update, restart HA, and verify your existing entities.
-If prompted, reauthenticate the existing account. Keep its config entry.
-Keep beta versions enabled to receive prerelease updates. If you installed
-`main` before the release, use HACS's **Redownload** action and select the release
-tag to switch to it. There is no need to remove the integration or its entries.
+Back up, keep **Show beta versions enabled**, and select the latest tagged beta
+release in HACS. After downloading, verify HACS shows that release tag as the
+installed version, restart HA, and verify your existing entities. If prompted,
+reauthenticate the existing account. Keep its config entry.
+
+## Switch from a branch install
+
+If HACS shows `main` or a short commit hash as the installed version:
+
+1. Create a complete HA backup and open **NuHeat Beta** in HACS.
+2. Enable **Show beta versions**, then open **Redownload**.
+3. Explicitly select the latest tagged release, currently **v0.1.0b4**, and
+   download it. Do not select `main`, uninstall the repository, or delete any
+   NuHeat integration entries.
+4. Confirm HACS now shows the release tag as the installed version, restart HA,
+   and verify the original thermostat entities. Reconnect the existing entry
+   only if prompted.
+
+This changes the HACS download reference while keeping your NuHeat entries,
+credentials and registry associations. Even when the branch files already match
+the release, selecting the tag makes the installed release explicit in HACS.
 
 ## Automatic transition to Core
 
@@ -89,9 +114,9 @@ Removing redundant entries is an irreversible boundary.
 
 **Known v0.1.0b3 issue:** opening setup before NuHeat starts can report missing
 application credentials. Existing users should enable their original entry and
-restart HA before reconnecting. The v0.1.0b4 candidate registers the client when
+restart HA before reconnecting. The v0.1.0b4 release registers the client when
 the setup flow opens too; it is not included in the unchanged v0.1.0b3 tag.
-Fresh installs should use v0.1.0b4 once published. Do not
+Fresh installs should use v0.1.0b4 or a newer tagged beta release. Do not
 delete an existing entry to work around this message.
 
 To undo completed migration, restore the **complete pre-migration backup** with

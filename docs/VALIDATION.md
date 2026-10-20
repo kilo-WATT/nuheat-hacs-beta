@@ -1,21 +1,23 @@
-# Validation record: beta 0.1.0b4 candidate and v0.1.0b3 audit
+# Validation record: beta 0.1.0b4 and v0.1.0b3 audit
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
-the immutable v0.1.0b3 tag from the v0.1.0b4 candidate on `main`. The final merged Core
+the immutable v0.1.0b3 tag from the published v0.1.0b4 release. The final merged Core
 release remains a future verification target.
 
-## v0.1.0b4 release candidate
+## Published v0.1.0b4 release
 
 The manifest version is `0.1.0b4`. Compared with audited commit
 `90842666ccf03ea9450b9ad13f065ddd8dac8ae5`, preparation changes only that version
 and version-specific documentation. Integration logic, client registration,
 OAuth behavior, migration safeguards, config-entry version and Core handoff
-are unchanged. No v0.1.0b4 release or tag is created by this preparation.
+are unchanged. The maintainer subsequently published v0.1.0b4 as a prerelease,
+tagging `a813aac8735c6f0ac00c4c9be2c458146eba9b5b`.
 
 The existing suite passes **161 tests, 1 skipped**; the persistence scenario was
 exercised separately in the audit. Lint and the gated `tools/package.py --release`
-validation also pass. The generated package is local only. GitHub Actions must
-pass on the final preparation commit before it is considered ready to publish.
+validation also pass. The generated audit package is local only.
+[GitHub Actions passed on the release commit](https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/39427903599).
+This documentation update does not change either published release or tag.
 
 ## Published release and readiness audit
 
@@ -43,9 +45,9 @@ Separate synthetic processes also passed legacy seed, corrected beta migration,
 restart and matching-Core replay after this correction. Both tagged and corrected
 source passed local packaging. No package was uploaded.
 
-The corrections are included in the v0.1.0b4 candidate but have not been released.
-The v0.1.0b3 tag and release are untouched. Publish v0.1.0b4 after its final CI
-passes before broad community sharing, particularly to new installations.
+The corrections are included in the published v0.1.0b4 release. The v0.1.0b3
+tag and release are untouched. New installations should use v0.1.0b4 or a newer
+tagged beta release.
 
 ## Source and changes
 
@@ -56,7 +58,7 @@ are in `provenance.json`. Config entry version remains **3**.
 Migration, registry transfer and account identity are the PR implementation.
 Beta changes are HACS metadata, English translations, stable climate property
 names, community-client import into standard Application Credentials and guarded
-automatic Core handoff. The v0.1.0b4 candidate also imports the same client
+automatic Core handoff. The v0.1.0b4 release also imports the same client
 before a setup flow needs it.
 Packaging checks the original integration code except these documented changes.
 
@@ -150,10 +152,20 @@ manifest while leaving separate synthetic registry storage intact. No uploaded
 ZIP asset was needed. This is a method-level integration check, not a complete
 HACS UI upgrade in another live HA installation. Production was not modified.
 
-The README explains beta visibility, tagged download, moving from a branch
-install to a release, restart, reconnect, desktop authorization and complete
-backup recovery. HACS updates require a newer release/version; future delivery
-cannot be empirically tested until another release exists.
+The subsequent read-only production audit found HACS 2.0.5 recording a branch
+installation at `a813aac`, with no selected tag and beta visibility effectively
+disabled. Its update entity reported both installed and latest versions as that
+commit hash, despite HACS knowing about prerelease v0.1.0b4. All 17 installed
+NuHeat source/configuration files nevertheless matched the v0.1.0b4 tag's Git
+blob hashes exactly, including the client and startup helper. Matching manifest
+versions or file contents therefore do not prove tagged-release tracking.
+
+The README now requires enabling beta visibility, explicitly selecting the
+latest release tag rather than `main`, and verifying the installed tag in HACS.
+It includes Redownload instructions for existing branch users, retaining their
+NuHeat entries and registry associations. The repository button alone does not
+pin a release. No production download, settings change or restart was performed
+during that audit, so a completed live branch-to-tag switch is not claimed.
 
 ## Recovery, privacy and future Core
 

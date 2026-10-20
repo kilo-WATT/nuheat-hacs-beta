@@ -8,9 +8,12 @@ Users do not need to register a developer application or enter client credential
 
 The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
 Opening setup first can report missing credentials. Existing users can enable
-their existing entry and restart before reconnecting. The v0.1.0b4 candidate
+their existing entry and restart before reconnecting. The published v0.1.0b4 release
 also registers the client before the setup flow checks for providers;
-fresh installs should use v0.1.0b4 once published.
+fresh installs should use v0.1.0b4 or a newer tagged beta release. Enable beta
+versions in HACS, select the release tag rather than `main`, and verify that
+HACS's installed version displays that tag. See the README for branch-to-release
+instructions that retain existing NuHeat entries.
 
 Each user still signs in to their own NuHeat account on Chemelex's login page.
 The shared client registration is not an account password or a shared account
