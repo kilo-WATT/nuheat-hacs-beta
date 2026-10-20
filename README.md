@@ -18,30 +18,34 @@ Home Assistant; confirm the download there, then restart and reconnect NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Download **NuHeat Beta** and restart Home Assistant.
-4. Add your approved NuHeat client once under Settings > Devices & services >
-   Application credentials. Select NuHeat and enter the approved Client ID and
-   Client secret. Credentials remain in HA, not this repository. The community
-   registration is described in [OAuth details](docs/AUTHENTICATION.md).
-5. Keep your existing NuHeat entries. Enable the existing entry if disabled.
-   Use its **Reauthenticate / Reconnect NuHeat** prompt and sign in to NuHeat
-   in a desktop browser. Do not delete and re-add the integration.
-6. Verify your existing entity IDs, dashboards and automations.
+3. Download **NuHeat Beta**. Keep your existing NuHeat entry and enable it if
+   disabled, then restart Home Assistant.
+4. In a **desktop browser**, open Settings > Devices & services > NuHeat and
+   follow the existing entry's **Reauthenticate / Reconnect NuHeat** prompt.
+   Sign in to your own NuHeat account and complete the return to Home Assistant.
+   Do not delete and re-add the integration. New users can add NuHeat from
+   Devices & services instead.
+5. Verify your existing entity IDs, dashboards and automations. Restart HA once
+   more and confirm the thermostat remains available without another login.
+
+The beta registers its community OAuth client automatically; users do not need
+to enter a Client ID or Client secret in Application Credentials.
+
+**Authorize from a desktop browser.** On phones, both the Home Assistant app
+and a mobile browser may hand the authorization link to the installed NuHeat
+app, interrupting the return to HA. Desktop authorization succeeded in testing.
+After setup, normal thermostat use through the HA mobile app is supported.
 
 Matching legacy thermostats may consolidate into one account entry while
 retaining registry identities. Unmatched entries remain for a later attempt.
 
 No manual pip installation is needed. The beta uses HA's standard Application
-Credentials store and Authorization Code + S256 PKCE. The shared client secret
-is not embedded or republished. Enter your password only on Chemelex's login
-page. Existing application credentials are retained through upgrades and handoff.
+Credentials store and Authorization Code + S256 PKCE. Enter your password only
+on Chemelex's login page. Each user authorizes their own NuHeat account; account
+tokens remain in their HA installation. Existing application credentials are
+retained through upgrades and handoff.
 HA installs the pinned `chemelex-nuheat==0.1.1` dependency automatically.
 The shared client registration is not added to Core or the API library.
-
-`custom_components/nuheat/community_oauth.py` is a deliberately blank local
-bootstrap template. It does nothing in the published beta. An authorized
-maintainer who supplies both values locally can use it for a private build, but
-must keep that edited file out of Git and repeat the edit after HACS updates.
 
 ## Upgrade
 
