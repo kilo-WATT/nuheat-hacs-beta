@@ -1,5 +1,5 @@
 {
-  "publish_allowed": false,
+  "publish_allowed": true,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -22,5 +22,6 @@
   },
   "version": "0.1.0b5",
   "tag": "v0.1.0b5",
-  "publication_status": "awaiting_user_approval"
+  "publication_status": "approved",
+  "github_release_prerelease": false
 }

@@ -12,8 +12,9 @@ The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
 Opening setup first can report missing credentials. Existing users can enable
 their existing entry and restart before reconnecting. The published v0.1.0b4 release
 also registers the client before the setup flow checks for providers;
-fresh installs should use v0.1.0b4 or a newer tagged beta release. Enable beta
-versions in HACS, select the release tag rather than `main`, and verify that
+fresh installs should use v0.1.0b5 or a newer published release. v0.1.0b5 is a
+regular GitHub release and does not require beta visibility in HACS. Select the
+release tag rather than `main`, and verify that
 HACS's installed version displays that tag. See the README for branch-to-release
 instructions that retain existing NuHeat entries.
 

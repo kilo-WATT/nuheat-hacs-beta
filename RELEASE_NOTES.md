@@ -1,7 +1,7 @@
 # v0.1.0b5 — setpoint reconciliation
 
-Prepared prerelease; awaiting maintainer approval. No v0.1.0b5 tag or release has
-been published by this preparation.
+Published as a **regular GitHub release** so HACS users can see it without enabling
+beta versions. NuHeat Beta remains unofficial community beta software.
 
 ## Fixed
 
@@ -19,8 +19,8 @@ timers. The normal five-minute background polling interval is unchanged.
 
 ## Upgrade
 
-Back up HA, enable **Show beta versions** in HACS, and explicitly select
-**v0.1.0b5** once published. Verify HACS displays that tag as installed, then
+Back up HA and explicitly select **v0.1.0b5** in HACS. **Show beta versions is not
+required** for this regular GitHub release. Verify HACS displays that tag as installed, then
 restart HA. Branch users can use **Redownload** to select the tag. Keep all
 existing NuHeat entries; do not delete or recreate thermostats or entities.
 No credential reset is required for this fix. Reauthenticate the existing entry
@@ -43,9 +43,9 @@ in-flight reads, rapid/concurrent commands, bounded timeout and timer cleanup.
 Final local checks passed: **185 beta tests, 1 skipped**, **164 Core tests**, lint,
 Core formatting/type checks, and packaging. The skipped persistence scenario
 passed separately through legacy, beta, restart and modified Core processes.
-See [validation](docs/VALIDATION.md) for the test boundaries. GitHub Actions must
-pass on the selected release-preparation commit before merging, tagging or
-publishing. No remote CI pass is claimed in advance by these release notes.
+See [validation](docs/VALIDATION.md) for the test boundaries. The preparation
+commit passed [GitHub Actions](https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/39503358029).
+Publication requires successful checks on the final main commit as well.
 
 Visual frontend/physical-display latency, forced live failure/timeout behavior,
 other thermostat models, and a separate live Core-framework run remain unverified

@@ -1,7 +1,7 @@
 # Setpoint reconciliation in v0.1.0b5
 
-This fix is prepared for v0.1.0b5 and is not part of the published v0.1.0b4 tag.
-Release publication is awaiting maintainer approval. OAuth behavior, migration
+This fix is included in v0.1.0b5 and is not part of the published v0.1.0b4 tag.
+Publication was approved by the maintainer. OAuth behavior, migration
 format and Core handoff eligibility are unchanged. The matching upstream Core
 patch remains separate and unpushed.
 

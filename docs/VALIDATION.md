@@ -1,15 +1,19 @@
-# Validation record: v0.1.0b5 candidate and published-release history
+# Validation record: v0.1.0b5 and published-release history
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
-the prepared v0.1.0b5 candidate from published v0.1.0b4 and the older v0.1.0b3
+v0.1.0b5 from published v0.1.0b4 and the older v0.1.0b3
 audit. No published tag is rewritten. Final merged Core remains a future target.
 
-## v0.1.0b5 preparation (not published)
+## v0.1.0b5
 
 The manifest is 0.1.0b5, containing bounded optimistic targets and delayed cloud
-reconciliation beyond published v0.1.0b4. Publication remains awaiting approval;
-the release gate is closed and no v0.1.0b5 tag or release was created. A separate
-release-preparation branch may be pushed for CI without updating main.
+reconciliation beyond published v0.1.0b4. The maintainer approved publication as
+a regular GitHub release, with prerelease disabled, so HACS beta opt-in is not
+required. The beta product name and version suffix do not change that GitHub flag.
+The validated preparation commit is `da1d3a5042e5814af6f6edd482ba5d8f570a236c`;
+[its GitHub Actions run passed](https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/39503358029).
+Final publication metadata changes are limited to documentation and approval
+status, followed by CI on the final main commit before tagging and publishing.
 OAuth, migration, registry identity, and Core handoff eligibility remain unchanged.
 Thirteen unchanged runtime/configuration files, including the community OAuth
 registration and handoff guards, match the saved v0.1.0b4 source. The community
@@ -25,7 +29,7 @@ and lint. Its 26 allowlisted files matched the selected source bytes. An offline
 audit found no matches against known private account tokens and identifiers in
 source or ZIP contents; this is a scoped check, not a universal secret detector.
 Local packaging and archive-content checks passed;
-the publication-gated build is deliberately refused until approval. The domain,
+the publication-gated build is enabled by the recorded approval. The domain,
 minimum HA version and API dependency remain unchanged.
 The normally skipped persistence test was run separately:
 synthetic legacy seed, beta migration, beta restart, and modified Core each passed
@@ -267,8 +271,8 @@ ruff check custom_components tests tools
 python tools/package.py
 ```
 
-This produces a local `-UNRELEASED.zip` review artifact. `--release` intentionally
-refuses while `release-status.json` records pending publication approval. Neither
+This produces a local `-UNRELEASED.zip` review artifact. `--release` produces the
+local release ZIP only when approval and validation gates are satisfied. Neither
 mode uploads, tags, pushes or publishes anything.
 
 `tools/transition.py` retains the expected failure of development climate code
