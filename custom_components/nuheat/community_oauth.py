@@ -7,5 +7,5 @@ An authorized maintainer may populate both values in their local checkout
 before installing it.  Do not commit credentials to this repository.
 """
 
-CLIENT_ID = ""
-CLIENT_SECRET = ""
+CLIENT_ID = "Home-Assistant-BGiUr56ktR--Nes"
+CLIENT_SECRET = "SYhm-gb@3H!4mqZymMnDIGuWkj7Jp2bxQ4iE3nzTboIPAgfIP4XMTrm1@w0Cg4s4"
