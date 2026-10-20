@@ -1,56 +1,74 @@
-# OAuth investigation
+# Authentication in beta 0.1.0b3
 
-Checked 2026-10-19 (America/New_York). OAuth client secrets are not included in
-this distribution. User passwords, account tokens and private identifiers are
-also excluded. No credential values have been printed or permission-request
-messages sent to third parties.
+This unofficial beta intentionally includes the temporary shared community OAuth
+registration in `community_oauth.py`. On integration startup, it registers that
+client in Home Assistant's standard Application Credentials store if no NuHeat
+provider already exists. Existing user-supplied credentials are retained.
+Users do not need to register a developer application or enter client credentials.
 
-Sources:
-- https://github.com/SmilesGalore/HA-Nuheat-Conductor
-- https://github.com/SmilesGalore/HA-Nuheat-Conductor/blob/main/custom_components/nuheat_conductor/config_flow.py
-- https://identity.nam.mynuheat.com/.well-known/openid-configuration
-- https://github.com/home-assistant/core/pull/176586
+The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
+Opening setup first can report missing credentials. Existing users can enable
+their existing entry and restart before reconnecting. The audited correction on
+`main` also registers the client before the setup flow checks for providers;
+fresh installs should use a future release containing that correction.
 
-The public SmilesGalore config flow references client credentials and uses
-LocalOAuth2Implementation. A source scan found no code_challenge, code_verifier,
-or WithPkce usage in that file. This does not establish PKCE is prohibited;
-it establishes that this implementation provides no evidence it was tested.
+Each user still signs in to their own NuHeat account on Chemelex's login page.
+The shared client registration is not an account password or a shared account
+token. Each installation receives its own account authorization and stores its
+access and refresh tokens locally in HA. Do not share those tokens, passwords,
+authorization codes, callback URLs, backups or thermostat identifiers in issues.
 
-Chemelex's discovery document advertises S256 and plain code challenges,
-authorization_code, and refresh_token. These are server capabilities and do not
-prove a particular registered client's grant, scopes or callback permissions.
-The beta retains HA's LocalOAuth2ImplementationWithPkce with a 128-character
-verifier. A mocked S256 test can verify the client implementation, but live
-code exchange and refresh rotation still require authorized registration.
+## Login and callback
 
-The user reports that Chemelex approved sharing this specific community OAuth
-client through a private message from its representative. The user authorizes
-reuse and distribution for this beta. That report is accepted as authorization;
-the private message has not been independently inspected. No private message
-or personal contact details will be included in the distribution.
+Use a desktop browser to reconnect the existing NuHeat entry. Mobile browsers
+and the Home Assistant app can hand the link to the installed NuHeat phone app
+and interrupt the return to HA. This was observed during production setup;
+desktop authorization succeeded. Normal HA mobile use works after authorization.
 
-The distribution nevertheless keeps the client secret out of GitHub. Configure
-the approved client once through HA's Application Credentials UI. It persists
-across beta upgrades and the tested Core handoff. A public embedded client is
-not required for migration preservation. The intentionally published registration
-is in the author's [source](https://github.com/SmilesGalore/HA-Nuheat-Conductor/blob/main/custom_components/nuheat_conductor/const.py);
-use only a registration you are authorized to use. Do not paste it into issues.
+The registered redirect is `https://my.home-assistant.io/redirect/oauth`.
+My Home Assistant forwards the authorization result to the user's HA instance;
+if prompted, select that instance's reachable URL, not a lab or example address.
+No beta-operated OAuth relay or additional hosted service is used.
 
-The public `community_oauth.py` file has blank values and therefore has no
-effect by default. It is provided only as a local-build template: if an
-authorized maintainer supplies both values in their own checkout, setup imports
-them into HA's standard credential store when none exists. That edit is local,
-is overwritten by HACS updates, and must never be committed or attached to an
-issue.
+The beta uses HA's `LocalOAuth2ImplementationWithPkce`, S256 PKCE, a
+128-character verifier, state validation and scopes `openid openapi offline_access`.
+Live checks passed fresh authorization, matching-verifier exchange, rejection of
+a deliberately incorrect verifier, API reads, refresh rotation and persistence
+across restart. See [validation](VALIDATION.md) for the test boundaries.
 
-SmilesGalore also publicly describes the credentials as intentionally provided
-for community use in issue #3. That corroborates the author's intended use,
-while the user's report supplies the vendor permission. Live callback, S256
-PKCE, requested scopes (`openid openapi offline_access`) and refresh rotation
-still require validation. This beta-only shared registration must not be added
-to the Core PR or standalone API library.
+## Permission and attribution
 
-Live checks passed consent, state validation, exchange with the matching
-verifier, rejection of the wrong verifier, API reads, refresh-token replacement
-and post-restart refresh. See VALIDATION.md for sanitized outcomes. Codes,
-account tokens and private callback data remain outside the beta repository.
+The registration comes from
+[SmilesGalore's NuHeat Conductor integration](https://github.com/SmilesGalore/HA-Nuheat-Conductor).
+The author explains its deliberate community use in
+[issue #3](https://github.com/SmilesGalore/HA-Nuheat-Conductor/issues/3).
+The beta maintainer reports Chemelex permission to share this registration via
+a private Discord message. That report is accepted for this beta; the message
+was not independently inspected and is not published. No independently verified
+public vendor commitment or service-level guarantee is claimed.
+
+The integration code is derived from
+[Home Assistant Core PR #176586](https://github.com/home-assistant/core/pull/176586),
+with exact source and community-client provenance in `provenance.json`.
+The source projects use Apache-2.0; the license is included in this repository.
+This beta's shared registration must not be copied into the Core PR or the
+standalone API library.
+
+## Confirmed properties and remaining risks
+
+The client secret is intentionally public in this beta. It therefore cannot
+serve as proof that a caller is a trusted installation. Possessing it alone
+does not provide a user's thermostat authorization; the user still completes
+OAuth, and the live test confirmed rejection of an incorrect PKCE verifier.
+
+The confirmed operational dependency is one vendor-controlled registration for
+all beta users. Revocation, rotation, callback changes or registration limits
+could interrupt new logins or refreshes. Abuse, throttling and vendor revocation
+are possible failure modes, not observed incidents from this audit. There is
+no evidence here of account compromise. Shared-client permission does not
+guarantee continued service or cover unrelated registrations.
+
+Existing credentials and account tokens survive the tested Core-candidate
+handoff. If the final official integration adopts a different client or Cloud
+Account Linking, users may need to authorize the existing entry again. The
+beta does not promise that account relinking will never be necessary.

@@ -53,6 +53,17 @@ def main():
             assert actual.startswith(
                 original.decode().rstrip() + "\n\n\nasync def async_setup("
             )
+        elif relative == "custom_components/nuheat/config_flow.py":
+            original = (
+                ROOT / "tests/fixtures/core_candidate/nuheat/config_flow.py"
+            ).read_bytes()
+            assert hashlib.sha256(original).hexdigest() == digest
+            actual = (ROOT / relative).read_text().replace(
+                "from .oauth_setup import async_ensure_community_credentials\n", ""
+            ).replace(
+                "            await async_ensure_community_credentials(self.hass)\n", ""
+            )
+            assert actual == original.decode(), relative
         elif relative == "custom_components/nuheat/strings.json":
             original = (
                 ROOT / "tests/fixtures/core_candidate/nuheat/strings.json"

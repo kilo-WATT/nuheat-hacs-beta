@@ -4,6 +4,9 @@ Restore NuHeat after the Chemelex API migration, keeping the existing `nuheat`
 domain, thermostat entities, devices, dashboard and automation references.
 Based on [Core PR #176586](https://github.com/home-assistant/core/pull/176586).
 
+This is an **unofficial community beta**, installed as a HACS custom repository.
+It is not listed in the official HACS catalog and is not an official Core release.
+
 Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
@@ -18,7 +21,9 @@ Home Assistant; confirm the download there, then restart and reconnect NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Download **NuHeat Beta**. Keep your existing NuHeat entry and enable it if
+3. Open **NuHeat Beta**, enable **Show beta versions** in its menu if needed,
+   and select **v0.1.0b3** in the download/version dialog. Download it.
+   Keep your existing NuHeat entry and enable it if
    disabled, then restart Home Assistant.
 4. In a **desktop browser**, open Settings > Devices & services > NuHeat and
    follow the existing entry's **Reauthenticate / Reconnect NuHeat** prompt.
@@ -30,6 +35,8 @@ Home Assistant; confirm the download there, then restart and reconnect NuHeat.
 
 The beta registers its community OAuth client automatically; users do not need
 to enter a Client ID or Client secret in Application Credentials.
+The temporary registration is shared by beta users and remains controlled by
+Chemelex. It does not grant access to anyone's account without authorization.
 
 **Authorize from a desktop browser.** On phones, both the Home Assistant app
 and a mobile browser may hand the authorization link to the installed NuHeat
@@ -51,6 +58,9 @@ The shared client registration is not added to Core or the API library.
 
 Back up, download the HACS update, restart HA, and verify your existing entities.
 If prompted, reauthenticate the existing account. Keep its config entry.
+Keep beta versions enabled to receive prerelease updates. If you installed
+`main` before the release, use HACS's **Redownload** action and select the release
+tag to switch to it. There is no need to remove the integration or its entries.
 
 ## Automatic transition to Core
 
@@ -77,6 +87,13 @@ fixing the login. For migration rollback or incomplete cleanup, retain sanitized
 logs and follow Settings > Repairs. Cleanup retries when the account loads.
 Removing redundant entries is an irreversible boundary.
 
+**Known v0.1.0b3 issue:** opening setup before NuHeat starts can report missing
+application credentials. Existing users should enable their original entry and
+restart HA before reconnecting. A correction on `main` registers the client when
+the setup flow opens too; it is not included in the unchanged v0.1.0b3 tag.
+Fresh installs should wait for a release containing that correction. Do not
+delete an existing entry to work around this message.
+
 To undo completed migration, restore the **complete pre-migration backup** with
 the matching HA/custom component version. Removing beta files does not convert
 OAuth entries back to legacy credentials or revive the retired API. Do not
@@ -97,3 +114,9 @@ thermostat writes. Shared-client availability remains controlled by Chemelex.
 The final merged release still needs verification before extending the allowlist.
 
 Apache-2.0. [License](LICENSE.md).
+
+Derived from Home Assistant Core's NuHeat integration; source commit and changes
+are recorded in `provenance.json` and the validation record. Thanks to
+[SmilesGalore](https://github.com/SmilesGalore/HA-Nuheat-Conductor) for the community
+OAuth registration. Vendor permission is maintainer-reported; see
+[authentication details](docs/AUTHENTICATION.md).

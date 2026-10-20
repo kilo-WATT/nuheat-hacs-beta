@@ -25,6 +25,7 @@ from .account_identity import (
     account_subject_from_entry_data,
 )
 from .const import DOMAIN, OAUTH_SCOPES
+from .oauth_setup import async_ensure_community_credentials
 from .migration import (
     OAUTH_CONFIG_ENTRY_VERSION,
     MigrationAccountMismatchError,
@@ -50,6 +51,7 @@ class NuHeatConfigFlow(
     ) -> ConfigFlowResult:
         """Start with any HA-registered local or cloud OAuth provider."""
         if user_input is None:
+            await async_ensure_community_credentials(self.hass)
             try:
                 implementations = (
                     await config_entry_oauth2_flow.async_get_implementations(

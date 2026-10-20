@@ -160,28 +160,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     if await async_schedule_core_handoff(hass):
         return True
 
-    from .community_oauth import CLIENT_ID, CLIENT_SECRET
+    from .oauth_setup import async_ensure_community_credentials
 
-    if not CLIENT_ID or not CLIENT_SECRET:
-        return True
-
-    from homeassistant.components.application_credentials import (
-        ClientCredential,
-        async_import_client_credential,
-    )
-    from homeassistant.helpers.config_entry_oauth2_flow import (
-        async_get_implementations,
-    )
-
-    try:
-        implementations = await async_get_implementations(hass, DOMAIN)
-    except ImplementationUnavailableError:
-        return True
-    if not implementations:
-        await async_import_client_credential(
-            hass,
-            DOMAIN,
-            ClientCredential(CLIENT_ID, CLIENT_SECRET, "NuHeat community beta"),
-            auth_domain=DOMAIN,
-        )
+    await async_ensure_community_credentials(hass)
     return True
