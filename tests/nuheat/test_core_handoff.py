@@ -21,6 +21,16 @@ def test_recognizes_only_tested_core_source(tmp_path):
     assert not core_handoff.compatible_core(tmp_path / "missing")
 
 
+def test_local_setpoint_candidate_is_not_automatically_allowlisted(tmp_path):
+    """Testing a local fix must not silently authorize a new Core handoff."""
+    fixtures = Path(__file__).resolve().parents[1] / "fixtures"
+    core = tmp_path / "core"
+    shutil.copytree(fixtures / "core_candidate/nuheat", core)
+    for source in (fixtures / "setpoint_candidate/nuheat").glob("*.py"):
+        shutil.copyfile(source, core / source.name)
+    assert not core_handoff.compatible_core(core)
+
+
 async def test_retirement_preserves_backup_and_requests_one_restart(
     hass, tmp_path, monkeypatch
 ):

@@ -1,0 +1,18 @@
+"""Constants for the NuHeat integration."""
+
+from datetime import timedelta
+
+DOMAIN = "nuheat"
+CONF_SERIAL_NUMBER = "serial_number"
+AUTHORIZE_URL = "https://identity.nam.mynuheat.com/connect/authorize"
+TOKEN_URL = "https://identity.nam.mynuheat.com/connect/token"
+OAUTH_SCOPES = ("openid", "openapi", "offline_access")
+
+SCAN_INTERVAL = timedelta(minutes=5)
+SETPOINT_RECONCILE_DELAY = 2
+SETPOINT_RECONCILE_RETRY = 8
+SETPOINT_RECONCILE_TIMEOUT = 30
+
+PRESET_RUN = "run_schedule"
+PRESET_TEMPORARY_HOLD = "temporary_hold"
+PRESET_MODES = [PRESET_RUN, PRESET_TEMPORARY_HOLD]

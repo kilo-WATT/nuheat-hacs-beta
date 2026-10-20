@@ -1,10 +1,12 @@
-# Authentication in beta 0.1.0b4
+# Authentication in beta 0.1.0b5
 
 This unofficial beta intentionally includes the temporary shared community OAuth
 registration in `community_oauth.py`. On integration startup, it registers that
 client in Home Assistant's standard Application Credentials store if no NuHeat
 provider already exists. Existing user-supplied credentials are retained.
 Users do not need to register a developer application or enter client credentials.
+The registration, OAuth flow, callback, scopes and PKCE settings are unchanged
+from v0.1.0b4. The setpoint fix requires no credential reset.
 
 The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
 Opening setup first can report missing credentials. Existing users can enable

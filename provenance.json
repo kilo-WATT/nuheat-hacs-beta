@@ -24,5 +24,14 @@
     "source": "https://raw.githubusercontent.com/SmilesGalore/HA-Nuheat-Conductor/f262c51d8e90b2998d2d30c17d74cd50d208d593/custom_components/nuheat_conductor/const.py",
     "sha256": "384966dcee02c9109ff9ddea8cfe7ca7323790d79ad24deaae5a4996c6ff0ff8",
     "permission": "user-reported vendor approval"
+  },
+  "setpoint_reconciliation_sha256": {
+    "custom_components/nuheat/climate.py": "d0f254d012cde99444971656a0e733b64db120ed4c3dc36bfec35ebb75fb902e",
+    "custom_components/nuheat/const.py": "0f8034bac244543326591faaa98e3b3519545220297360d43ba966df3c7260ba",
+    "custom_components/nuheat/coordinator.py": "9a0d2980231465103f1b2261b46e629cc58bf45a92a7c3244a8343a02e6febf4"
+  },
+  "distributed_community_registration": {
+    "unchanged_from_tag": "v0.1.0b4",
+    "sha256": "9ba467c3dccca2741da1b845be0ac370753f2758d871d2e5223383dbb22ec250"
   }
 }

@@ -1,0 +1,140 @@
+"""Verify release preparation cannot package placeholders or unexpected files."""
+
+import hashlib
+import json
+from pathlib import Path
+import sys
+import zipfile
+
+import pytest
+
+from tools import package
+
+
+def candidate(tmp_path: Path, monkeypatch) -> Path:
+    """Build only a synthetic candidate; never load distributed OAuth values."""
+    monkeypatch.setattr(package, "ROOT", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["package.py"])
+    component = tmp_path / "custom_components/nuheat"
+    for name in package.COMPONENT_FILES:
+        path = component / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}" if path.suffix == ".json" else "# synthetic\n")
+    source = "CLIENT_ID = 'synthetic-client'\nCLIENT_SECRET = 'synthetic-secret'\n"
+    (component / "community_oauth.py").write_text(source)
+    manifest = {
+        "domain": "nuheat",
+        "version": "0.1.0b5",
+        "requirements": ["chemelex-nuheat==0.1.1"],
+        "issue_tracker": "https://example.invalid/issues",
+        "documentation": "https://example.invalid/docs",
+        "codeowners": ["@synthetic"],
+    }
+    (component / "manifest.json").write_text(json.dumps(manifest))
+    (tmp_path / "release-status.json").write_text(
+        json.dumps(
+            {
+                "version": "0.1.0b5",
+                "tag": "v0.1.0b5",
+                "publish_allowed": False,
+                "gates": {"synthetic": "passed"},
+            }
+        )
+    )
+    (tmp_path / "provenance.json").write_text(
+        json.dumps(
+            {
+                "sha256": {},
+                "setpoint_reconciliation_sha256": {},
+                "distributed_community_registration": {
+                    "sha256": hashlib.sha256(source.encode()).hexdigest()
+                },
+            }
+        )
+    )
+    for name in (
+        "README.md",
+        "LICENSE.md",
+        "RELEASE_NOTES.md",
+        "hacs.json",
+        "docs/AUTHENTICATION.md",
+        "docs/VALIDATION.md",
+        "docs/SETPOINT_RECONCILIATION.md",
+    ):
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            "{}" if path.suffix == ".json" else "Synthetic packaging fixture\n"
+        )
+    return component
+
+
+@pytest.mark.parametrize(
+    ("client_id", "client_secret"), [("", ""), ("synthetic", ""), ("", "synthetic")]
+)
+def test_blank_community_credentials_are_rejected(tmp_path, client_id, client_secret):
+    """Even an explicitly pinned blank template cannot produce a package."""
+    source = f"CLIENT_ID = {client_id!r}\nCLIENT_SECRET = {client_secret!r}\n"
+    (tmp_path / "community_oauth.py").write_text(source)
+    with pytest.raises(AssertionError, match="placeholders"):
+        package.validate_community_registration(
+            tmp_path, hashlib.sha256(source.encode()).hexdigest()
+        )
+
+
+def test_registration_drift_is_rejected(tmp_path):
+    """A registration must match the independently audited source fingerprint."""
+    (tmp_path / "community_oauth.py").write_text(
+        "CLIENT_ID = 'synthetic'\nCLIENT_SECRET = 'synthetic'\n"
+    )
+    with pytest.raises(AssertionError):
+        package.validate_community_registration(tmp_path, "0" * 64)
+
+
+def test_pending_publication_blocks_release_build(tmp_path, monkeypatch):
+    """Preparation must not silently clear the maintainer's approval gate."""
+    candidate(tmp_path, monkeypatch)
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(SystemExit, match="RELEASE BLOCKED"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
+
+
+def test_unexpected_component_file_is_rejected(tmp_path, monkeypatch):
+    """An accidentally copied private JSON file must not enter the ZIP."""
+    component = candidate(tmp_path, monkeypatch)
+    (component / "unexpected.json").write_text('{"synthetic": true}')
+    with pytest.raises(AssertionError, match="Unexpected or missing"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
+
+
+def test_prepared_archive_has_only_allowlisted_files(tmp_path, monkeypatch):
+    """A local review artifact includes the selected runtime and release notes."""
+    candidate(tmp_path, monkeypatch)
+    package.main()
+    artifact = tmp_path / "artifacts/nuheat-0.1.0b5-UNRELEASED.zip"
+    with zipfile.ZipFile(artifact) as archive:
+        names = set(archive.namelist())
+        assert len(names) == len(archive.namelist())
+        assert {name for name in names if name.startswith("custom_components/")} == {
+            "custom_components/nuheat/" + name for name in package.COMPONENT_FILES
+        }
+        assert "RELEASE_NOTES.md" in names
+        assert (
+            json.loads(archive.read("custom_components/nuheat/manifest.json"))[
+                "version"
+            ]
+            == "0.1.0b5"
+        )
+
+
+def test_manifest_and_candidate_version_must_match(tmp_path, monkeypatch):
+    """Version metadata cannot silently describe a different candidate."""
+    component = candidate(tmp_path, monkeypatch)
+    path = component / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["version"] = "0.1.0b4"
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(AssertionError):
+        package.main()

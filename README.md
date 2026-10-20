@@ -25,11 +25,12 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 3. Open **NuHeat Beta** and **enable Show beta versions**. This is required
    because the beta releases are GitHub prereleases.
 4. In the download/version dialog, explicitly select the **latest tagged beta
-   release**, currently **v0.1.0b4**, then download it. **Do not select `main`.**
+   release**: select **v0.1.0b5** once available, then download it.
+   **Do not select `main`.**
    If the tag is missing, refresh the repository information and check beta
    visibility rather than downloading the branch.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b4**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b5**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -65,6 +66,10 @@ The shared client registration is not added to Core or the API library.
 
 ## Upgrade
 
+For v0.1.0b5, keep your existing NuHeat entries and credentials. This update fixes
+delayed setpoint display; no migration reset or new account authorization is
+required solely for this change. See [release notes](RELEASE_NOTES.md).
+
 Back up, keep **Show beta versions enabled**, and select the latest tagged beta
 release in HACS. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
@@ -76,7 +81,7 @@ If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
 2. Enable **Show beta versions**, then open **Redownload**.
-3. Explicitly select the latest tagged release, currently **v0.1.0b4**, and
+3. Explicitly select the latest published tagged release (**v0.1.0b5** once available), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,
@@ -134,9 +139,20 @@ Restore the complete working beta backup if Core cannot load.
 Testing includes stable HA, live PKCE success and wrong-verifier rejection,
 refresh rotation, real-storage legacy migration, restart, pinned Core handoff
 and automatic retirement. No private backup contents or identifiers are in this
-repository. Thermostat commands have mocked coverage; these live tests sent no
-thermostat writes. Shared-client availability remains controlled by Chemelex.
+repository. The v0.1.0b5 setpoint fix also passed an approved isolated Signature
+hardware test: HA state updated in 0.24–0.32 seconds, stale cloud responses did
+not revert it, and delayed reads confirmed changes in about 2.1 seconds. Rapid
+changes coalesced correctly and the original target, schedule mode and hold
+settings were restored. These timings are observations, not vendor guarantees.
+Visual frontend/device timing and live failure/timeout cases were not measured;
+failure and timeout handling has synthetic regression coverage.
+Shared-client availability remains controlled by Chemelex.
 The final merged release still needs verification before extending the allowlist.
+
+After a successful temperature command, HA temporarily shows the requested
+setpoint while waiting for cloud confirmation. If confirmation does not arrive
+within thirty seconds, HA returns to the latest cloud value and logs a warning.
+Check the NuHeat app/device before repeating a command whose outcome is uncertain.
 
 Apache-2.0. [License](LICENSE.md).
 

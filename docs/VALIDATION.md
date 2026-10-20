@@ -1,12 +1,63 @@
-# Validation record: beta 0.1.0b4 and v0.1.0b3 audit
+# Validation record: v0.1.0b5 candidate and published-release history
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
-the immutable v0.1.0b3 tag from the published v0.1.0b4 release. The final merged Core
-release remains a future verification target.
+the prepared v0.1.0b5 candidate from published v0.1.0b4 and the older v0.1.0b3
+audit. No published tag is rewritten. Final merged Core remains a future target.
+
+## v0.1.0b5 preparation (not published)
+
+The manifest is 0.1.0b5, containing bounded optimistic targets and delayed cloud
+reconciliation beyond published v0.1.0b4. Publication remains awaiting approval;
+the release gate is closed and no v0.1.0b5 tag or release was created. A separate
+release-preparation branch may be pushed for CI without updating main.
+OAuth, migration, registry identity, and Core handoff eligibility remain unchanged.
+Thirteen unchanged runtime/configuration files, including the community OAuth
+registration and handoff guards, match the saved v0.1.0b4 source. The community
+registration also matches the public v0.1.0b4 file byte-for-byte. Packaging now
+rejects blank OAuth placeholders, registration drift, inconsistent version/tag
+metadata and unexpected component source/JSON files. See
+[the implementation record](SETPOINT_RECONCILIATION.md).
+
+Validation on 2026-10-20: **185 beta tests passed, 1 skipped**, **164 Core tests
+passed**, beta/Core lint passed, Core changed-file formatting passed, and targeted
+Core type checks passed. The extracted review ZIP also passed all 185 beta tests
+and lint. Its 26 allowlisted files matched the selected source bytes. An offline
+audit found no matches against known private account tokens and identifiers in
+source or ZIP contents; this is a scoped check, not a universal secret detector.
+Local packaging and archive-content checks passed;
+the publication-gated build is deliberately refused until approval. The domain,
+minimum HA version and API dependency remain unchanged.
+The normally skipped persistence test was run separately:
+synthetic legacy seed, beta migration, beta restart, and modified Core each passed
+in independent processes with preserved registry identities and options. These
+checks used isolated runtimes. No production HA installation was accessed or
+changed during these tests or the hardware run below. The configured CI commands
+pass locally. Verify the GitHub Actions checks on the selected release-preparation
+commit before merging, tagging or publishing; this record does not claim a remote
+CI result in advance.
+
+The approved isolated Signature hardware run passed. HA state changes took
+0.239–0.313 seconds from service start. Two delayed account reads started
+2.0016/2.0008 seconds after service completion and confirmed the requested targets
+after 2.1091/2.0901 seconds. Naturally stale readbacks did not revert the displayed
+target. Rapid changes used one delayed read after the final success. Six setpoint
+writes stayed within the approved 0.5 C bound; one Auto write restored the original
+scheduled mode. Cloud readback confirmed the original target and no-hold state.
+No further reads occurred during the forty-second unload observation. The lab
+was stopped. A private-observer JSON snapshot race affected only the final unload
+event, which was recovered from a complete independently decodable record; command
+and readback measurements were intact. The observer was corrected without another
+hardware run. Private logs, tokens and device identities are excluded from source
+and release artifacts.
+
+Live frontend/physical-display latency, deliberately failed writes/timeouts, other
+thermostat models, and a separate live Core-framework test remain unverified for
+this fix. Failure and timeout handling has synthetic coverage; no universal cloud
+propagation timing is promised.
 
 ## Published v0.1.0b4 release
 
-The manifest version is `0.1.0b4`. Compared with audited commit
+The published tag's manifest version is `0.1.0b4`. Compared with audited commit
 `90842666ccf03ea9450b9ad13f065ddd8dac8ae5`, preparation changes only that version
 and version-specific documentation. Integration logic, client registration,
 OAuth behavior, migration safeguards, config-entry version and Core handoff
@@ -52,14 +103,17 @@ tagged beta release.
 ## Source and changes
 
 Core PR #176586 is pinned to `c45837c18b59ebddf4a2ce40a1732f5beec360fd`.
-No upstream source, branch, PR text or comment was modified. Original hashes
-are in `provenance.json`. Config entry version remains **3**.
+The remote upstream branch, PR text and comments were not modified. Original
+fixtures and hashes remain in `provenance.json`. A separate uncommitted Core
+patch contains the aligned setpoint fix; it is not included in the beta ZIP.
+Config entry version remains **3**.
 
 Migration, registry transfer and account identity are the PR implementation.
 Beta changes are HACS metadata, English translations, stable climate property
 names, community-client import into standard Application Credentials and guarded
 automatic Core handoff. The v0.1.0b4 release also imports the same client
-before a setup flow needs it.
+before a setup flow needs it. v0.1.0b5 adds the documented setpoint reconciliation
+deviation while retaining the exact Core handoff allowlist.
 Packaging checks the original integration code except these documented changes.
 
 ## Stable tests
@@ -125,7 +179,8 @@ retirement and the following Core startup successfully. Reusing the upgraded clo
 exposed a newer HTTP storage schema; its disposable HTTP settings were archived
 before repeating stable validation. NuHeat credentials and registries were retained.
 
-No thermostat writes were sent. No backup data, actual serials, account IDs,
+Those earlier transition checks sent no thermostat writes; the later v0.1.0b5
+Signature run is recorded above. No backup data, actual serials, account IDs,
 private addresses, real registry IDs or raw logs are published.
 
 Production testing subsequently completed desktop OAuth with the distributed
@@ -209,8 +264,12 @@ On Linux/Python 3.14:
 python -m pip install -r requirements-test.txt
 python -m pytest -q
 ruff check custom_components tests tools
-python tools/package.py --release
+python tools/package.py
 ```
+
+This produces a local `-UNRELEASED.zip` review artifact. `--release` intentionally
+refuses while `release-status.json` records pending publication approval. Neither
+mode uploads, tags, pushes or publishes anything.
 
 `tools/transition.py` retains the expected failure of development climate code
 on stable. `tools/core_handoff.py --core /path/to/matching/core` verifies the
