@@ -1,0 +1,20 @@
+{
+  "publish_allowed": true,
+  "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
+  "target_homeassistant": "2026.10.2",
+  "gates": {
+    "vendor_credential_reuse_permission": "passed",
+    "live_pkce_and_refresh": "passed",
+    "incorrect_pkce_verifier_rejected": "passed",
+    "stable_suite": "passed",
+    "synthetic_legacy_beta_restart": "passed",
+    "core_candidate_on_matching_framework": "passed",
+    "isolated_real_storage_transition": "passed",
+    "automatic_core_handoff": "passed",
+    "pbs_backup_before_user_ha_changes": "passed"
+  },
+  "official_release_follow_up": {
+    "status": "awaiting_merge",
+    "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
+  }
+}

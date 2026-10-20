@@ -1,0 +1,15 @@
+{
+  "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
+  "files": {
+    "__init__.py": "3e9c19e0039af08c198b75d2d30d31737b868f13267b056e3b0280e20bfc6c0a",
+    "account_identity.py": "cc7e56f6d524db4f3933980997f2869571608f56fda04cd465a2db554c9d2f88",
+    "application_credentials.py": "130520430337bbb8006d6e5a2eb07085e4db42204948e9f5bcb013c668a08dfb",
+    "behavior.py": "27822f542c9415fe69b682e0bbc326f90289df1f36159a786d5bbea2cabfba8e",
+    "climate.py": "b5dbb67f58d3d392fa21ecb4c66d69103030b0e0419ea875c915a8eca0a395a8",
+    "config_flow.py": "74f2c0423ef74bd7647c6f57577872d1dbfe474078693acabb0e19be63e55fbd",
+    "const.py": "3c0580bb32a711ebf0117611dd6e6bec0ac4b02390d91ac6e28e320ca3c338e3",
+    "coordinator.py": "5088721a425f133f8439346e95cca425908621408f812bd227d4d3b8fb27040d",
+    "migration.py": "e6d092d0cdbdb137bced48de92380f58a2c370769172f128323e1a38fd75bf41",
+    "registry_migration.py": "122ab446b97faef59759bc6b798f5f005c28789912f44a431c8062808c1525ac"
+  }
+}
