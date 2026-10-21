@@ -24,7 +24,7 @@ def candidate(tmp_path: Path, monkeypatch) -> Path:
     (component / "community_oauth.py").write_text(source)
     manifest = {
         "domain": "nuheat",
-        "version": "0.1.0b5",
+        "version": "0.1.0b6",
         "requirements": ["chemelex-nuheat==0.1.1"],
         "issue_tracker": "https://example.invalid/issues",
         "documentation": "https://example.invalid/docs",
@@ -34,8 +34,8 @@ def candidate(tmp_path: Path, monkeypatch) -> Path:
     (tmp_path / "release-status.json").write_text(
         json.dumps(
             {
-                "version": "0.1.0b5",
-                "tag": "v0.1.0b5",
+                "version": "0.1.0b6",
+                "tag": "v0.1.0b6",
                 "publish_allowed": False,
                 "gates": {"synthetic": "passed"},
             }
@@ -60,6 +60,7 @@ def candidate(tmp_path: Path, monkeypatch) -> Path:
         "docs/AUTHENTICATION.md",
         "docs/VALIDATION.md",
         "docs/SETPOINT_RECONCILIATION.md",
+        "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
     ):
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -113,7 +114,7 @@ def test_prepared_archive_has_only_allowlisted_files(tmp_path, monkeypatch):
     """A local review artifact includes the selected runtime and release notes."""
     candidate(tmp_path, monkeypatch)
     package.main()
-    artifact = tmp_path / "artifacts/nuheat-0.1.0b5-UNRELEASED.zip"
+    artifact = tmp_path / "artifacts/nuheat-0.1.0b6-UNRELEASED.zip"
     with zipfile.ZipFile(artifact) as archive:
         names = set(archive.namelist())
         assert len(names) == len(archive.namelist())
@@ -125,7 +126,7 @@ def test_prepared_archive_has_only_allowlisted_files(tmp_path, monkeypatch):
             json.loads(archive.read("custom_components/nuheat/manifest.json"))[
                 "version"
             ]
-            == "0.1.0b5"
+            == "0.1.0b6"
         )
 
 
@@ -138,3 +139,25 @@ def test_manifest_and_candidate_version_must_match(tmp_path, monkeypatch):
     path.write_text(json.dumps(manifest))
     with pytest.raises(AssertionError):
         package.main()
+
+
+def test_unapproved_oauth_candidate_cannot_build_release(tmp_path, monkeypatch):
+    """Historical v5 approval cannot authorize publishing this local fix."""
+    candidate(tmp_path, monkeypatch)
+    status_path = tmp_path / "release-status.json"
+    status = json.loads(status_path.read_text())
+    status["publish_allowed"] = True
+    status_path.write_text(json.dumps(status))
+    provenance_path = tmp_path / "provenance.json"
+    provenance = json.loads(provenance_path.read_text())
+    provenance["oauth_authorization_fix"] = {
+        "status": "local review candidate; not released",
+        "sha256": {},
+    }
+    provenance_path.write_text(json.dumps(provenance))
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(
+        SystemExit, match="OAuth correction has no publication approval"
+    ):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()

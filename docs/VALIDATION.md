@@ -1,8 +1,30 @@
-# Validation record: v0.1.0b5 and published-release history
+# Validation record: v0.1.0b6 candidate and published-release history
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
 v0.1.0b5 from published v0.1.0b4 and the older v0.1.0b3
 audit. No published tag is rewritten. Final merged Core remains a future target.
+
+## v0.1.0b6 candidate (unpublished)
+
+Prepared on 2026-10-20, America/New_York, from published v0.1.0b5. Publication is
+blocked pending separate approval. The exact preparation commit must pass GitHub
+Actions; the final report records its SHA and result. Main and existing tags are
+not changed by preparation.
+
+Local validation passed 208 tests with 1 skip, lint, changed-file formatting,
+allowlisted packaging, and the known-private-value source/archive scan. The
+historically separate persistence scenario remains skipped in the routine suite;
+this version does not change migration, registry, setpoint, or handoff code.
+Live read-only OAuth passed with My genuinely loaded in an isolated HA instance.
+Synthetic full HTTP round trips cover custom clients with/without My, successful
+community authorization and denial, plus preserved provider associations. See
+[the detailed evidence and boundaries](OAUTH_UNAUTHORIZED_CLIENT.md).
+
+The proposed runtime differences are confined to OAuth registration/provider
+selection, callback requirements, and explanatory translations. Community secrets,
+API dependency, scopes, PKCE, entity identity, migration code, setpoint behavior,
+and handoff allowlist remain byte-for-byte unchanged from v0.1.0b5. No production
+HA or Core PR changes are included. Community-user confirmation remains pending.
 
 ## v0.1.0b5
 

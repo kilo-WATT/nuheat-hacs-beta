@@ -1,3 +1,53 @@
+# v0.1.0b6 - OAuth authorization correction (unpublished)
+
+Prepared for GitHub CI; this version is not yet released. Publication requires
+separate maintainer approval and successful checks on the final release commit.
+The intended GitHub release setting remains regular (prerelease disabled).
+
+## Fixed
+
+Community sign-in now requires My Home Assistant (`my`) before opening NuHeat's
+login page. If it is absent, HA explains how to enable `my:` and retry linking
+the existing entry. Nothing is enabled or edited automatically. This avoids the
+direct instance callback that the shared registration rejects, and supports the
+documented My return/cancellation paths.
+
+The community client is registered alongside existing Application Credentials.
+Fresh and legacy migration flows with multiple providers show an explicit picker
+with recognizable names. Choose **NuHeat community beta** for the shared client,
+or your own application if you have registered one. Existing OAuth entries retain
+their associated provider. Stored credentials are neither deleted nor replaced.
+Custom applications retain normal callback handling and can work without `my`.
+
+## Upgrade after publication
+
+Back up HA, explicitly select the **v0.1.0b6** tag in HACS, verify HACS tracks that
+tag, and restart. The tag will not be available until publication; do not install
+`main` as a substitute. A regular GitHub release needs no beta-visibility opt-in.
+If community sign-in reports missing My Home Assistant and you do not use
+`default_config:`, add `my:` to `configuration.yaml` and restart HA. Reconnect the
+existing NuHeat entry from a desktop browser. Do not delete entries, thermostats,
+entities, or Application Credentials to perform this upgrade.
+
+## Validation and unchanged behavior
+
+Validated on HA 2026.10.2: 208 tests passed, 1 skipped; lint, formatting, packaging,
+and the scoped privacy audit passed. A live isolated round trip completed NuHeat
+consent, My redirect, PKCE token exchange, account/device reads, and entry creation
+with `my` loaded. No production HA access or thermostat writes occurred. Synthetic
+HTTP tests cover community/custom success and denial, custom direct callbacks
+without My, provider choices, credential associations, and missing-My guidance.
+See [the OAuth validation record](docs/OAUTH_UNAUTHORIZED_CLIENT.md).
+
+The domain, account/thermostat identity, migration safeguards, bounded setpoint
+reconciliation, shared credential values, scopes, PKCE, and dependency are unchanged.
+The Core handoff allowlist is not expanded. Updated/final Core code still needs
+separate validation before handoff eligibility changes. No Core PR changes are
+included. Affected community testers still need to confirm the fixes on their
+installations; their original callback/provider choices remain unconfirmed.
+
+---
+
 # v0.1.0b5 — setpoint reconciliation
 
 Published as a **regular GitHub release** so HACS users can see it without enabling

@@ -13,7 +13,8 @@
       "migration_successful": "NuHeat was reconnected successfully and matching legacy thermostats were consolidated.",
       "missing_configuration": "OAuth application credentials are missing.",
       "missing_oauth_credentials": "OAuth application credentials are required for this development build. A future official Home Assistant integration should use centrally managed credentials.",
-      "reauth_account_mismatch": "The linked NuHeat account does not match the existing account."
+      "reauth_account_mismatch": "The linked NuHeat account does not match the existing account.",
+      "my_required": "NuHeat community sign-in requires My Home Assistant. If you do not use `default_config:`, add `my:` to `configuration.yaml`, restart Home Assistant, and retry linking your existing NuHeat entry. Do not delete the entry. Users with their own OAuth application can select its Application Credentials instead."
     },
     "step": {
       "migration_confirm": {

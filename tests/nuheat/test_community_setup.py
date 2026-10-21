@@ -17,10 +17,11 @@ from custom_components.nuheat.const import DOMAIN
 
 
 @pytest.fixture(autouse=True)
-def synthetic_community_client(monkeypatch):
+def synthetic_community_client(monkeypatch, hass):
     """Exercise the bootstrap without using the distributed client values."""
     from custom_components.nuheat import community_oauth
 
+    hass.config.components.add("my")
     monkeypatch.setattr(community_oauth, "CLIENT_ID", "synthetic-community-client")
     monkeypatch.setattr(community_oauth, "CLIENT_SECRET", "synthetic-community-secret")
 
@@ -62,7 +63,11 @@ async def test_existing_application_credentials_are_retained(hass):
     )
     assert await async_setup_component(hass, DOMAIN, {})
     providers = await async_get_implementations(hass, DOMAIN)
-    assert list(providers) == ["synthetic-existing-provider"]
+    assert set(providers) == {"synthetic-existing-provider", DOMAIN}
+    assert (
+        providers["synthetic-existing-provider"].client_id
+        == "synthetic-existing-client"
+    )
     assert isinstance(
         providers["synthetic-existing-provider"], LocalOAuth2ImplementationWithPkce
     )
@@ -74,8 +79,8 @@ async def test_first_flow_registers_client_before_domain_startup(hass):
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": "user"}
     )
-    # With no browser request, HA presents its provider picker before OAuth.
-    assert result["type"] == "form"
-    assert result["step_id"] == "pick_implementation"
+    # The beta selects its registered community provider for a fresh flow.
+    assert result["type"] == "external"
+    assert result["step_id"] == "auth"
     providers = await async_get_implementations(hass, DOMAIN)
     assert isinstance(providers[DOMAIN], LocalOAuth2ImplementationWithPkce)

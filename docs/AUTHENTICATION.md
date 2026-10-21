@@ -1,12 +1,13 @@
-# Authentication in beta 0.1.0b5
+# Authentication in beta 0.1.0b6 candidate (unpublished)
 
 This unofficial beta intentionally includes the temporary shared community OAuth
-registration in `community_oauth.py`. On integration startup, it registers that
-client in Home Assistant's standard Application Credentials store if no NuHeat
-provider already exists. Existing user-supplied credentials are retained.
-Users do not need to register a developer application or enter client credentials.
-The registration, OAuth flow, callback, scopes and PKCE settings are unchanged
-from v0.1.0b4. The setpoint fix requires no credential reset.
+registration in `community_oauth.py`. The v0.1.0b6 candidate ensures that client is
+registered alongside existing NuHeat Application Credentials without overwriting
+them. Multiple providers are offered by name during fresh/legacy setup; existing
+OAuth entries retain their provider. Users choosing community credentials do not
+need to register a developer application or enter client credentials.
+Community sign-in requires `my`; enable `my:` and restart HA if not using
+`default_config:`. Custom clients keep HA's standard callback selection.
 
 The unchanged v0.1.0b3 tag only runs this bootstrap during integration startup.
 Opening setup first can report missing credentials. Existing users can enable
@@ -78,3 +79,13 @@ Existing credentials and account tokens survive the tested Core-candidate
 handoff. If the final official integration adopts a different client or Cloud
 Account Linking, users may need to authorize the existing entry again. The
 beta does not promise that account relinking will never be necessary.
+
+## v0.1.0b6 authorization correction (unpublished)
+
+The v0.1.0b6 candidate ensures community registration alongside stored clients,
+requires `my` explicitly for community sign-in, and presents a provider picker when
+custom credentials also exist. It does not load `my` automatically or override
+legitimate custom applications. Without `default_config:`, enable `my:` in
+`configuration.yaml`, restart HA, and retry the existing entry. These changes are
+not yet in v0.1.0b5. See the
+[reproductions, safeguards, and remaining tester questions](OAUTH_UNAUTHORIZED_CLIENT.md).

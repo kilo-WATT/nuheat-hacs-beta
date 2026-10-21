@@ -24,6 +24,7 @@ from .account_identity import (
     InvalidAccountSubjectError,
     account_subject_from_entry_data,
 )
+from .application_credentials import CommunityOAuth2Implementation
 from .const import DOMAIN, OAUTH_SCOPES
 from .oauth_setup import async_ensure_community_credentials
 from .migration import (
@@ -51,7 +52,7 @@ class NuHeatConfigFlow(
     ) -> ConfigFlowResult:
         """Start with any HA-registered local or cloud OAuth provider."""
         if user_input is None:
-            await async_ensure_community_credentials(self.hass)
+            community_provider = await async_ensure_community_credentials(self.hass)
             try:
                 implementations = (
                     await config_entry_oauth2_flow.async_get_implementations(
@@ -62,7 +63,31 @@ class NuHeatConfigFlow(
                 return self.async_abort(reason="oauth_implementation_unavailable")
             if not implementations:
                 return self.async_abort(reason="missing_oauth_credentials")
+            # Retain an OAuth entry's provider. With multiple providers, fresh
+            # and legacy flows must let the user choose their own registration.
+            provider = None
+            if self.source == SOURCE_REAUTH and not is_legacy_entry(
+                entry := self._get_reauth_entry()
+            ):
+                provider = entry.data.get("auth_implementation")
+            elif len(implementations) == 1:
+                provider = community_provider
+            if provider in implementations:
+                user_input = {"implementation": provider}
         return await super().async_step_user(user_input)
+
+    @override
+    async def async_step_auth(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Require the supported My return path before community authorization."""
+        if (
+            user_input is None
+            and isinstance(self.flow_impl, CommunityOAuth2Implementation)
+            and "my" not in self.hass.config.components
+        ):
+            return self.async_abort(reason="my_required")
+        return await super().async_step_auth(user_input)
 
     @property
     @override

@@ -11,6 +11,18 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
+## v0.1.0b6 preparation
+
+**v0.1.0b6 is not published yet.** It corrects OAuth callback requirements and
+provider selection while retaining custom credentials and existing NuHeat entries.
+The current published installation example below remains v0.1.0b5 until release.
+After publication, select the v0.1.0b6 tag explicitly in HACS. See
+[release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
+Community sign-in requires My Home Assistant: if you do not use `default_config:`,
+enable `my:` in `configuration.yaml`, restart HA, and reconnect the existing entry.
+When offered multiple OAuth providers, choose **NuHeat community beta** or your
+own registered application. Existing OAuth entries keep their associated provider.
+
 ## Install
 
 [![Open your Home Assistant and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=kilo-WATT&repository=nuheat-hacs-beta&category=integration)

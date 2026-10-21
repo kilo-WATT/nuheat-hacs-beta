@@ -78,7 +78,24 @@ def main():
         if path.is_file() and path.suffix in (".py", ".json")
     }
     assert actual_files == COMPONENT_FILES, "Unexpected or missing component files"
+    oauth_candidate = provenance.get("oauth_authorization_fix", {})
+    if args.release and oauth_candidate and oauth_candidate.get("status") != "approved":
+        raise SystemExit(
+            "RELEASE BLOCKED: OAuth correction has no publication approval"
+        )
+    oauth_fixes = oauth_candidate.get("sha256", {})
+    for relative, expected_digest in oauth_fixes.items():
+        assert (
+            hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            == expected_digest
+        )
     for relative, digest in provenance["sha256"].items():
+        if relative in oauth_fixes:
+            original = (
+                ROOT / "tests/fixtures/core_candidate/nuheat" / Path(relative).name
+            )
+            assert hashlib.sha256(original.read_bytes()).hexdigest() == digest
+            continue
         if relative in provenance["setpoint_reconciliation_sha256"]:
             name = Path(relative).name
             original = (
@@ -134,6 +151,7 @@ def main():
             assert hashlib.sha256(original).hexdigest() == digest
             actual = json.loads((ROOT / relative).read_text(encoding="utf-8"))
             assert actual["issues"].pop("beta_handoff_failed")
+            assert actual["config"]["abort"].pop("my_required")
             assert actual == json.loads(original)
         elif relative.startswith("custom_components/") and not relative.endswith(
             "manifest.json"
@@ -160,6 +178,7 @@ def main():
         ROOT / "docs/AUTHENTICATION.md",
         ROOT / "docs/VALIDATION.md",
         ROOT / "docs/SETPOINT_RECONCILIATION.md",
+        ROOT / "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
     ]
     suffix = ".zip" if args.release else "-UNRELEASED.zip"
     artifact = ROOT / "artifacts" / ("nuheat-" + manifest["version"] + suffix)
