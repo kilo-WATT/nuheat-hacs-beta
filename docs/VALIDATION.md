@@ -1,15 +1,17 @@
-# Validation record: v0.1.0b6 candidate and published-release history
+# Validation record: v0.1.0b6 and published-release history
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes
 v0.1.0b5 from published v0.1.0b4 and the older v0.1.0b3
 audit. No published tag is rewritten. Final merged Core remains a future target.
 
-## v0.1.0b6 candidate (unpublished)
+## v0.1.0b6
 
-Prepared on 2026-10-20, America/New_York, from published v0.1.0b5. Publication is
-blocked pending separate approval. The exact preparation commit must pass GitHub
-Actions; the final report records its SHA and result. Main and existing tags are
-not changed by preparation.
+Validated on 2026-10-20, America/New_York, from published v0.1.0b5. The maintainer
+approved publication as a regular latest GitHub release. Preparation commit
+`d860313925cee4279d5a95f3d9f624bfc315c64a` passed
+[GitHub Actions](https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/39522439116).
+Final approval/documentation metadata is checked again on the exact release commit
+before tagging. Existing tags are not rewritten.
 
 Local validation passed 208 tests with 1 skip, lint, changed-file formatting,
 allowlisted packaging, and the known-private-value source/archive scan. The

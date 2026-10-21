@@ -1,8 +1,7 @@
-# v0.1.0b6 - OAuth authorization correction (unpublished)
+# v0.1.0b6 - OAuth authorization correction
 
-Prepared for GitHub CI; this version is not yet released. Publication requires
-separate maintainer approval and successful checks on the final release commit.
-The intended GitHub release setting remains regular (prerelease disabled).
+Published as a regular GitHub release (prerelease disabled), visible by default
+in HACS. NuHeat Beta remains unofficial community beta software.
 
 ## Fixed
 
@@ -19,11 +18,11 @@ or your own application if you have registered one. Existing OAuth entries retai
 their associated provider. Stored credentials are neither deleted nor replaced.
 Custom applications retain normal callback handling and can work without `my`.
 
-## Upgrade after publication
+## Upgrade
 
 Back up HA, explicitly select the **v0.1.0b6** tag in HACS, verify HACS tracks that
-tag, and restart. The tag will not be available until publication; do not install
-`main` as a substitute. A regular GitHub release needs no beta-visibility opt-in.
+tag, and restart. Do not install `main` as a substitute. A regular GitHub release
+needs no beta-visibility opt-in.
 If community sign-in reports missing My Home Assistant and you do not use
 `default_config:`, add `my:` to `configuration.yaml` and restart HA. Reconnect the
 existing NuHeat entry from a desktop browser. Do not delete entries, thermostats,

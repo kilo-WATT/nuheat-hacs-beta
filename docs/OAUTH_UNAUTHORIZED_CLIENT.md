@@ -1,7 +1,7 @@
-# OAuth correction - v0.1.0b6 release candidate
+# OAuth correction - v0.1.0b6
 
-These changes are prepared for branch CI and are not in published v0.1.0b5.
-Version v0.1.0b6 is not yet published.
+These changes are included in v0.1.0b6 and are absent from the unchanged
+v0.1.0b5 tag. The maintainer approved publication after preparation CI passed.
 Production HA and the upstream Core branch were untouched during this investigation.
 
 ## Confirmed request defects

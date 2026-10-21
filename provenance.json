@@ -35,7 +35,7 @@
     "sha256": "9ba467c3dccca2741da1b845be0ac370753f2758d871d2e5223383dbb22ec250"
   },
   "oauth_authorization_fix": {
-    "status": "validated; publication pending",
+    "status": "approved",
     "base_tag": "v0.1.0b5",
     "reason": "Explicit My requirement for community auth; named custom-provider choice; preserve credentials and OAuth associations.",
     "sha256": {

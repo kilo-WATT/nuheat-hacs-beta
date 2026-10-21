@@ -11,18 +11,6 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b6 preparation
-
-**v0.1.0b6 is not published yet.** It corrects OAuth callback requirements and
-provider selection while retaining custom credentials and existing NuHeat entries.
-The current published installation example below remains v0.1.0b5 until release.
-After publication, select the v0.1.0b6 tag explicitly in HACS. See
-[release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
-Community sign-in requires My Home Assistant: if you do not use `default_config:`,
-enable `my:` in `configuration.yaml`, restart HA, and reconnect the existing entry.
-When offered multiple OAuth providers, choose **NuHeat community beta** or your
-own registered application. Existing OAuth entries keep their associated provider.
-
 ## Install
 
 [![Open your Home Assistant and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=kilo-WATT&repository=nuheat-hacs-beta&category=integration)
@@ -34,16 +22,16 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**. v0.1.0b5 is published as a **regular GitHub release**,
+3. Open **NuHeat Beta**. v0.1.0b6 is published as a **regular GitHub release**,
    so **Show beta versions is not required**. The integration remains community
    beta software despite this GitHub release setting.
 4. In the download/version dialog, explicitly select the **latest tagged beta
-   release**: select **v0.1.0b5**, then download it.
+   release**: select **v0.1.0b6**, then download it.
    **Do not select `main`.**
    If the tag is missing, refresh the repository information rather than
    downloading the branch. Older GitHub prereleases require beta visibility.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b5**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b6**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -79,11 +67,16 @@ The shared client registration is not added to Core or the API library.
 
 ## Upgrade
 
-For v0.1.0b5, keep your existing NuHeat entries and credentials. This update fixes
-delayed setpoint display; no migration reset or new account authorization is
-required solely for this change. See [release notes](RELEASE_NOTES.md).
+For v0.1.0b6, keep your existing NuHeat entries and credentials. This update fixes
+OAuth callback requirements and provider selection. Community sign-in requires
+My Home Assistant: if you do not use `default_config:`, add `my:` to
+`configuration.yaml` and restart HA. If multiple providers are offered, choose
+**NuHeat community beta** or your own registered application. Existing OAuth
+entries retain their associated provider. Reconnect the existing entry only if
+needed; do not delete entries or Application Credentials. See
+[release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select the latest published release in HACS. v0.1.0b5 does not require
+Back up and select the latest published release in HACS. v0.1.0b6 does not require
 **Show beta versions**. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
@@ -93,8 +86,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Open **Redownload**. Beta visibility is not required for v0.1.0b5.
-3. Explicitly select the latest published tagged release (**v0.1.0b5**), and
+2. Open **Redownload**. Beta visibility is not required for v0.1.0b6.
+3. Explicitly select the latest published tagged release (**v0.1.0b6**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,

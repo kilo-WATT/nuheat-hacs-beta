@@ -1,7 +1,7 @@
-# Authentication in beta 0.1.0b6 candidate (unpublished)
+# Authentication in beta 0.1.0b6
 
 This unofficial beta intentionally includes the temporary shared community OAuth
-registration in `community_oauth.py`. The v0.1.0b6 candidate ensures that client is
+registration in `community_oauth.py`. Version v0.1.0b6 ensures that client is
 registered alongside existing NuHeat Application Credentials without overwriting
 them. Multiple providers are offered by name during fresh/legacy setup; existing
 OAuth entries retain their provider. Users choosing community credentials do not
@@ -80,12 +80,11 @@ handoff. If the final official integration adopts a different client or Cloud
 Account Linking, users may need to authorize the existing entry again. The
 beta does not promise that account relinking will never be necessary.
 
-## v0.1.0b6 authorization correction (unpublished)
+## v0.1.0b6 authorization correction
 
-The v0.1.0b6 candidate ensures community registration alongside stored clients,
+Version v0.1.0b6 ensures community registration alongside stored clients,
 requires `my` explicitly for community sign-in, and presents a provider picker when
 custom credentials also exist. It does not load `my` automatically or override
 legitimate custom applications. Without `default_config:`, enable `my:` in
-`configuration.yaml`, restart HA, and retry the existing entry. These changes are
-not yet in v0.1.0b5. See the
+`configuration.yaml`, restart HA, and retry the existing entry. These changes first appear in v0.1.0b6. See the
 [reproductions, safeguards, and remaining tester questions](OAUTH_UNAUTHORIZED_CLIENT.md).
