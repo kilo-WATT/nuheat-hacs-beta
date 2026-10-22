@@ -117,7 +117,8 @@ async def test_api_access_token_callback_translation(
     oauth_session.async_ensure_token_valid = AsyncMock(side_effect=[None, error])
     access_token_callback = None
 
-    def make_api(_session, callback):
+    def make_api(_session, callback, *, include_schedule_details):
+        assert include_schedule_details is True
         nonlocal access_token_callback
         access_token_callback = callback
         return MagicMock()

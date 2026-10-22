@@ -81,13 +81,9 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         self._optimistic_standby = False
         self._setpoint_lock = Lock()
         self._attr_unique_id = serial_number
-        self._attr_temperature_unit = (
-            coordinator.hass.config.units.temperature_unit
-        )
+        self._attr_temperature_unit = coordinator.hass.config.units.temperature_unit
         self._attr_target_temperature_step = (
-            0.5
-            if self._attr_temperature_unit == UnitOfTemperature.CELSIUS
-            else 1.0
+            0.5 if self._attr_temperature_unit == UnitOfTemperature.CELSIUS else 1.0
         )
 
     @property
@@ -266,18 +262,25 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 translation_key="unsupported_preset",
                 translation_placeholders={"preset": preset_mode},
             ) from err
-        if mode is ScheduleMode.AUTO:
-            await self.coordinator.api.set_schedule_mode(self._serial_number, mode)
-        else:
-            # A Hold command without an end is verified to last until the next
-            # scheduled event; it does not create an indefinite hold.
-            await self.coordinator.api.set_schedule_mode(
-                self._serial_number,
-                mode,
-                temperature=self.thermostat.target_temperature,
-            )
+        try:
+            if mode is ScheduleMode.AUTO:
+                await self.coordinator.api.set_schedule_mode(self._serial_number, mode)
+            else:
+                # Permanent Hold uses the verified v1 schedule-mode-3 request;
+                # Temporary Hold without an end lasts until the next schedule event.
+                await self.coordinator.api.set_schedule_mode(
+                    self._serial_number,
+                    mode,
+                    temperature=self.thermostat.target_temperature,
+                )
+        except Exception:
+            if mode is ScheduleMode.PERMANENT_HOLD:
+                self.coordinator.async_schedule_reconciliation()
+            raise
         self._optimistic_standby = False
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
+        if mode is ScheduleMode.PERMANENT_HOLD:
+            self.coordinator.async_schedule_reconciliation()
         await self.coordinator.async_request_refresh()
 
     @property

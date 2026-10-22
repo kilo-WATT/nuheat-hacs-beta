@@ -1,3 +1,39 @@
+# v0.1.0b7 - Permanent Hold (prerelease)
+
+Opt-in prerelease for initial testing. v0.1.0b6 remains the regular latest release.
+Enable **Show beta versions** in HACS, explicitly download **v0.1.0b7**, verify
+HACS tracks that tag, and restart HA. Back up first. Keep existing NuHeat entries,
+credentials, entities, dashboards, and automations; no re-creation is required.
+
+## Controls and fixes
+
+Run schedule, Temporary hold, and Permanent hold are available as presets.
+Off remains frost-protected Standby (5 C / 41 F); Heat remains physical Manual.
+Correlated v1 schedule details distinguish Manual and Permanent Hold where v2
+returns the same mode. Permanent Hold uses the documented v1 command and retains
+its hold when the target changes. Unresolved schedule details block implicit
+temperature changes rather than silently changing the hold type.
+
+Failed commands do not report invented success or automatically repeat writes.
+Delayed reconciliation, bounded optimistic setpoint updates, OAuth, migration,
+entity identity, and the Core handoff allowlist retain their safeguards.
+The pinned API client is chemelex-nuheat 0.1.2.
+
+## Validation and limitations
+
+107 client tests and 224 integration/packaging tests passed (one historical
+persistence scenario skipped in the standard suite). Lint, formatting, client
+type checks, package validation, and scoped private-data audits passed.
+An approved isolated Signature comparison verified Manual versus Permanent Hold
+and restored the original schedule, target, and hold after five commands.
+Full client-to-HA regression tests use synthetic data. Other models/firmware and
+Standby-to-Permanent Hold still need community hardware verification.
+See [Permanent Hold validation](docs/PERMANENT_HOLD.md) and the README for backup,
+upgrade, recovery, authentication, and eventual Core handoff instructions.
+No production HA or upstream Core PR changes are included.
+
+---
+
 # v0.1.0b6 - OAuth authorization correction
 
 Published as a regular GitHub release (prerelease disabled), visible by default

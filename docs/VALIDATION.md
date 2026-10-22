@@ -1,3 +1,11 @@
+# v0.1.0b7 Permanent Hold validation
+
+107 SDK tests passed; 224 beta tests passed, 1 historical persistence case skipped.
+Validated on HA 2026.10.2 with lint, packaging, and private-data checks.
+See [Permanent Hold evidence and limits](PERMANENT_HOLD.md). Protected OAuth,
+migration, identity, coordinator, and Core handoff source is unchanged from b6.
+The Core PR and production HA are unchanged. GitHub CI is verified before publication.
+
 # Validation record: v0.1.0b6 and published-release history
 
 Validated 2026-10-19 and 2026-10-20, America/New_York. This record distinguishes

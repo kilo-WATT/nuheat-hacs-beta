@@ -1021,6 +1021,7 @@ async def test_legacy_hvac_command_support_remains_separate_from_read_state(
     assert entity.preset_modes == [
         PRESET_RUN,
         PRESET_TEMPORARY_HOLD,
+        "permanent_hold",
     ]
 
     await entity.async_set_hvac_mode(hvac_mode)
@@ -1185,6 +1186,7 @@ def test_climate_preset_translations() -> None:
     ]["state"] == {
         PRESET_RUN: "Run schedule",
         PRESET_TEMPORARY_HOLD: "Temporary hold",
+        "permanent_hold": "Permanent hold",
     }
 
 

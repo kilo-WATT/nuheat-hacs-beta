@@ -63,7 +63,7 @@ def main():
     assert manifest["version"] == status["version"]
     assert status["tag"] == "v" + manifest["version"]
     assert manifest["domain"] == "nuheat"
-    assert manifest["requirements"] == ["chemelex-nuheat==0.1.1"]
+    assert manifest["requirements"] == ["chemelex-nuheat==0.1.2"]
     assert all(
         key in manifest
         for key in ("version", "issue_tracker", "documentation", "codeowners")
@@ -78,6 +78,21 @@ def main():
         if path.is_file() and path.suffix in (".py", ".json")
     }
     assert actual_files == COMPONENT_FILES, "Unexpected or missing component files"
+    permanent_candidate = provenance.get("permanent_hold_fix", {})
+    if (
+        args.release
+        and permanent_candidate
+        and permanent_candidate.get("status") != "approved"
+    ):
+        raise SystemExit(
+            "RELEASE BLOCKED: Permanent Hold correction has no publication approval"
+        )
+    permanent_fixes = permanent_candidate.get("sha256", {})
+    for relative, expected_digest in permanent_fixes.items():
+        assert (
+            hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            == expected_digest
+        )
     oauth_candidate = provenance.get("oauth_authorization_fix", {})
     if args.release and oauth_candidate and oauth_candidate.get("status") != "approved":
         raise SystemExit(
@@ -90,6 +105,12 @@ def main():
             == expected_digest
         )
     for relative, digest in provenance["sha256"].items():
+        if relative in permanent_fixes:
+            original = (
+                ROOT / "tests/fixtures/core_candidate/nuheat" / Path(relative).name
+            )
+            assert hashlib.sha256(original.read_bytes()).hexdigest() == digest
+            continue
         if relative in oauth_fixes:
             original = (
                 ROOT / "tests/fixtures/core_candidate/nuheat" / Path(relative).name
@@ -179,6 +200,7 @@ def main():
         ROOT / "docs/VALIDATION.md",
         ROOT / "docs/SETPOINT_RECONCILIATION.md",
         ROOT / "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
+        ROOT / "docs/PERMANENT_HOLD.md",
     ]
     suffix = ".zip" if args.release else "-UNRELEASED.zip"
     artifact = ROOT / "artifacts" / ("nuheat-" + manifest["version"] + suffix)

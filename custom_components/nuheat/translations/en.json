@@ -43,7 +43,8 @@
           "preset_mode": {
             "state": {
               "run_schedule": "Run schedule",
-              "temporary_hold": "Temporary hold"
+              "temporary_hold": "Temporary hold",
+              "permanent_hold": "Permanent hold"
             }
           }
         }

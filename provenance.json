@@ -43,5 +43,19 @@
       "custom_components/nuheat/oauth_setup.py": "cfdbc45ede78e1a693842ebf7ad621e77dc5c6b49c2d5fbe6a216cd0a0fc3d92",
       "custom_components/nuheat/config_flow.py": "3149e2f4d80b8efd7b3c10963ab9a2ca609a1b705ab0ea29442bea290645cc70"
     }
+  },
+  "permanent_hold_fix": {
+    "status": "approved",
+    "base_tag": "v0.1.0b6",
+    "client_version": "0.1.2",
+    "reason": "Verified v1 Permanent Hold command and correlated v1/v2 mode readback; preserve other controls and identities.",
+    "sha256": {
+      "custom_components/nuheat/__init__.py": "37a42f17a27db8bab0aed201a05e804cc425387360411486ea05b69ed6218535",
+      "custom_components/nuheat/behavior.py": "eb15a8ba89dc17befb48a40b03d2313737db66d43e21ddac02ac2464136c93db",
+      "custom_components/nuheat/climate.py": "b651aa42ff97928fc7f1d3f350b74c6430f5781335fcd123562e145697807e0f",
+      "custom_components/nuheat/const.py": "afdf82be239f4773bfad6c77d9e0d984952fb824eb6a0efc3f50a446754260fb",
+      "custom_components/nuheat/strings.json": "c6d5a4b0fafc697c38e195eee0354fad3144e1f672286440ef9a8ef0c19151c5",
+      "custom_components/nuheat/translations/en.json": "1a470ae092024af1c65626ebcd135ddef7b6d2066a61f8d224bada1f764fa8e6"
+    }
   }
 }

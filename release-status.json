@@ -18,14 +18,18 @@
     "oauth_provider_selection": "passed",
     "community_my_requirement": "passed",
     "live_oauth_callback_roundtrip": "passed",
-    "custom_oauth_roundtrips": "passed"
+    "custom_oauth_roundtrips": "passed",
+    "permanent_hold_client_published": "passed",
+    "permanent_hold_client_regressions": "passed",
+    "permanent_hold_beta_regressions": "passed",
+    "permanent_hold_mode_comparison": "passed"
   },
   "official_release_follow_up": {
     "status": "awaiting_merge",
     "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
   },
-  "version": "0.1.0b6",
-  "tag": "v0.1.0b6",
+  "version": "0.1.0b7",
+  "tag": "v0.1.0b7",
   "publication_status": "approved",
-  "github_release_prerelease": false
+  "github_release_prerelease": true
 }

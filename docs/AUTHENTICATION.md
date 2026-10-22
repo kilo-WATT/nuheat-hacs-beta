@@ -1,4 +1,7 @@
-# Authentication in beta 0.1.0b6
+# Authentication in beta 0.1.0b7
+
+OAuth behavior is unchanged from v0.1.0b6. For the v0.1.0b7 prerelease, enable
+Show beta versions in HACS and explicitly select its tag.
 
 This unofficial beta intentionally includes the temporary shared community OAuth
 registration in `community_oauth.py`. Version v0.1.0b6 ensures that client is

@@ -96,7 +96,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: NuHeatConfigEntry) -> bo
     except (OAuth2TokenRequestTransientError, OAuth2TokenRequestError) as err:
         raise ConfigEntryNotReady("Unable to refresh NuHeat authorization") from err
 
-    api = NuHeatClient(async_get_clientsession(hass), async_access_token)
+    api = NuHeatClient(
+        async_get_clientsession(hass), async_access_token, include_schedule_details=True
+    )
     coordinator = NuHeatCoordinator(hass, entry, api)
     await coordinator.async_config_entry_first_refresh()
 
