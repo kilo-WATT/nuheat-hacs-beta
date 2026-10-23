@@ -43,7 +43,7 @@ change while Permanent Hold is active uses the same command, preserving the hold
 No command is automatically repeated after transport/server/readback failure.
 The existing single authentication refresh/retry contract remains unchanged.
 
-A delayed read follows a new Permanent Hold command, including an uncertain
+A delayed read follows Permanent Hold and Run schedule/Auto commands, including an uncertain
 post-write read failure. Success is not invented on a failed command. Existing
 bounded optimistic setpoint reconciliation remains unchanged. Unload cancels
 reconciliation timers. OAuth credentials/flow, migration, entity IDs, config entry

@@ -225,16 +225,23 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
             await self.async_turn_off()
             return
         mode = api_mode_for_hvac_mode(hvac_mode)
-        if mode is ScheduleMode.AUTO:
-            await self.coordinator.api.set_schedule_mode(self._serial_number, mode)
-        else:
-            await self.coordinator.api.set_schedule_mode(
-                self._serial_number,
-                mode,
-                temperature=self.thermostat.target_temperature,
-            )
+        try:
+            if mode is ScheduleMode.AUTO:
+                await self.coordinator.api.set_schedule_mode(self._serial_number, mode)
+            else:
+                await self.coordinator.api.set_schedule_mode(
+                    self._serial_number,
+                    mode,
+                    temperature=self.thermostat.target_temperature,
+                )
+        except Exception:
+            if mode is ScheduleMode.AUTO:
+                self.coordinator.async_schedule_reconciliation()
+            raise
         self._optimistic_standby = False
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
+        if mode is ScheduleMode.AUTO:
+            self.coordinator.async_schedule_reconciliation()
         await self.coordinator.async_request_refresh()
 
     @override
@@ -274,12 +281,12 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                     temperature=self.thermostat.target_temperature,
                 )
         except Exception:
-            if mode is ScheduleMode.PERMANENT_HOLD:
+            if mode in (ScheduleMode.AUTO, ScheduleMode.PERMANENT_HOLD):
                 self.coordinator.async_schedule_reconciliation()
             raise
         self._optimistic_standby = False
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
-        if mode is ScheduleMode.PERMANENT_HOLD:
+        if mode in (ScheduleMode.AUTO, ScheduleMode.PERMANENT_HOLD):
             self.coordinator.async_schedule_reconciliation()
         await self.coordinator.async_request_refresh()
 

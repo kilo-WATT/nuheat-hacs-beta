@@ -5,6 +5,19 @@ Enable **Show beta versions** in HACS, explicitly download **v0.1.0b7**, verify
 HACS tracks that tag, and restart HA. Back up first. Keep existing NuHeat entries,
 credentials, entities, dashboards, and automations; no re-creation is required.
 
+## Prerelease revision: Run schedule refresh
+
+This existing v0.1.0b7 prerelease was revised before promotion. If you already
+installed b7, use HACS **Redownload**, explicitly select **v0.1.0b7**, then restart
+HA. The unchanged version number may not produce an update notification.
+
+Run schedule and Auto now schedule a read after two seconds, including uncertain
+post-write read failures. This refreshes the scheduled target and mode when the
+immediate cloud response is stale. It does not guess the scheduled temperature,
+repeat thermostat commands, or guarantee confirmation if the vendor remains stale.
+Regression tests cover Manual, Permanent Hold and Standby, target changes,
+failed writes, rapid commands, and cancellation on unload.
+
 ## Controls and fixes
 
 Run schedule, Temporary hold, and Permanent hold are available as presets.
@@ -21,7 +34,7 @@ The pinned API client is chemelex-nuheat 0.1.2.
 
 ## Validation and limitations
 
-107 client tests and 224 integration/packaging tests passed (one historical
+107 client tests and 236 integration/packaging tests passed (one historical
 persistence scenario skipped in the standard suite). Lint, formatting, client
 type checks, package validation, and scoped private-data audits passed.
 An approved isolated Signature comparison verified Manual versus Permanent Hold

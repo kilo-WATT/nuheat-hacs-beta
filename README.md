@@ -17,6 +17,10 @@ Adds Run schedule, Temporary hold, and Permanent hold presets alongside existing
 Off/Standby and Manual/Heat controls. See [validation and limitations](docs/PERMANENT_HOLD.md).
 v0.1.0b6 remains the regular latest release while this version is tested.
 
+**Already installed b7?** This prerelease was revised to refresh Run schedule/Auto
+after two seconds. In HACS choose **Redownload > v0.1.0b7**, then restart HA.
+The version number is unchanged, so an update notification may not appear.
+
 ## Install
 
 [![Open your Home Assistant and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=kilo-WATT&repository=nuheat-hacs-beta&category=integration)

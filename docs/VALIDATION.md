@@ -1,7 +1,10 @@
 # v0.1.0b7 Permanent Hold validation
 
-107 SDK tests passed; 224 beta tests passed, 1 historical persistence case skipped.
+107 SDK tests passed; 236 beta tests passed, 1 historical persistence case skipped.
 Validated on HA 2026.10.2 with lint, packaging, and private-data checks.
+The revised b7 adds 12 regression cases for stale schedule targets/modes, failed
+Auto writes, rapid commands, and timer cleanup. Original failing cases reproduced
+the stale display; all pass with delayed reconciliation.
 See [Permanent Hold evidence and limits](PERMANENT_HOLD.md). Protected OAuth,
 migration, identity, coordinator, and Core handoff source is unchanged from b6.
 The Core PR and production HA are unchanged. GitHub CI is verified before publication.

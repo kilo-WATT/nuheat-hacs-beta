@@ -333,3 +333,113 @@ async def test_real_client_and_entity_complete_four_control_roundtrip(
     assert hass.config_entries.async_get_entry(entry.entry_id) is entry
     await entity.async_will_remove_from_hass()
     await coordinator.async_shutdown()
+
+
+@pytest.mark.parametrize("control", ["preset", "hvac"])
+@pytest.mark.parametrize("initial", ["manual", "permanent", "standby"])
+async def test_resume_schedule_reconciles_stale_immediate_response(
+    hass, freezer, control, initial
+):
+    """A successful Auto command must not leave stale Heat/hold until polling."""
+    from datetime import timedelta
+    from pytest_homeassistant_custom_component.common import async_fire_time_changed
+
+    value = permanent(
+        operating=2 if initial != "permanent" else 1,
+        target=500 if initial == "standby" else 2300,
+    )
+    coordinator, api, _ = await coordinator_with(hass, value)
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    await add_entity_state(hass, entity, "climate.synthetic_resume")
+    if control == "preset":
+        await entity.async_set_preset_mode(PRESET_RUN)
+    else:
+        await entity.async_set_hvac_mode(HVACMode.AUTO)
+    api.set_schedule_mode.assert_awaited_once_with("ABC123", ScheduleMode.AUTO)
+    # The first cloud read still contains the old mode; no second write is needed.
+    api.list_thermostats.return_value = [
+        thermostat(
+            mode=1,
+            raw_target_temperature=3100,
+            hold_until=None,
+            hold_until_status=HoldUntilStatus.NULL,
+        )
+    ]
+    freezer.tick(timedelta(seconds=2))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+    assert entity.hvac_mode is HVACMode.AUTO
+    assert entity.preset_mode == PRESET_RUN
+    assert entity.target_temperature == 31
+    assert hass.states.get(entity.entity_id).state == HVACMode.AUTO
+    assert api.set_schedule_mode.await_count == 1
+    await entity.async_will_remove_from_hass()
+    await coordinator.async_shutdown()
+
+
+@pytest.mark.parametrize("control", ["preset", "hvac"])
+async def test_failed_resume_does_not_invent_auto_or_repeat_write(
+    hass, freezer, control
+):
+    from datetime import timedelta
+    from pytest_homeassistant_custom_component.common import async_fire_time_changed
+
+    coordinator, api, _ = await coordinator_with(hass, permanent(operating=2))
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    api.set_schedule_mode.side_effect = NuHeatApiError("synthetic uncertain write")
+    with pytest.raises(NuHeatApiError):
+        if control == "preset":
+            await entity.async_set_preset_mode(PRESET_RUN)
+        else:
+            await entity.async_set_hvac_mode(HVACMode.AUTO)
+    freezer.tick(timedelta(seconds=2))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+    assert entity.hvac_mode is HVACMode.HEAT
+    assert entity.target_temperature == 23
+    assert entity.preset_mode is None
+    assert api.set_schedule_mode.await_count == 1
+    assert api.list_thermostats.await_count == 2
+    await coordinator.async_shutdown()
+
+
+@pytest.mark.parametrize("control", ["preset", "hvac"])
+async def test_resume_then_permanent_reconciles_latest_command(hass, freezer, control):
+    from datetime import timedelta
+    from pytest_homeassistant_custom_component.common import async_fire_time_changed
+
+    coordinator, api, _ = await coordinator_with(hass, permanent(operating=2))
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    if control == "preset":
+        await entity.async_set_preset_mode(PRESET_RUN)
+    else:
+        await entity.async_set_hvac_mode(HVACMode.AUTO)
+    await entity.async_set_preset_mode(PRESET_PERMANENT_HOLD)
+    api.list_thermostats.return_value = [permanent()]
+    reads = api.list_thermostats.await_count
+    freezer.tick(timedelta(seconds=2))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+    assert entity.preset_mode == PRESET_PERMANENT_HOLD
+    assert api.list_thermostats.await_count == reads + 1
+    assert api.set_schedule_mode.await_count == 2
+    await coordinator.async_shutdown()
+
+
+@pytest.mark.parametrize("control", ["preset", "hvac"])
+async def test_resume_reconciliation_cancelled_on_unload(hass, freezer, control):
+    from datetime import timedelta
+    from pytest_homeassistant_custom_component.common import async_fire_time_changed
+
+    coordinator, api, _ = await coordinator_with(hass, permanent())
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    if control == "preset":
+        await entity.async_set_preset_mode(PRESET_RUN)
+    else:
+        await entity.async_set_hvac_mode(HVACMode.AUTO)
+    reads = api.list_thermostats.await_count
+    await coordinator.async_shutdown()
+    freezer.tick(timedelta(seconds=40))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+    assert api.list_thermostats.await_count == reads
