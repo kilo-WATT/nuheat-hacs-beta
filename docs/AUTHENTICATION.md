@@ -1,7 +1,7 @@
 # Authentication in beta 0.1.0b7
 
-OAuth behavior is unchanged from v0.1.0b6. For the v0.1.0b7 prerelease, enable
-Show beta versions in HACS and explicitly select its tag.
+OAuth behavior is unchanged from v0.1.0b6. v0.1.0b7 is a regular GitHub release, visible by default in HACS.
+Explicitly select its tag; beta visibility is not required.
 
 This unofficial beta intentionally includes the temporary shared community OAuth
 registration in `community_oauth.py`. Version v0.1.0b6 ensures that client is

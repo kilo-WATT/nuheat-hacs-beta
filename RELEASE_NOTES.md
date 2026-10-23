@@ -1,7 +1,8 @@
-# v0.1.0b7 - Hold controls and responsive updates (prerelease)
+# v0.1.0b7 - Hold controls and responsive updates
 
-Opt-in prerelease for initial testing. v0.1.0b6 remains the regular latest release.
-Enable **Show beta versions** in HACS, explicitly download **v0.1.0b7**, verify
+Published as the regular latest GitHub release. Beta visibility is not required
+in HACS. The integration remains unofficial community beta software.
+Explicitly download **v0.1.0b7**, verify
 HACS tracks that tag, and restart HA. Back up first. Keep existing NuHeat entries,
 credentials, entities, dashboards, and automations; no re-creation is required.
 
@@ -9,7 +10,7 @@ credentials, entities, dashboards, and automations; no re-creation is required.
 
 This existing v0.1.0b7 prerelease was revised before promotion. Already installed
 b7? Use HACS **Redownload > v0.1.0b7**, then restart HA; the unchanged version may
-not produce an update notification. v0.1.0b6 remains the regular latest release.
+not produce an update notification.
 
 All thermostat writes now schedule a read about two seconds after the last
 command: setpoints, all presets, Heat/Manual, Off, and On. This prevents a stale

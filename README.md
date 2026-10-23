@@ -11,13 +11,14 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b7 - Hold controls and responsive updates (prerelease)
+## v0.1.0b7 - Hold controls and responsive updates
 
 Adds Run schedule, Temporary hold, and Permanent hold presets alongside existing
 Off/Standby and Manual/Heat controls. See [validation and limitations](docs/PERMANENT_HOLD.md).
-v0.1.0b6 remains the regular latest release while this version is tested.
+v0.1.0b7 is the regular latest GitHub release and is visible by default in HACS.
+The integration remains unofficial community beta software.
 
-**Already installed b7?** This prerelease was revised to add timed holds and follow-up reads
+**Already installed an earlier b7 prerelease?** It was revised to add timed holds and follow-up reads
 for every thermostat write after about two seconds. In HACS choose **Redownload > v0.1.0b7**, then restart HA.
 The version number is unchanged, so an update notification may not appear.
 
@@ -32,10 +33,10 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta** and enable **Show beta versions** in its menu.
+3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b7.
 4. In the download/version dialog, explicitly select **v0.1.0b7**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
-   information and confirm beta visibility is enabled.
+   information before retrying.
 5. Verify that **HACS's installed version** shows the selected release tag,
    such as **v0.1.0b7**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
@@ -107,7 +108,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up, enable **Show beta versions**, and select **v0.1.0b7** in HACS. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b7** in HACS; beta visibility is not required. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -116,7 +117,7 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Enable **Show beta versions**, then open **Redownload**.
+2. Open **Redownload**; beta visibility is not required for v0.1.0b7.
 3. Explicitly select the latest published tagged release (**v0.1.0b7**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.

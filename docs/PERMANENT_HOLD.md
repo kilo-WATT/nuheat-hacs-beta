@@ -1,7 +1,8 @@
-# Permanent Hold - v0.1.0b7 prerelease
+# Permanent Hold - v0.1.0b7
 
-Opt-in HACS prerelease using `chemelex-nuheat==0.1.2`. Enable Show beta versions
-and explicitly select v0.1.0b7. Keep your existing NuHeat entries.
+Regular latest GitHub release using `chemelex-nuheat==0.1.2`. Beta visibility
+is not required in HACS. Explicitly select v0.1.0b7 and keep your existing NuHeat
+entries. The integration remains unofficial community beta software.
 
 ## Home Assistant controls
 
