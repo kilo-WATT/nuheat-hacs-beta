@@ -11,14 +11,14 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b7 opt-in prerelease
+## v0.1.0b7 - Hold controls and responsive updates (prerelease)
 
 Adds Run schedule, Temporary hold, and Permanent hold presets alongside existing
 Off/Standby and Manual/Heat controls. See [validation and limitations](docs/PERMANENT_HOLD.md).
 v0.1.0b6 remains the regular latest release while this version is tested.
 
-**Already installed b7?** This prerelease was revised to refresh Run schedule/Auto
-after two seconds. In HACS choose **Redownload > v0.1.0b7**, then restart HA.
+**Already installed b7?** This prerelease was revised to add timed holds and follow-up reads
+for every thermostat write after about two seconds. In HACS choose **Redownload > v0.1.0b7**, then restart HA.
 The version number is unchanged, so an update notification may not appear.
 
 ## Install
@@ -70,6 +70,26 @@ tokens remain in their HA installation. Existing application credentials are
 retained through upgrades and handoff.
 HA installs the pinned `chemelex-nuheat==0.1.2` dependency automatically.
 The shared client registration is not added to Core or the API library.
+
+## Set a temporary hold expiry
+
+The **Temporary hold** preset holds until the next scheduled event. To choose an
+end time instead, open **Developer tools > Actions**, select **NuHeat: Set temporary
+hold**, choose your existing thermostat, enter a target in your HA temperature
+unit, and pick a future date/time. Click **Perform action**. You can also use this
+action in an automation or a dashboard button calling a script.
+
+Local times use HA's configured timezone. During the repeated hour at the end of
+daylight-saving time, use YAML with an explicit UTC offset. Invalid, past, or
+nonexistent local times are rejected. Adjusting the target preserves the timed
+expiry; selecting Run schedule cancels the hold. No new thermostat entities or
+helpers are required. See [hold controls and action examples](docs/PERMANENT_HOLD.md).
+
+Commands are sent immediately. Setpoints, all three presets, Heat/Manual, Off,
+and On schedule a follow-up account read about two seconds after the last write.
+Rapid commands coalesce. Setpoints retry reads every eight seconds within a
+30-second confirmation window. Other mode commands get one delayed read; normal
+five-minute polling continues. Vendor delays can exceed the follow-up interval.
 
 ## Upgrade
 

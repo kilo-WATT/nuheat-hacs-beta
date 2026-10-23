@@ -66,6 +66,12 @@
     },
     "unsupported_state": {
       "message": "NuHeat reported thermostat state {state}, which cannot be controlled safely. Refresh before retrying."
+    },
+    "invalid_hold_time": {
+      "message": "Choose a future hold expiry. Ambiguous or nonexistent local times require a valid explicit UTC offset."
+    },
+    "invalid_hold_temperature": {
+      "message": "Choose a finite temperature within the thermostat's supported range, using Home Assistant's temperature unit."
     }
   },
   "issues": {
@@ -80,6 +86,22 @@
     "beta_handoff_failed": {
       "title": "NuHeat automatic Core handoff needs attention",
       "description": "The beta could not finish switching to the verified Core integration. Its files are preserved under .storage/nuheat_beta_backups if retirement completed. Check the installed implementation and logs, then restart Home Assistant or restore the complete working beta backup. Keep the existing NuHeat config entry."
+    }
+  },
+  "services": {
+    "set_temporary_hold": {
+      "name": "Set temporary hold",
+      "description": "Hold a target until a future date and time. Local times use Home Assistant's timezone.",
+      "fields": {
+        "temperature": {
+          "name": "Target temperature",
+          "description": "Target in Home Assistant's temperature unit (Celsius or Fahrenheit)."
+        },
+        "hold_until": {
+          "name": "Hold until",
+          "description": "Future expiry in Home Assistant's timezone. Use an explicit UTC offset for ambiguous local times."
+        }
+      }
     }
   }
 }

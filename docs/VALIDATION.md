@@ -1,6 +1,13 @@
+# Timed hold and complete write-refresh coverage
+
+35 additional synthetic cases cover all controls, failure readback, coalescing,
+unload cancellation, real HA action dispatch, Celsius/Fahrenheit, local timezone
+and DST validation, expiry preservation during rapid changes, and bounded timeout.
+No new live thermostat commands were sent for this revision.
+
 # v0.1.0b7 Permanent Hold validation
 
-107 SDK tests passed; 236 beta tests passed, 1 historical persistence case skipped.
+107 SDK tests passed; 271 beta tests passed, 1 historical persistence case skipped.
 Validated on HA 2026.10.2 with lint, packaging, and private-data checks.
 The revised b7 adds 12 regression cases for stale schedule targets/modes, failed
 Auto writes, rapid commands, and timer cleanup. Original failing cases reproduced

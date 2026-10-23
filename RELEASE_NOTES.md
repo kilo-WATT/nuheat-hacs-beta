@@ -1,22 +1,28 @@
-# v0.1.0b7 - Permanent Hold (prerelease)
+# v0.1.0b7 - Hold controls and responsive updates (prerelease)
 
 Opt-in prerelease for initial testing. v0.1.0b6 remains the regular latest release.
 Enable **Show beta versions** in HACS, explicitly download **v0.1.0b7**, verify
 HACS tracks that tag, and restart HA. Back up first. Keep existing NuHeat entries,
 credentials, entities, dashboards, and automations; no re-creation is required.
 
-## Prerelease revision: Run schedule refresh
+## Prerelease revision: timed holds and consistent refresh
 
-This existing v0.1.0b7 prerelease was revised before promotion. If you already
-installed b7, use HACS **Redownload**, explicitly select **v0.1.0b7**, then restart
-HA. The unchanged version number may not produce an update notification.
+This existing v0.1.0b7 prerelease was revised before promotion. Already installed
+b7? Use HACS **Redownload > v0.1.0b7**, then restart HA; the unchanged version may
+not produce an update notification. v0.1.0b6 remains the regular latest release.
 
-Run schedule and Auto now schedule a read after two seconds, including uncertain
-post-write read failures. This refreshes the scheduled target and mode when the
-immediate cloud response is stale. It does not guess the scheduled temperature,
-repeat thermostat commands, or guarantee confirmation if the vendor remains stale.
-Regression tests cover Manual, Permanent Hold and Standby, target changes,
-failed writes, rapid commands, and cancellation on unload.
+All thermostat writes now schedule a read about two seconds after the last
+command: setpoints, all presets, Heat/Manual, Off, and On. This prevents a stale
+immediate response from being the only post-command read. Mode writes get one
+follow-up; setpoint retries retain their existing eight-second interval and
+30-second deadline. Commands are never automatically repeated after uncertainty.
+
+New **NuHeat: Set temporary hold** action: select the existing thermostat, target
+in HA's temperature unit, and a future end date/time. Local times use HA's timezone;
+invalid/past/nonexistent times are rejected, and ambiguous times require an
+explicit offset. The ordinary Temporary hold preset remains until next schedule.
+Quick target changes preserve a newly requested expiry during confirmation.
+See README and [action examples](docs/PERMANENT_HOLD.md).
 
 ## Controls and fixes
 
@@ -34,7 +40,7 @@ The pinned API client is chemelex-nuheat 0.1.2.
 
 ## Validation and limitations
 
-107 client tests and 236 integration/packaging tests passed (one historical
+107 client tests and 271 integration/packaging tests passed (one historical
 persistence scenario skipped in the standard suite). Lint, formatting, client
 type checks, package validation, and scoped private-data audits passed.
 An approved isolated Signature comparison verified Manual versus Permanent Hold

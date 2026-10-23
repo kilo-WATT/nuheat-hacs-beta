@@ -48,14 +48,16 @@
     "status": "approved",
     "base_tag": "v0.1.0b6",
     "client_version": "0.1.2",
-    "reason": "Verified v1 Permanent Hold command and correlated v1/v2 mode readback; preserve other controls and identities. Run schedule and Auto receive delayed readback after successful or uncertain writes.",
+    "reason": "Verified Permanent Hold, explicit timed-hold action with bounded expiry preservation, and delayed readback for all thermostat writes.",
     "sha256": {
       "custom_components/nuheat/__init__.py": "37a42f17a27db8bab0aed201a05e804cc425387360411486ea05b69ed6218535",
       "custom_components/nuheat/behavior.py": "eb15a8ba89dc17befb48a40b03d2313737db66d43e21ddac02ac2464136c93db",
-      "custom_components/nuheat/climate.py": "62f163ad3143468e900abd397d942a422740bdc97fc43778d4fd4f8bf676663f",
+      "custom_components/nuheat/climate.py": "e4bfd0ce015eecec5d806d4d31b1822bb0eacd99dbb07d58ad7b16a189409e51",
       "custom_components/nuheat/const.py": "afdf82be239f4773bfad6c77d9e0d984952fb824eb6a0efc3f50a446754260fb",
-      "custom_components/nuheat/strings.json": "c6d5a4b0fafc697c38e195eee0354fad3144e1f672286440ef9a8ef0c19151c5",
-      "custom_components/nuheat/translations/en.json": "1a470ae092024af1c65626ebcd135ddef7b6d2066a61f8d224bada1f764fa8e6"
+      "custom_components/nuheat/strings.json": "a29d73b83d6cf8d4d794a674139ad39c5f431619c77969fa903bd960b299b079",
+      "custom_components/nuheat/translations/en.json": "1fd59f9be3a71a801b10676a67e252b81758bf78853fd9a967f154b6d931fc79",
+      "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64",
+      "custom_components/nuheat/services.yaml": "4c7f3e3022ba14668339416f28b97afc39b445232e7439e1f4b11042c1701ec0"
     }
   }
 }

@@ -22,7 +22,9 @@
     "permanent_hold_client_published": "passed",
     "permanent_hold_client_regressions": "passed",
     "permanent_hold_beta_regressions": "passed",
-    "permanent_hold_mode_comparison": "passed"
+    "permanent_hold_mode_comparison": "passed",
+    "timed_hold_action_regressions": "passed",
+    "all_write_controls_reconciliation": "passed"
   },
   "official_release_follow_up": {
     "status": "awaiting_merge",

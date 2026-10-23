@@ -25,6 +25,7 @@ COMPONENT_FILES = {
     "oauth_setup.py",
     "registry_migration.py",
     "strings.json",
+    "services.yaml",
     "translations/en.json",
 }
 
@@ -75,7 +76,7 @@ def main():
     actual_files = {
         path.relative_to(component).as_posix()
         for path in component.rglob("*")
-        if path.is_file() and path.suffix in (".py", ".json")
+        if path.is_file() and path.suffix in (".py", ".json", ".yaml")
     }
     assert actual_files == COMPONENT_FILES, "Unexpected or missing component files"
     permanent_candidate = provenance.get("permanent_hold_fix", {})

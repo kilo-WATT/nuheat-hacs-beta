@@ -1,0 +1,22 @@
+set_temporary_hold:
+  name: Set temporary hold
+  description: Hold a target temperature until a future date and time. Uses Home Assistant's timezone when no offset is supplied. Changing the target later preserves the confirmed expiry.
+  target:
+    entity:
+      integration: nuheat
+      domain: climate
+  fields:
+    temperature:
+      name: Target temperature
+      description: Temperature in your Home Assistant temperature unit (Celsius or Fahrenheit).
+      required: true
+      selector:
+        number:
+          step: 0.5
+          mode: box
+    hold_until:
+      name: Hold until
+      description: Future local date and time. During a daylight-saving clock change, use YAML with an explicit UTC offset if the local time is ambiguous.
+      required: true
+      selector:
+        datetime:
