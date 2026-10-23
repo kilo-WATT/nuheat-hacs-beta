@@ -1,0 +1,45 @@
+name: Feature request
+description: Describe a NuHeat Beta improvement.
+title: '[Feature]: '
+labels:
+- enhancement
+body:
+- type: markdown
+  attributes:
+    value: This issue and any attachments are public. Remove passwords, tokens, OAuth client secrets,
+      authorization headers, thermostat serial numbers, callback URLs, account identifiers and private
+      configuration storage. Do not upload backups or .storage files. Logs are optional; you can report
+      a problem without them.
+- type: textarea
+  id: problem
+  attributes:
+    label: What problem would this solve?
+  validations:
+    required: true
+- type: textarea
+  id: proposed
+  attributes:
+    label: What behavior would you like?
+  validations:
+    required: true
+- type: textarea
+  id: alternatives
+  attributes:
+    label: Alternatives considered
+  validations:
+    required: false
+- type: input
+  id: integration_version
+  attributes:
+    label: NuHeat Beta version, if relevant
+    placeholder: Unknown is OK
+  validations:
+    required: false
+- type: textarea
+  id: context
+  attributes:
+    label: Optional context
+    description: Explain the use case without sharing account identifiers, thermostat serials or private
+      configuration.
+  validations:
+    required: false

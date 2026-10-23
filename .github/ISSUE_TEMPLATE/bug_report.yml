@@ -1,0 +1,96 @@
+name: Bug report
+description: Report a reproducible NuHeat Beta problem.
+title: '[Bug]: '
+labels:
+- bug
+body:
+- type: markdown
+  attributes:
+    value: This issue and any attachments are public. Remove passwords, tokens, OAuth client secrets,
+      authorization headers, thermostat serial numbers, callback URLs, account identifiers and private
+      configuration storage. Do not upload backups or .storage files. Logs are optional; you can report
+      a problem without them.
+- type: input
+  id: ha_version
+  attributes:
+    label: Home Assistant version
+    placeholder: 2026.10.2
+  validations:
+    required: true
+- type: input
+  id: integration_version
+  attributes:
+    label: NuHeat Beta version
+    placeholder: 0.1.0b8
+  validations:
+    required: true
+- type: input
+  id: hacs_reference
+  attributes:
+    label: Installed version shown by HACS
+    description: Copy the release tag, main, or commit shown by HACS. The integration manifest version
+      alone is not enough.
+    placeholder: v0.1.0b8
+  validations:
+    required: true
+- type: input
+  id: hacs_version
+  attributes:
+    label: HACS version
+    placeholder: Unknown is OK
+  validations:
+    required: false
+- type: dropdown
+  id: setup_history
+  attributes:
+    label: How was this account set up?
+    options:
+    - Updated an existing legacy NuHeat installation
+    - Updated an existing OAuth beta installation
+    - Fresh beta installation
+    - Reauthenticating an existing entry
+    - Not sure
+    description: Keep existing NuHeat entries and credentials. Do not delete/recreate entries to gather
+      this information.
+  validations:
+    required: true
+- type: textarea
+  id: steps
+  attributes:
+    label: Steps to reproduce
+  validations:
+    required: true
+- type: textarea
+  id: expected
+  attributes:
+    label: Expected behavior
+  validations:
+    required: true
+- type: textarea
+  id: actual
+  attributes:
+    label: Actual behavior
+    description: 'For control problems: which preset/target was selected, what HA and the NuHeat app showed,
+      and whether it changed within 30 seconds. Do not repeatedly resend uncertain commands.'
+  validations:
+    required: true
+- type: textarea
+  id: context
+  attributes:
+    label: Optional device / account-linking context
+    description: Model and firmware if known (unknown is OK), Celsius/Fahrenheit, desktop/mobile browser,
+      and whether you chose the community application or your own application. Do not include serials,
+      account names, client IDs/secrets or callback URLs.
+  validations:
+    required: false
+- type: textarea
+  id: logs
+  attributes:
+    label: Optional sanitized logs
+    description: This issue and any attachments are public. Remove passwords, tokens, OAuth client secrets,
+      authorization headers, thermostat serial numbers, callback URLs, account identifiers and private
+      configuration storage. Do not upload backups or .storage files. Logs are optional; you can report
+      a problem without them.
+    render: text
+  validations:
+    required: false

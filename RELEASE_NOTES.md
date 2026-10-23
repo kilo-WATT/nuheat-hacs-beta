@@ -1,9 +1,10 @@
-# v0.1.0b8 - Bounded mode confirmation (pre-release)
+# v0.1.0b8 - Bounded mode confirmation
 
-Opt-in release for testing. Enable **Show beta versions** in HACS, select
+Promoted to the regular latest GitHub release after maintainer-reported
+successful b8 hardware testing. HACS beta visibility is not required. Select
 **v0.1.0b8**, verify HACS tracks that tag, and restart Home Assistant. Keep all
-existing NuHeat entries, credentials, entities, dashboards, and automations.
-Back up before updating. v0.1.0b7 remains the regular latest release.
+existing NuHeat entries, credentials, entities, dashboards and automations.
+Back up before updating. The integration remains unofficial community beta software.
 
 ## Changed
 
@@ -21,17 +22,30 @@ Back up before updating. v0.1.0b7 remains the regular latest release.
 
 OAuth, migration, entity identity, API client 0.1.2, and the exact-source Core
 handoff allowlist are unchanged. OpenSpec development tooling is excluded from
-Home Assistant runtime packages. The matching Core port remains separately pending.
+Home Assistant runtime packages. The matching Core port was pushed to PR #176586 as `9ab210660371eaf6bda2083a518cf15eea29318f`; final Core handoff validation remains separate.
 
 ## Validation and limitations
 
 297 isolated integration/packaging tests passed; one existing historical
 persistence case is skipped. Lint, formatting, packaging, privacy and strict
 OpenSpec checks passed. GitHub CI is checked on the final release commit before
-publication. The new mode-confirmation lifecycle has not yet been tested on live
-hardware; this pre-release is for that validation. Earlier Signature hardware
-results cover prior behavior and are not a claim of new hardware validation.
+publication. The maintainer subsequently reported that b8's tested controls
+worked well on hardware. This is qualitative feedback; no new b8 timings or
+exhaustive model/firmware coverage are claimed. Earlier measured Signature
+results cover prior behavior.
 No production Home Assistant changes are included.
+
+## Known limitation
+
+A rapid target change followed by a preset change before cloud readback can
+reuse the earlier cloud target in b8. A synthetic comparison confirmed that
+Core's accepted-target helper avoids this edge; the beta correction is a separate
+follow-up. Check the resulting target in HA and the NuHeat app when changing
+controls rapidly. No runtime correction is included in this documentation update.
+
+Current repository notes describe the promoted status. Original documentation
+inside the published b8 ZIP remains its publication snapshot; its tag and assets
+have not been rewritten.
 
 ## Recovery
 
@@ -147,7 +161,7 @@ installations; their original callback/provider choices remain unconfirmed.
 
 ---
 
-# v0.1.0b5 — setpoint reconciliation
+# v0.1.0b5 â€” setpoint reconciliation
 
 Published as a **regular GitHub release** so HACS users can see it without enabling
 beta versions. NuHeat Beta remains unofficial community beta software.
@@ -184,7 +198,7 @@ future Core code.
 ## Validation and limits
 
 The approved isolated Signature hardware run observed HA state updates in
-0.24–0.32 seconds and delayed cloud confirmation in about 2.1 seconds. Naturally
+0.24â€“0.32 seconds and delayed cloud confirmation in about 2.1 seconds. Naturally
 stale responses did not revert the displayed target. Rapid commands, original
 target/mode/hold restoration, and a forty-second unload check passed without
 modifying production HA. Regression coverage includes failed writes, stale and

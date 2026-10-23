@@ -33,12 +33,12 @@
   },
   "version": "0.1.0b8",
   "tag": "v0.1.0b8",
-  "publication_status": "approved_prerelease",
-  "github_release_prerelease": true,
+  "publication_status": "approved_regular_release",
+  "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",
-    "live_hardware": "pending user prerelease testing",
-    "core_port": "pending separate scope",
+    "live_hardware": "maintainer-reported successful b8 control testing; qualitative, not instrumented",
+    "core_port": "pushed in PR #176586 at 9ab210660371eaf6bda2083a518cf15eea29318f; final handoff validation pending",
     "production_modified": false
   }
 }

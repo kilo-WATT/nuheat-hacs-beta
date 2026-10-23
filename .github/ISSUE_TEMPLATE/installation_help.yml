@@ -1,0 +1,101 @@
+name: Installation or login help
+description: Get help installing, upgrading or reconnecting an existing NuHeat account.
+title: '[Help]: '
+labels:
+- question
+body:
+- type: markdown
+  attributes:
+    value: This issue and any attachments are public. Remove passwords, tokens, OAuth client secrets,
+      authorization headers, thermostat serial numbers, callback URLs, account identifiers and private
+      configuration storage. Do not upload backups or .storage files. Logs are optional; you can report
+      a problem without them.
+- type: markdown
+  attributes:
+    value: Start with the [installation guide](https://github.com/kilo-WATT/nuheat-hacs-beta#install)
+      and [OAuth troubleshooting](https://github.com/kilo-WATT/nuheat-hacs-beta/blob/main/docs/OAUTH_UNAUTHORIZED_CLIENT.md).
+      Keep existing NuHeat entries, entities and Application Credentials; do not delete/recreate them
+      to troubleshoot.
+- type: input
+  id: ha_version
+  attributes:
+    label: Home Assistant version
+    placeholder: 2026.10.2
+  validations:
+    required: true
+- type: input
+  id: integration_version
+  attributes:
+    label: NuHeat Beta version
+    placeholder: 0.1.0b8
+  validations:
+    required: true
+- type: input
+  id: hacs_reference
+  attributes:
+    label: Installed version shown by HACS
+    description: Copy the release tag, main, or commit shown by HACS. The integration manifest version
+      alone is not enough.
+    placeholder: v0.1.0b8
+  validations:
+    required: true
+- type: input
+  id: hacs_version
+  attributes:
+    label: HACS version
+    placeholder: Unknown is OK
+  validations:
+    required: false
+- type: dropdown
+  id: setup_history
+  attributes:
+    label: How was this account set up?
+    options:
+    - Updated an existing legacy NuHeat installation
+    - Updated an existing OAuth beta installation
+    - Fresh beta installation
+    - Reauthenticating an existing entry
+    - Not sure
+    description: Keep existing NuHeat entries and credentials. Do not delete/recreate entries to gather
+      this information.
+  validations:
+    required: true
+- type: textarea
+  id: steps
+  attributes:
+    label: What steps did you try?
+  validations:
+    required: true
+- type: textarea
+  id: expected
+  attributes:
+    label: What did you expect?
+  validations:
+    required: true
+- type: textarea
+  id: actual
+  attributes:
+    label: What happened instead?
+    description: Include the error message, but never an OAuth callback URL or credentials.
+  validations:
+    required: true
+- type: textarea
+  id: context
+  attributes:
+    label: Optional device / account-linking context
+    description: Model and firmware if known (unknown is OK), Celsius/Fahrenheit, desktop/mobile browser,
+      and whether you chose the community application or your own application. Do not include serials,
+      account names, client IDs/secrets or callback URLs.
+  validations:
+    required: false
+- type: textarea
+  id: logs
+  attributes:
+    label: Optional sanitized logs
+    description: This issue and any attachments are public. Remove passwords, tokens, OAuth client secrets,
+      authorization headers, thermostat serial numbers, callback URLs, account identifiers and private
+      configuration storage. Do not upload backups or .storage files. Logs are optional; you can report
+      a problem without them.
+    render: text
+  validations:
+    required: false

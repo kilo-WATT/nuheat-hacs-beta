@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+- name: Installation and upgrades
+  url: https://github.com/kilo-WATT/nuheat-hacs-beta#install
+  about: Install a tagged release and keep your existing NuHeat entries.
+- name: Login troubleshooting
+  url: https://github.com/kilo-WATT/nuheat-hacs-beta/blob/main/docs/OAUTH_UNAUTHORIZED_CLIENT.md
+  about: Check community/custom OAuth selection and reconnect guidance.

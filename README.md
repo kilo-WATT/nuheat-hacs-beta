@@ -11,19 +11,19 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b8 pre-release - Bounded mode confirmation
+## v0.1.0b8 - Bounded mode confirmation
 
 Mode and preset changes now retry readback within a 30-second confirmation
 window. Off's optimistic display clears on confirmation or timeout; rapid target
 changes preserve the latest accepted mode and timed expiry. See
 [validation and limitations](docs/VALIDATION.md).
 
-**Opt-in test release:** enable **Show beta versions** in HACS, explicitly select
-**v0.1.0b8**, and verify HACS tracks that tag before restarting HA. Keep your
-existing NuHeat entries, credentials, entities, dashboards, and automations.
-v0.1.0b7 remains the regular latest release for users who have not opted in.
-The new mode-confirmation lifecycle has synthetic coverage; live hardware testing
-is pending. The integration remains unofficial community beta software.
+**Current regular/latest release:** select **v0.1.0b8** in HACS and verify it
+tracks that tag before restarting HA. **Show beta versions is not required** for
+this release. Keep your existing NuHeat entries, credentials, entities, dashboards
+and automations. The integration remains unofficial community beta software.
+The maintainer reported successful b8 hardware testing; this is qualitative
+feedback, not new measured latency or exhaustive model/firmware coverage.
 
 ## Install
 
@@ -36,7 +36,7 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta** and enable **Show beta versions** to test v0.1.0b8.
+3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b8.
 4. In the download/version dialog, explicitly select **v0.1.0b8**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
    information before retrying.
@@ -115,7 +115,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select **v0.1.0b8** in HACS with **Show beta versions** enabled. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b8** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -124,8 +124,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Enable **Show beta versions** and open **Redownload** to test v0.1.0b8.
-3. Explicitly select the test release (**v0.1.0b8**), and
+2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b8.
+3. Explicitly select the regular release (**v0.1.0b8**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,
@@ -184,7 +184,7 @@ Testing includes stable HA, live PKCE success and wrong-verifier rejection,
 refresh rotation, real-storage legacy migration, restart, pinned Core handoff
 and automatic retirement. No private backup contents or identifiers are in this
 repository. The v0.1.0b5 setpoint fix also passed an approved isolated Signature
-hardware test: HA state updated in 0.24–0.32 seconds, stale cloud responses did
+hardware test: HA state updated in 0.24â€“0.32 seconds, stale cloud responses did
 not revert it, and delayed reads confirmed changes in about 2.1 seconds. Rapid
 changes coalesced correctly and the original target, schedule mode and hold
 settings were restored. These timings are observations, not vendor guarantees.
@@ -206,8 +206,19 @@ are recorded in `provenance.json` and the validation record. Thanks to
 OAuth registration. Vendor permission is maintainer-reported; see
 [authentication details](docs/AUTHENTICATION.md).
 
+## Support
+
+Use the [issue chooser](https://github.com/kilo-WATT/nuheat-hacs-beta/issues/new/choose)
+for bugs, feature requests or installation help. Reports and attachments are public:
+remove credentials, tokens, authorization headers, serial numbers, callback URLs,
+account identifiers and private storage/backup contents. Sanitized logs are optional.
+Keep your existing NuHeat entries while troubleshooting.
+
 ## Development
 
 See [the OpenSpec development workflow](docs/DEVELOPMENT.md) for behavior
 specifications, regression coverage, and proposed refinements. This tooling is
 for contributors; Home Assistant users do not need Node.js or OpenSpec.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contributions and
+[MAINTAINING.md](docs/MAINTAINING.md) for triage and release/promotion checklists.

@@ -1,0 +1,19 @@
+# Reviewable label catalog; not an automatic GitHub synchronization.
+- name: area:oauth
+  color: 0969DA
+  description: Login, provider selection, callbacks and token refresh
+- name: area:controls
+  color: 0969DA
+  description: Thermostat targets, modes, holds and reconciliation
+- name: area:migration
+  color: 0969DA
+  description: Legacy migration, config entries and entity retention
+- name: area:handoff
+  color: 0969DA
+  description: Validated transition from the beta to official Core
+- name: needs-info
+  color: D4C5F9
+  description: Specific non-sensitive information is needed to investigate
+- name: waiting-on-vendor
+  color: FBCA04
+  description: Progress depends on a stated Chemelex clarification or action

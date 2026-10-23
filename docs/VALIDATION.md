@@ -1,3 +1,29 @@
+# Current status - 2026-10-23
+
+v0.1.0b8 is now the regular latest GitHub release. HACS beta visibility is not
+required; explicitly select and verify its tag. The original tag and published
+assets remain unchanged. The maintainer installed b8 and reported successful
+control testing. This is qualitative feedback, not a new instrumented latency
+measurement, exhaustive hardware qualification or a repeat of earlier OAuth tests.
+
+The bounded-mode Core port was pushed to PR #176586 at
+`9ab210660371eaf6bda2083a518cf15eea29318f`. Its local Core suite passed 263 tests,
+plus relevant lint/type/format/hassfest and changed-file hooks. The bounded
+repository-wide hook sweep did not complete; no full-repository pass is claimed.
+The exact-source beta handoff allowlist remains unchanged and does not recognize
+that Core source. Final transition validation is still a separate change.
+
+Known beta edge: a rapid target-then-preset change can reuse stale target
+readback. A mocked comparison confirmed Core preserves the accepted target; the
+beta correction remains pending. See [current release notes](../RELEASE_NOTES.md).
+
+This community-workflow update changes documentation and templates only. It does
+not modify integration code, credentials, production HA or upstream Core. The
+following preparation and validation records are historical snapshots; their
+pending/prerelease wording describes the state at that time.
+
+---
+
 # v0.1.0b8 pre-release preparation
 
 Maintainer approved commit, push and publication as a new pre-release for user
@@ -8,7 +34,7 @@ on the final release commit before publication. Core port and live mode-lifecycl
 validation remain pending. Production HA is not modified by this release process.
 Historical local candidate notes below describe the pre-approval state.
 
-# Local bounded mode confirmation validation � 2026-10-23
+# Local bounded mode confirmation validation — 2026-10-23
 
 Unreleased beta working tree based on v0.1.0b7; no version/tag change, commit,
 push, production access, hardware commands, or Core modification in this run.
@@ -133,7 +159,7 @@ commit before merging, tagging or publishing; this record does not claim a remot
 CI result in advance.
 
 The approved isolated Signature hardware run passed. HA state changes took
-0.239–0.313 seconds from service start. Two delayed account reads started
+0.239â€“0.313 seconds from service start. Two delayed account reads started
 2.0016/2.0008 seconds after service completion and confirmed the requested targets
 after 2.1091/2.0901 seconds. Naturally stale readbacks did not revert the displayed
 target. Rapid changes used one delayed read after the final success. Six setpoint

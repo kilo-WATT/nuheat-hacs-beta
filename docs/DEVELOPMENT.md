@@ -87,7 +87,7 @@ artifacts or examples. The npm tooling does not authorize publication of secrets
 
 1. [Bounded mode confirmation](../openspec/changes/confirm-mode-changes/proposal.md):
    replace the current one-read mode boundary with bounded confirmation and clear
-   stale Standby assumptions. Beta implementation under local validation; Core port pending.
+   stale Standby assumptions. Shipped in b8; the Core port was pushed to PR #176586. See the change validation record for scope and limits.
 2. [Updated Core handoff validation](../openspec/changes/validate-updated-core-handoff/proposal.md):
    prove identity, OAuth, action, hold, and recovery compatibility before a separate
    allowlist update. Proposed, not executed.
@@ -99,3 +99,6 @@ Task checklists distinguish completed local validation from pending Core and han
 OpenSpec is provided by [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec)
 under the MIT license. Generated skills retain their upstream MIT metadata. NuHeat's
 own license and runtime dependency contract are unchanged.
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for PR scope and proportionate checks,
+and [MAINTAINING.md](MAINTAINING.md) for triage, label provisioning and release/promotion.
