@@ -73,11 +73,17 @@ The shared client registration is not added to Core or the API library.
 
 ## Set a temporary hold expiry
 
-The **Temporary hold** preset holds until the next scheduled event. To choose an
-end time instead, open **Developer tools > Actions**, select **NuHeat: Set temporary
-hold**, choose your existing thermostat, enter a target in your HA temperature
-unit, and pick a future date/time. Click **Perform action**. You can also use this
-action in an automation or a dashboard button calling a script.
+The standard thermostat card's **Temporary hold** preset holds until the next
+scheduled event. It does not offer an end-time picker. The integration cannot
+add that field to the standard card; that would require a Home Assistant frontend
+change.
+
+For a specific end time, open **Developer tools > Actions**, select **NuHeat: Set
+temporary hold**, choose your existing thermostat, enter a target in your HA
+temperature unit, and pick a future date/time. Click **Perform action**. This action
+is provided automatically by the integration: you do not need to create a custom
+action, edit your dashboard, add helpers, or install a custom card. It is also
+available to automations and scripts.
 
 Local times use HA's configured timezone. During the repeated hour at the end of
 daylight-saving time, use YAML with an explicit UTC offset. Invalid, past, or

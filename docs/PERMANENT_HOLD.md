@@ -67,8 +67,17 @@ The historical persistence scenario remains a separately run baseline check.
 Use **Developer tools > Actions > NuHeat: Set temporary hold**. Select your
 existing climate entity, target temperature, and future end date/time. The target
 uses HA's temperature unit. The date/time picker uses HA's configured timezone.
-No extra entities are created. **Temporary hold** in the thermostat preset picker
-still means until the next scheduled event; that picker has no expiry field.
+No extra entities are created. The integration automatically provides this action;
+users do not need to create it. No dashboard edits, helpers, or custom cards are
+required. The action is also available to automations and scripts.
+
+### Why is there no end-time picker on the thermostat card?
+
+The standard thermostat card's **Temporary hold** preset means until the next
+scheduled event. Its preset picker has no expiry field. Adding an end-time field
+to that standard card would require a Home Assistant frontend change; the NuHeat
+integration alone cannot add one. Use **NuHeat: Set temporary hold** when you want
+a specific end time. Selecting the preset does not open the action form.
 
 For an automation/script, this action holds a Fahrenheit-configured thermostat
 at 75.2 F for two hours (use 24 for Celsius). Replace the example entity ID:
