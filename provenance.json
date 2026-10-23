@@ -59,5 +59,18 @@
       "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64",
       "custom_components/nuheat/services.yaml": "4c7f3e3022ba14668339416f28b97afc39b445232e7439e1f4b11042c1701ec0"
     }
+  },
+  "bounded_mode_confirmation": {
+    "status": "approved",
+    "base_tag": "v0.1.0b7",
+    "reason": "Bounded mode confirmation validated synthetically; maintainer approved a new prerelease for hardware testing.",
+    "previous_sha256": {
+      "custom_components/nuheat/climate.py": "e4bfd0ce015eecec5d806d4d31b1822bb0eacd99dbb07d58ad7b16a189409e51",
+      "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64"
+    },
+    "sha256": {
+      "custom_components/nuheat/climate.py": "d1c61058d6fc2356728d295487d62d06a228cceb83bb186e3db241402f494389",
+      "custom_components/nuheat/coordinator.py": "c4b92953be68c6d563570e796a9d57bd1c3ec46b0b8f0792bffb4348f9c75cca"
+    }
   }
 }

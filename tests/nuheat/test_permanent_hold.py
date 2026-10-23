@@ -165,7 +165,7 @@ async def test_permanent_from_standby_and_delayed_confirmation(hass, freezer):
         hass, permanent(target=500, operating=2)
     )
     entity = NuHeatClimateEntity(coordinator, "ABC123")
-    entity._optimistic_standby = True
+    coordinator.async_set_pending_mode("ABC123", None)
     await entity.async_set_preset_mode(PRESET_PERMANENT_HOLD)
     api.set_schedule_mode.assert_awaited_once_with(
         "ABC123", ScheduleMode.PERMANENT_HOLD, temperature=5

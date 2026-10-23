@@ -47,3 +47,33 @@ These results measure HA state and cloud readback, not visual frontend or physic
 display latency. Live failure/timeout behavior and a separate live Core-framework
 run were not exercised. Hardware beyond Signature remains unverified for this
 specific fix; synthetic tests cover the remaining failure and timing scenarios.
+
+## Bounded mode confirmation in v0.1.0b8 (pre-release)
+
+All accepted presets, Heat/Manual, Auto, Off and On now share the bounded read
+lifecycle: an initial account read about two seconds after completion, then reads
+about every eight seconds until confirmation or a thirty-second per-device
+deadline. Matching online readback confirms the expected mode; ambiguous Manual /
+Permanent Hold details cannot confirm either. No scheduled target is invented.
+Mode confirmation uses a distinct generation object for each accepted write, so
+an earlier in-flight read cannot confirm a newer intent.
+
+Pending modes report assumed state. Off retains its immediate optimistic display
+only until Standby confirms or the deadline expires. On expiry HA uses reported
+cloud state and logs a mode-not-confirmed warning. A later external mode change
+can update the display normally. API/authentication errors retain their normal
+availability and reauthentication behavior; authentication failure stops extra
+reads. Failed write methods still raise, receive a delayed read, and never create
+new optimistic success or automatic write retries.
+
+All control writes now use the existing per-entity lock. A target adjustment
+following an accepted preset preserves that intent while readback remains stale,
+including when leaving Standby. Mode-only commands cancel an earlier pending
+target/expiry; explicit timed-hold expiry stays intact during target changes.
+Selecting ordinary Temporary hold must not restore a previous timed expiry.
+Unload cancels account callbacks and both kinds of independent deadlines.
+
+v0.1.0b8 is an opt-in pre-release; it is not automatically installed on production. The Core
+port and fresh live hardware validation remain pending; earlier hardware evidence
+above does not validate this new mode-confirmation lifecycle. OAuth, migration,
+identity, dependency pins, and automatic Core handoff allowlisting are unchanged.

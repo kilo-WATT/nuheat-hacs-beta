@@ -1,3 +1,53 @@
+# v0.1.0b8 pre-release preparation
+
+Maintainer approved commit, push and publication as a new pre-release for user
+hardware testing. Version/tag: v0.1.0b8. v0.1.0b7 remains the regular latest release.
+The local results below establish synthetic behavior, not new hardware evidence.
+Final regression/packaging checks are rerun after versioning; GitHub CI is verified
+on the final release commit before publication. Core port and live mode-lifecycle
+validation remain pending. Production HA is not modified by this release process.
+Historical local candidate notes below describe the pre-approval state.
+
+# Local bounded mode confirmation validation — 2026-10-23
+
+Unreleased beta working tree based on v0.1.0b7; no version/tag change, commit,
+push, production access, hardware commands, or Core modification in this run.
+
+- HA 2026.10.2 isolated suite: **297 passed, 1 existing historical persistence
+  skip**. Includes 24 new mode regression cases and two packaging approval/drift
+  cases. Existing OAuth, migration, identity, setpoint, timed-hold and handoff tests pass.
+- `ruff check custom_components tests tools`: passed. Ruff formatting of changed
+  runtime, new mode test and packaging files: passed.
+- Candidate packaging: passed, 29 files including 18 runtime files. OpenSpec and
+  Node tooling are excluded. Exact runtime fingerprints remain enforced by a
+  separate pending candidate provenance record; historical b7 pins are retained.
+- Publication approval is disabled for the local candidate. Synthetic tests prove
+  a candidate cannot inherit the older release's approval or ignore source drift.
+- Private-data audit: 18 known private values checked; zero matches in publishable
+  files and candidate ZIP. No credential values were printed.
+- Strict OpenSpec validation: seven baseline specs plus two changes passed.
+
+Synthetic coverage includes every mode/preset/Off/On control, stale and ambiguous
+readback, offline responses, failed writes/post-write reads, authentication errors,
+independent deadlines, blocked reads, in-flight generation replacement, mixed
+concurrent writes, rapid target/preset changes, expiry preservation/supersession,
+Standby confirmation/expiry/external changes, and shutdown cleanup. Writes are
+never retried automatically. User-visible behavior is documented in
+[SETPOINT_RECONCILIATION.md](SETPOINT_RECONCILIATION.md).
+
+A pre-existing privacy assertion used the token literal `malformed`, which also
+appeared in asyncio's slow-task log containing the test function's name. The
+synthetic invalid token now has a distinct marker; the no-token-logging assertion
+remains intact. Other updated historical assertions now expect assumed state
+while mode readback is still stale.
+
+**Remaining:** separate Core port/parity checks and live hardware validation of
+this new mode lifecycle. Earlier hardware results below do not prove this change.
+The OpenSpec change remains active with its Core task unchecked; baseline specs were subsequently synced for b8 publication while the pending
+Core task keeps the change active.
+
+---
+
 # Timed hold and complete write-refresh coverage
 
 35 additional synthetic cases cover all controls, failure readback, coalescing,

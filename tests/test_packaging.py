@@ -182,3 +182,33 @@ def test_pending_permanent_hold_cannot_build_release(tmp_path, monkeypatch):
         SystemExit, match="Permanent Hold correction has no publication approval"
     ):
         package.main()
+
+
+def test_pending_mode_candidate_blocks_release_build(tmp_path, monkeypatch):
+    """A new local behavior cannot inherit an older release's approval."""
+    candidate(tmp_path, monkeypatch)
+    status_path = tmp_path / "release-status.json"
+    status = json.loads(status_path.read_text())
+    status["publish_allowed"] = True
+    status_path.write_text(json.dumps(status))
+    provenance_path = tmp_path / "provenance.json"
+    provenance = json.loads(provenance_path.read_text())
+    provenance["bounded_mode_confirmation"] = {"status": "pending", "sha256": {}}
+    provenance_path.write_text(json.dumps(provenance))
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(SystemExit, match="Bounded mode confirmation"):
+        package.main()
+
+
+def test_mode_candidate_source_drift_is_rejected(tmp_path, monkeypatch):
+    """Candidate packaging retains exact source fingerprint enforcement."""
+    candidate(tmp_path, monkeypatch)
+    provenance_path = tmp_path / "provenance.json"
+    provenance = json.loads(provenance_path.read_text())
+    provenance["bounded_mode_confirmation"] = {
+        "status": "pending",
+        "sha256": {"custom_components/nuheat/climate.py": "0" * 64},
+    }
+    provenance_path.write_text(json.dumps(provenance))
+    with pytest.raises(AssertionError):
+        package.main()

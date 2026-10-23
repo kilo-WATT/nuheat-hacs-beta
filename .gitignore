@@ -6,3 +6,7 @@ artifacts/
 .coverage*
 .env*
 *.log
+
+# Development-only specification tooling
+node_modules/
+npm-debug.log*

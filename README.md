@@ -11,16 +11,19 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b7 - Hold controls and responsive updates
+## v0.1.0b8 pre-release - Bounded mode confirmation
 
-Adds Run schedule, Temporary hold, and Permanent hold presets alongside existing
-Off/Standby and Manual/Heat controls. See [validation and limitations](docs/PERMANENT_HOLD.md).
-v0.1.0b7 is the regular latest GitHub release and is visible by default in HACS.
-The integration remains unofficial community beta software.
+Mode and preset changes now retry readback within a 30-second confirmation
+window. Off's optimistic display clears on confirmation or timeout; rapid target
+changes preserve the latest accepted mode and timed expiry. See
+[validation and limitations](docs/VALIDATION.md).
 
-**Already installed an earlier b7 prerelease?** It was revised to add timed holds and follow-up reads
-for every thermostat write after about two seconds. In HACS choose **Redownload > v0.1.0b7**, then restart HA.
-The version number is unchanged, so an update notification may not appear.
+**Opt-in test release:** enable **Show beta versions** in HACS, explicitly select
+**v0.1.0b8**, and verify HACS tracks that tag before restarting HA. Keep your
+existing NuHeat entries, credentials, entities, dashboards, and automations.
+v0.1.0b7 remains the regular latest release for users who have not opted in.
+The new mode-confirmation lifecycle has synthetic coverage; live hardware testing
+is pending. The integration remains unofficial community beta software.
 
 ## Install
 
@@ -33,12 +36,12 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b7.
-4. In the download/version dialog, explicitly select **v0.1.0b7**, then download.
+3. Open **NuHeat Beta** and enable **Show beta versions** to test v0.1.0b8.
+4. In the download/version dialog, explicitly select **v0.1.0b8**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
    information before retrying.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b7**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b8**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -94,13 +97,17 @@ helpers are required. See [hold controls and action examples](docs/PERMANENT_HOL
 
 Commands are sent immediately. Setpoints, all three presets, Heat/Manual, Off,
 and On schedule a follow-up account read about two seconds after the last write.
-Rapid commands coalesce. Setpoints retry reads every eight seconds within a
-30-second confirmation window. Other mode commands get one delayed read; normal
-five-minute polling continues. Vendor delays can exceed the follow-up interval.
+Rapid commands coalesce. In v0.1.0b8, setpoints
+and mode commands retry reads every eight seconds within a 30-second confirmation
+window. HA marks accepted but unconfirmed commands as assumed state. Off's
+optimistic display clears when Standby confirms or the deadline expires; other
+modes and scheduled targets come from API readback. An unconfirmed outcome logs a
+warning and returns to reported cloud state. Writes are never automatically
+repeated. Normal five-minute polling continues. The previous v0.1.0b7 release gives mode-only commands one delayed read.
 
 ## Upgrade
 
-For v0.1.0b7, keep your existing NuHeat entries and credentials. This update adds verified Permanent Hold controls; OAuth behavior is unchanged from v0.1.0b6. Community sign-in requires
+For v0.1.0b8, keep your existing NuHeat entries and credentials. This update adds bounded mode confirmation; OAuth behavior is unchanged from v0.1.0b7. Community sign-in requires
 My Home Assistant: if you do not use `default_config:`, add `my:` to
 `configuration.yaml` and restart HA. If multiple providers are offered, choose
 **NuHeat community beta** or your own registered application. Existing OAuth
@@ -108,7 +115,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select **v0.1.0b7** in HACS; beta visibility is not required. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b8** in HACS with **Show beta versions** enabled. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -117,8 +124,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Open **Redownload**; beta visibility is not required for v0.1.0b7.
-3. Explicitly select the latest published tagged release (**v0.1.0b7**), and
+2. Enable **Show beta versions** and open **Redownload** to test v0.1.0b8.
+3. Explicitly select the test release (**v0.1.0b8**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,
@@ -198,3 +205,9 @@ are recorded in `provenance.json` and the validation record. Thanks to
 [SmilesGalore](https://github.com/SmilesGalore/HA-Nuheat-Conductor) for the community
 OAuth registration. Vendor permission is maintainer-reported; see
 [authentication details](docs/AUTHENTICATION.md).
+
+## Development
+
+See [the OpenSpec development workflow](docs/DEVELOPMENT.md) for behavior
+specifications, regression coverage, and proposed refinements. This tooling is
+for contributors; Home Assistant users do not need Node.js or OpenSpec.

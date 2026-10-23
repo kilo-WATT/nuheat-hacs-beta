@@ -88,7 +88,15 @@ def main():
         raise SystemExit(
             "RELEASE BLOCKED: Permanent Hold correction has no publication approval"
         )
-    permanent_fixes = permanent_candidate.get("sha256", {})
+    mode_candidate = provenance.get("bounded_mode_confirmation", {})
+    if args.release and mode_candidate and mode_candidate.get("status") != "approved":
+        raise SystemExit(
+            "RELEASE BLOCKED: Bounded mode confirmation has no publication approval"
+        )
+    permanent_fixes = {
+        **permanent_candidate.get("sha256", {}),
+        **mode_candidate.get("sha256", {}),
+    }
     for relative, expected_digest in permanent_fixes.items():
         assert (
             hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()

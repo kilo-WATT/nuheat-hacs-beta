@@ -1,0 +1,34 @@
+schema: spec-driven
+context: |
+  NuHeat spans the HACS beta, chemelex-nuheat client, and Home Assistant Core PR #176586.
+  This beta repository owns the shared planning record; do not install OpenSpec into upstream Core.
+  Preserve the nuheat domain, existing config entries, entity/device identity, OAuth provider associations, and migration rollback safeguards.
+  Baseline specs describe shipped beta behavior; changes describe proposals, not already implemented guarantees.
+  Keep Core and beta behavior aligned while respecting their different framework APIs and OAuth registrations.
+  No thermostat identifiers, account data, tokens, callback URLs, or real credentials belong in specs, examples, logs, or public artifacts.
+  The community OAuth registration intentionally shipped by the beta is not authorization to copy it into Core, the client, or planning files.
+  Spec validity proves document structure, not runtime conformance or completed hardware validation.
+  Follow the current user-authorized scope for writes, production access, hardware commands, commits, pushes, releases, and handoff allowlist changes.
+rules:
+  proposal:
+    - State observed behavior, evidence, proposed behavior, and affected repositories separately.
+    - Include user-visible behavior and limits; do not promise a standard-card field unsupported by HA.
+  specs:
+    - Cover every affected control, stale reads, failed writes, rapid commands, timeout, and unload when relevant.
+    - Distinguish command acceptance from API confirmation and distinguish mode from preset.
+    - Use synthetic data and testable WHEN/THEN scenarios.
+  design:
+    - Explain compatibility, failure handling, identity retention, and Core/beta differences.
+    - Keep production and hardware validation separate from isolated tests.
+  tasks:
+    - Pair each behavioral change with regression tests and documentation in the same task group.
+    - Include exact verification and evidence; keep unexecuted validation tasks unchecked.
+operations:
+  apply:
+    guidance:
+      - Read AGENTS.md and docs/DEVELOPMENT.md; honor the user's approved scope.
+      - Use isolated synthetic tests before any authorized hardware or production action.
+      - Report blockers and unverified claims instead of weakening safeguards.
+  archive:
+    guidance:
+      - Archive only implemented and verified behavior; record deferred work explicitly.

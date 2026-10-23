@@ -95,14 +95,19 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         """Initialize a NuHeat thermostat entity."""
         super().__init__(coordinator)
         self._serial_number = serial_number
-        # Preserve OFF immediately after a successful write until the first
-        # coordinator refresh confirms the corrected Standby GET response.
-        self._optimistic_standby = False
         self._setpoint_lock = Lock()
         self._attr_unique_id = serial_number
         self._attr_temperature_unit = coordinator.hass.config.units.temperature_unit
         self._attr_target_temperature_step = (
             0.5 if self._attr_temperature_unit == UnitOfTemperature.CELSIUS else 1.0
+        )
+
+    @property
+    def _optimistic_standby(self) -> bool:
+        """Bound Standby display to the coordinator's current intent."""
+        return (
+            self.coordinator.pending_mode(self._serial_number)
+            is ThermostatState.STANDBY
         )
 
     @property
@@ -178,7 +183,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     def assumed_state(self) -> bool:
         """Return whether a successful command is awaiting cloud confirmation."""
         return (
-            self._optimistic_standby
+            self.coordinator.pending_mode(self._serial_number) is not None
             or self.coordinator.pending_setpoint(self._serial_number) is not None
         )
 
@@ -199,11 +204,29 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         if temperature is None:
             return
         requested_hvac_mode = kwargs.get(ATTR_HVAC_MODE)
-        if self.hvac_mode is HVACMode.OFF and requested_hvac_mode is None:
+        pending_mode = self.coordinator.pending_mode(self._serial_number)
+        if (
+            self.hvac_mode is HVACMode.OFF
+            and requested_hvac_mode is None
+            and pending_mode in (None, ThermostatState.STANDBY)
+        ):
             # A setpoint from OFF exits Standby using Manual.
             requested_hvac_mode = HVACMode.HEAT
         try:
-            mode = setpoint_command_mode(self.thermostat, requested_hvac_mode)
+            if requested_hvac_mode is None and pending_mode in (
+                ThermostatState.SCHEDULED,
+                ThermostatState.TIMED_HOLD,
+                ThermostatState.PERMANENT_HOLD,
+                ThermostatState.MANUAL,
+            ):
+                mode = {
+                    ThermostatState.SCHEDULED: ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE,
+                    ThermostatState.TIMED_HOLD: ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE,
+                    ThermostatState.PERMANENT_HOLD: ScheduleMode.PERMANENT_HOLD,
+                    ThermostatState.MANUAL: ScheduleMode.MANUAL,
+                }[pending_mode]
+            else:
+                mode = setpoint_command_mode(self.thermostat, requested_hvac_mode)
         except ValueError as err:
             raise ServiceValidationError(
                 translation_domain=DOMAIN,
@@ -213,7 +236,8 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         temperature_celsius = self._to_celsius(float(temperature))
         hold_until = None
         if (
-            mode is ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE
+            pending_mode is None
+            and mode is ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE
             and self.thermostat.state is ThermostatState.TIMED_HOLD
             and self.thermostat.hold_until is not None
         ):
@@ -290,7 +314,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
             # the write failed. Read later, without retrying or assuming success.
             self.coordinator.async_schedule_reconciliation()
             raise
-        self._optimistic_standby = False
+        self.coordinator.async_set_pending_mode(self._serial_number, mode)
         self.coordinator.async_set_pending_setpoint(
             self._serial_number, temperature_celsius, hold_until=hold_until
         )
@@ -301,6 +325,10 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         if hvac_mode is HVACMode.OFF:
             await self.async_turn_off()
             return
+        async with self._setpoint_lock:
+            await self._async_set_hvac_mode(hvac_mode)
+
+    async def _async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         mode = api_mode_for_hvac_mode(hvac_mode)
         try:
             if mode is ScheduleMode.AUTO:
@@ -314,25 +342,25 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         except Exception:
             self.coordinator.async_schedule_reconciliation()
             raise
-        self._optimistic_standby = False
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
-        self.coordinator.async_schedule_reconciliation()
+        self.coordinator.async_set_pending_mode(self._serial_number, mode)
         await self.coordinator.async_request_refresh()
 
     @override
     async def async_turn_off(self) -> None:
         """Enter NuHeat's frost-protected Standby state."""
+        async with self._setpoint_lock:
+            await self._async_turn_off()
+
+    async def _async_turn_off(self) -> None:
         try:
             await self.coordinator.api.set_standby(self._serial_number)
         except Exception:
             self.coordinator.async_schedule_reconciliation()
             raise
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
-        self.coordinator.async_schedule_reconciliation()
-        self._optimistic_standby = True
+        self.coordinator.async_set_pending_mode(self._serial_number, None)
         await self.coordinator.async_request_refresh()
-        if self.thermostat.state is ThermostatState.STANDBY:
-            self._optimistic_standby = False
 
     @override
     async def async_turn_on(self) -> None:
@@ -341,6 +369,10 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
 
     @override
     async def async_set_preset_mode(self, preset_mode: str) -> None:
+        async with self._setpoint_lock:
+            await self._async_set_preset_mode(preset_mode)
+
+    async def _async_set_preset_mode(self, preset_mode: str) -> None:
         try:
             mode = api_mode_for_preset(preset_mode)
         except ValueError as err:
@@ -363,9 +395,8 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         except Exception:
             self.coordinator.async_schedule_reconciliation()
             raise
-        self._optimistic_standby = False
         self.coordinator.async_clear_pending_setpoint(self._serial_number)
-        self.coordinator.async_schedule_reconciliation()
+        self.coordinator.async_set_pending_mode(self._serial_number, mode)
         await self.coordinator.async_request_refresh()
 
     @property

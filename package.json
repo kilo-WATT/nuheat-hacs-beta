@@ -1,0 +1,18 @@
+{
+  "name": "nuheat-project-specs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Development-only OpenSpec tooling for NuHeat beta and Core alignment",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "specs": "node tools/openspec.mjs",
+    "specs:setup": "node tools/openspec.mjs init --tools codex --profile core --no-animation",
+    "specs:check": "node tools/openspec.mjs validate --all --strict --no-interactive",
+    "specs:list": "node tools/openspec.mjs list --specs"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.14.3"
+  }
+}

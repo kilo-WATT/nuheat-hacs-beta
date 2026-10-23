@@ -1,3 +1,47 @@
+# v0.1.0b8 - Bounded mode confirmation (pre-release)
+
+Opt-in release for testing. Enable **Show beta versions** in HACS, select
+**v0.1.0b8**, verify HACS tracks that tag, and restart Home Assistant. Keep all
+existing NuHeat entries, credentials, entities, dashboards, and automations.
+Back up before updating. v0.1.0b7 remains the regular latest release.
+
+## Changed
+
+- Run schedule, Temporary hold, Permanent hold, Heat, Auto, Off and On now
+  reconcile with API readback after about two seconds, then about every eight
+  seconds within a 30-second per-thermostat deadline.
+- Accepted but unconfirmed modes report assumed state. Off's optimistic display
+  clears when Standby confirms or the deadline expires; a later external mode
+  change can update HA normally. Other modes and schedule targets use API state.
+- Rapid and concurrent controls preserve the newest accepted mode, target and
+  explicit hold expiry. Selecting ordinary Temporary hold does not resurrect an
+  earlier timed expiry. Old in-flight reads cannot confirm a newer command.
+- Timeout logs an unconfirmed outcome and resumes reported cloud state. Failed
+  writes remain errors; writes are never automatically retried. Timers stop on unload.
+
+OAuth, migration, entity identity, API client 0.1.2, and the exact-source Core
+handoff allowlist are unchanged. OpenSpec development tooling is excluded from
+Home Assistant runtime packages. The matching Core port remains separately pending.
+
+## Validation and limitations
+
+297 isolated integration/packaging tests passed; one existing historical
+persistence case is skipped. Lint, formatting, packaging, privacy and strict
+OpenSpec checks passed. GitHub CI is checked on the final release commit before
+publication. The new mode-confirmation lifecycle has not yet been tested on live
+hardware; this pre-release is for that validation. Earlier Signature hardware
+results cover prior behavior and are not a claim of new hardware validation.
+No production Home Assistant changes are included.
+
+## Recovery
+
+If testing fails, select **v0.1.0b7** in HACS, verify the selected tag, download
+and restart HA. Keep existing NuHeat entries and credentials; do not delete or
+recreate thermostats. Retain your backup and report the control used and observed
+HA/NuHeat state without posting account credentials or thermostat identifiers.
+
+---
+
 # v0.1.0b7 - Hold controls and responsive updates
 
 Published as the regular latest GitHub release. Beta visibility is not required
