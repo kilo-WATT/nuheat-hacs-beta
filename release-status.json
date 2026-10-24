@@ -43,12 +43,31 @@
   },
   "version": "0.1.0b9",
   "tag": "v0.1.0b9",
-  "publication_status": "release_preparation_ci_pending",
+  "publication_status": "release_preparation_ci_validated",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",
     "live_hardware": "maintainer-reported successful b8 control testing; qualitative, not instrumented",
     "core_port": "pushed in PR #176586 at 9ab210660371eaf6bda2083a518cf15eea29318f; final handoff validation pending",
     "production_modified": false
+  },
+  "release_preparation_ci": {
+    "code_commit": "c2183b34650cd2912315efd62afb2ced20d5506d",
+    "runs": [
+      {
+        "conclusion": "success",
+        "headSha": "c2183b34650cd2912315efd62afb2ced20d5506d",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40046154451",
+        "workflowName": "Validate unpublished NuHeat candidate"
+      },
+      {
+        "conclusion": "success",
+        "headSha": "c2183b34650cd2912315efd62afb2ced20d5506d",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40046154467",
+        "workflowName": "Validate NuHeat specifications"
+      }
+    ]
   }
 }
