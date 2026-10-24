@@ -43,16 +43,14 @@ async def test_diagnostics_allowlist_and_no_cloud_calls(hass, cooldown):
     with (
         patch(
             "custom_components.nuheat.diagnostics.async_get_integration",
-            AsyncMock(return_value=SimpleNamespace(version="0.1.0b9")),
+            AsyncMock(return_value=SimpleNamespace(version="0.1.0b10")),
         ),
-        patch(
-            "custom_components.nuheat.diagnostics.version", return_value="0.1.3.dev0"
-        ),
+        patch("custom_components.nuheat.diagnostics.version", return_value="0.1.3"),
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
 
     assert result == {
-        "versions": {"integration": "0.1.0b9", "sdk": "0.1.3.dev0"},
+        "versions": {"integration": "0.1.0b10", "sdk": "0.1.3"},
         "entry_state": entry.state.value,
         "runtime": {
             "availability": {
@@ -91,7 +89,7 @@ async def test_diagnostics_before_setup_and_without_sdk_metadata(hass):
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
     assert result == {
-        "versions": {"integration": "0.1.0b9", "sdk": None},
+        "versions": {"integration": "0.1.0b10", "sdk": None},
         "entry_state": "not_loaded",
         "runtime": None,
     }

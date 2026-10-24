@@ -79,8 +79,8 @@
   },
   "api_resilience": {
     "status": "pending",
-    "sdk_version": "0.1.3.dev0",
-    "reason": "Local unpublished API resilience implementation; production and Core unchanged.",
+    "sdk_version": "0.1.3",
+    "reason": "Validated resilience and diagnostics prerelease preparation; final publication gates pending.",
     "sha256": {
       "custom_components/nuheat/__init__.py": "ed080bab0f7391f441add74edaf5e77e85cc8d7ec6c902558b163d6f1886cac4",
       "custom_components/nuheat/coordinator.py": "ae676c8d9618466d80d6e745e096f96a09692647d44438d9f174bf21b34c5a22",

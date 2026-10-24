@@ -93,9 +93,9 @@ legitimate custom applications. Without `default_config:`, enable `my:` in
 [reproductions, safeguards, and remaining tester questions](OAUTH_UNAUTHORIZED_CLIENT.md).
 
 
-## Local unpublished permission-error handling
+## Permission-error handling in v0.1.0b10
 
-The API-resilience candidate distinguishes HTTP 403 (application permission)
+The integration distinguishes HTTP 403 (application permission)
 from HTTP 401 (authorization). A 403 does not force token refresh, delete stored
 credentials or switch providers. Verify the application's endpoint permissions;
 relinking the same application may not fix them. A required read or requested
@@ -111,10 +111,9 @@ outcomes without exposing vendor response bodies or identifiers. Existing commun
 and custom provider associations, PKCE and migration identity checks are unchanged.
 Future official Cloud relinking remains a separate, unimplemented transition.
 
-## Local candidate diagnostics
+## Diagnostics in v0.1.0b10
 
-This preparation branch adds a NuHeat diagnostic download. It is not part of
-the published b9 release. Once installed in a compatible release, use
+The v0.1.0b10 regular release adds a NuHeat diagnostic download. Use
 **Settings → Devices & services → NuHeat → the entry's menu → Download diagnostics**.
 The menu may require administrator access.
 

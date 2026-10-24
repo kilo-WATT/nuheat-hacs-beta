@@ -52,3 +52,37 @@ unchecked. Diagnostics is independent and does not need these gates.
 Sources: [public guide](https://api.nam.mynuheat.com/),
 [v1 Swagger](https://api.nam.mynuheat.com/swagger/v1/swagger.json),
 [v2 Swagger](https://api.nam.mynuheat.com/swagger/v2/swagger.json).
+
+## Follow-up request to complete remaining tasks
+
+2026-10-24: The user requested completion of all pending work. A fresh public
+documentation search did not resolve H/P/E/R. A targeted connected-email search
+for NuHeat/Chemelex API correspondence returned no messages. No vendor response
+or new applicable protocol/hold/energy/relative contract can be claimed.
+
+A concise [vendor request](vendor-request.md) is prepared for user review and
+recipient authorization. It has not been sent. No additional runtime changes,
+account probes, thermostat commands or production operations were performed in
+this follow-up. The twelve dependent tasks remain unchecked; requesting their
+completion does not provide the missing external evidence.
+
+## Public issue outreach and newly located prior evidence
+
+2026-10-24: At the user's explicit request, posted an account-free comment to
+@PatrickHendrickx on the original Home Assistant issue, not by email:
+https://github.com/home-assistant/core/issues/175923#issuecomment-6380330250
+The comment was re-read and its text verified after posting.
+
+Reading the original issue uncovered relevant vendor answers missed in the
+earlier documentation/email search. Patrick stated that v2 explicit holds have
+a maximum of 24 hours in
+https://github.com/home-assistant/core/issues/175923#issuecomment-5102611902
+and described v1 as Signature-only, with v2 supporting both models, in
+https://github.com/home-assistant/core/issues/175923#issuecomment-4966456273.
+The outreach now asks about the 24-versus-23-hour discrepancy and a supported
+Conductor energy endpoint rather than assuming all v1 endpoints cover it.
+
+This narrows the missing evidence: a v2 duration answer does exist, contrary to
+the earlier record's implication, but conflicts with the guide and does not
+settle exact boundary/clock or retained-expiry policy. Gate H remains unresolved,
+as do P/E/R. No new runtime or thermostat behavior was changed. Awaiting reply.

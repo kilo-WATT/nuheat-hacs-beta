@@ -1,3 +1,14 @@
+# v0.1.0b10 regular release preparation - 2026-10-24
+
+Resilience and cached diagnostics only. Local beta: 348 passed, one skip; SDK:
+133 passed. The isolated Signature test confirmed rapid/stale-read reconciliation
+and restoration; the separate read-only diagnostics check issued zero additional
+API requests or commands. No production or Core changes. Published SDK install
+and exact release-commit CI are required before publication. See RELEASE_NOTES.md
+and the OpenSpec validation records. Optional vendor-dependent features are excluded.
+
+---
+
 # v0.1.0b9 publication approval
 
 The maintainer approved regular/latest publication. The release carries the

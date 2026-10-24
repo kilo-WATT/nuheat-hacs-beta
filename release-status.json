@@ -27,7 +27,10 @@
     "all_write_controls_reconciliation": "passed",
     "bounded_mode_confirmation": "passed",
     "accepted_target_preservation": "passed",
-    "api_resilience": "pending"
+    "api_resilience": "passed",
+    "cached_diagnostics": "passed",
+    "published_sdk_0_1_3": "passed",
+    "release_commit_ci": "pending"
   },
   "current_core_handoff_validation": {
     "candidate": "9ab210660371eaf6bda2083a518cf15eea29318f",
@@ -42,9 +45,9 @@
     "status": "awaiting_merge",
     "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
   },
-  "version": "0.1.0b9",
-  "tag": "v0.1.0b9",
-  "publication_status": "local_api_resilience_candidate",
+  "version": "0.1.0b10",
+  "tag": "v0.1.0b10",
+  "publication_status": "regular_release_preparation",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",
@@ -52,7 +55,7 @@
     "core_port": "pushed in PR #176586 at 9ab210660371eaf6bda2083a518cf15eea29318f; final handoff validation pending",
     "production_modified": false
   },
-  "release_preparation_ci": {
+  "previous_b9_preparation_ci": {
     "code_commit": "c2183b34650cd2912315efd62afb2ced20d5506d",
     "runs": [
       {

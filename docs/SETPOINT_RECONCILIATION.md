@@ -86,10 +86,9 @@ Without a pending target it uses reported data. Celsius and Fahrenheit cases
 have regression coverage; failure handling and confirmation deadlines are unchanged.
 
 
-## Local unpublished API-resilience candidate
+## API resilience in v0.1.0b10
 
-This checkout requires the locally built SDK 0.1.3.dev0; this section does not
-describe published b9. Rate limits pause API requests until Retry-After expires.
+The v0.1.0b10 regular release uses SDK 0.1.3. Rate limits pause API requests until Retry-After expires.
 Missing or invalid Retry-After uses 60 seconds. One client shares cooldown across
 its thermostats and optional/required endpoints. Other HA processes are independent.
 Reads resume after cooldown; user commands fail promptly and are not queued.
