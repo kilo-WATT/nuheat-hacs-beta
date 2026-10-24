@@ -78,9 +78,9 @@
     }
   },
   "api_resilience": {
-    "status": "pending",
+    "status": "approved",
     "sdk_version": "0.1.3",
-    "reason": "Validated resilience and diagnostics prerelease preparation; final publication gates pending.",
+    "reason": "User approved regular/latest b10 publication after local suites and isolated live validation; published SDK and preparation CI verified.",
     "sha256": {
       "custom_components/nuheat/__init__.py": "ed080bab0f7391f441add74edaf5e77e85cc8d7ec6c902558b163d6f1886cac4",
       "custom_components/nuheat/coordinator.py": "ae676c8d9618466d80d6e745e096f96a09692647d44438d9f174bf21b34c5a22",
@@ -88,10 +88,15 @@
       "custom_components/nuheat/config_flow.py": "1babb1fc05f84114227f016c2206369cb1042682a8771d6ba2e3a8b5ecf09887",
       "custom_components/nuheat/strings.json": "502eeda65f40d967f2e4df71c3144c7c797904361047f867f07373bd97e108a9",
       "custom_components/nuheat/translations/en.json": "f3d0d01ec040398d946b430099357029466d884a2805275541c0172db3782387"
+    },
+    "sdk_release": {
+      "version": "0.1.3",
+      "tag_commit": "c98e472044bea3170a2c4817472acfa0da45609a",
+      "wheel_sha256": "73140f56c062fdcd6fc9aefb289a071eb9646e433b6553bcdeaa76af74b36e2d"
     }
   },
   "diagnostics": {
-    "status": "local_review_candidate",
+    "status": "approved",
     "sha256": {
       "custom_components/nuheat/diagnostics.py": "da008575a987e9f0ac23443b70c0995bb0573d73c23be0b18823ba8cb97a764a"
     },

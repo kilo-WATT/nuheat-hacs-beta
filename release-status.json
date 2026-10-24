@@ -1,5 +1,5 @@
 {
-  "publish_allowed": false,
+  "publish_allowed": true,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -30,7 +30,7 @@
     "api_resilience": "passed",
     "cached_diagnostics": "passed",
     "published_sdk_0_1_3": "passed",
-    "release_commit_ci": "pending"
+    "release_preparation_ci": "passed"
   },
   "current_core_handoff_validation": {
     "candidate": "9ab210660371eaf6bda2083a518cf15eea29318f",
@@ -47,7 +47,7 @@
   },
   "version": "0.1.0b10",
   "tag": "v0.1.0b10",
-  "publication_status": "regular_release_preparation",
+  "publication_status": "regular_latest_release_approved",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",
@@ -73,5 +73,43 @@
         "workflowName": "Validate NuHeat specifications"
       }
     ]
+  },
+  "release_preparation_ci": {
+    "code_commit": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
+    "runs": [
+      {
+        "conclusion": "success",
+        "databaseId": 40066633609,
+        "headSha": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40066633609",
+        "workflowName": "Validate NuHeat specifications"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 40066633589,
+        "headSha": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40066633589",
+        "workflowName": "Validate unpublished NuHeat candidate"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 40066628802,
+        "headSha": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40066628802",
+        "workflowName": "Validate NuHeat specifications"
+      },
+      {
+        "conclusion": "success",
+        "databaseId": 40066628921,
+        "headSha": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
+        "status": "completed",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40066628921",
+        "workflowName": "Validate unpublished NuHeat candidate"
+      }
+    ],
+    "final_main_commit_ci": "must pass before tag publication; verified externally to avoid self-referential commit metadata"
   }
 }
