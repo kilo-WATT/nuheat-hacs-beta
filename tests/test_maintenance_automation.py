@@ -42,7 +42,9 @@ def test_hacs_checks_exact_candidate_without_privileges():
         for step in job["steps"]:
             assert "run" not in step
             assert re.fullmatch(r"hacs/action@[0-9a-f]{40}", step["uses"])
-            assert step["with"] == {"category": "integration", "comment": "false"}
+            assert step["with"] == {
+                "category": "integration", "comment": "false", "ignore": "brands"
+            }
             assert step["env"] == {
                 "REPOSITORY_REF": "${{ github.event.pull_request.head.sha || github.sha }}"
             }

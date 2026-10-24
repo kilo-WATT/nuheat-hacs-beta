@@ -1,8 +1,9 @@
 # Local validation evidence
 
 Date: 2026-10-24. Local branch: `codex/add-maintenance-automation`.
-No commit, push, hosted workflow run, repository-setting change, release or
-production/hardware access was performed.
+Initial local evidence preceded the approved commit/push and PR #5. Later hosted
+findings and the separately approved correction are recorded below. No release,
+merge or production/hardware access was performed.
 
 ## Executed
 
@@ -33,10 +34,19 @@ production/hardware access was performed.
 
 ## Pending hosted evidence
 
-Task 3.3 stays unchecked. Exact-commit hosted CI, actual HACS validation logs and
-fork/Dependabot execution need an authorized push/run. No HACS compatibility pass
-is claimed from actionlint or configuration tests alone. No ignored checks have
-been introduced; any hosted failure needs investigation before exceptions.
+Task 3.3 stays unchecked until corrected-commit hosted CI is verified. Initial
+push/PR HACS runs failed on empty repository topics and the custom-only brands
+lookup. The owner approved adding topics and excluding only `brands` after source
+inspection. Repository topics were set and read back successfully. All other
+validators remain active; no runtime file or identity change was made.
+
+Initial commit: `5228a6493460ebdc457bc4e59711c6770e91e9ea`. Push runtime and
+spec checks passed; HACS selected that exact SHA and failed the two checks above.
+Container digest observed in that run:
+`sha256:187499a09c5d41f9f0d42ff80d203ed87b974c028290140913b61e005fb0aab2`.
+Actual fork/Dependabot actor execution remains unobserved; the compatibility
+assessment is read-only token permissions, no secrets and source-repository/head
+SHA selection. No real fork or bot execution is claimed from ordinary PR CI.
 
 Dependabot's first default-branch update check/PR remains a post-adoption
 observation. CodeQL stays deferred; no catalog submission, automerge, automatic

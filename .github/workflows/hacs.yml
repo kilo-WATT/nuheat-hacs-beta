@@ -20,3 +20,5 @@ jobs:
         with:
           category: integration
           comment: 'false'
+          # Retains Core's domain; this action checks custom brands only.
+          ignore: brands

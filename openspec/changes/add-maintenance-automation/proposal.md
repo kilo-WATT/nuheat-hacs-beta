@@ -9,6 +9,7 @@ The beta already validates runtime tests, lint, packaging and OpenSpec structure
 - Add weekly Dependabot PRs for GitHub Actions, npm development tooling and Ruff, with grouped updates and small per-ecosystem PR limits. Preserve coordinated HA/frontend/test-plugin and runtime SDK pins for manual updates.
 - Add an independent HACS integration validation check on PRs, pushes, manual dispatch and a weekly schedule, with PR comments disabled and no automatic catalog submission.
 - Document failure triage, upstream validator mutability, manual review and evidence limits.
+- Following observed hosted failures and owner approval, add repository topics and a narrow `brands` exception for the retained Core domain; leave all other HACS checks enabled.
 - Defer CodeQL enablement to a separate reviewed follow-up using GitHub default setup initially; do not introduce duplicate scanning configurations now.
 - Keep automatic merging, release publication, issue closure and branch-protection changes out of scope.
 

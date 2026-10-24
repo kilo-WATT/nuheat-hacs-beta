@@ -14,3 +14,7 @@ The custom repository SHALL run HACS integration validation on PRs, pushes, manu
 #### Scenario: Repository validation passes
 - **WHEN** HACS accepts the checked repository structure
 - **THEN** documentation does not infer correct default release selection, successful UI installation, retained entities or live thermostat behavior from that result alone.
+
+#### Scenario: Retained Core domain fails custom brands lookup
+- **WHEN** the action rejects the existing Core domain because its lookup accepts only custom brand registration or local assets
+- **THEN** only the investigated brands check is excluded with documented owner approval, repository topics and other checks remain validated, and runtime identity and package contents stay unchanged.

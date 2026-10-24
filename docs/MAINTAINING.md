@@ -62,7 +62,12 @@ baseline, production access or catalog submission is required.
 The action source is pinned to `1ebf01c408f29afcb6406bd431bc98fd8cbb15aa`.
 Its definition still uses the mutable `ghcr.io/hacs/action:main` container, so the
 source pin does not freeze the validator image. Preserve run logs/image evidence
-when investigating upstream changes. No checks are ignored. Investigate failures
+when investigating upstream changes. Only `brands` is ignored: the beta retains
+Core's existing `nuheat` domain, while this action checks the custom brands list
+or local icon assets. The first hosted run confirmed this mismatch. The approved
+exception avoids changing runtime identity or the ZIP solely for that check.
+All other checks remain active, including topics. Repository topics are
+`home-assistant`, `hacs`, `nuheat` and `custom-integration`. Investigate failures
 before adding a narrowly explained exception; never grant a PAT or suppress all
 checks to hide fork/bot failures. Failed/unavailable validation remains a failure.
 

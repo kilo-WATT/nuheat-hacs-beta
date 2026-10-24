@@ -36,6 +36,17 @@ Record a separate future task to assess GitHub default CodeQL setup, initially P
 
 ## Risks / Trade-offs
 
+### Approved hosted-validation adjustment
+
+The first push and PR runs at `5228a6493460ebdc457bc4e59711c6770e91e9ea`
+failed only topics and brands. The owner approved adding repository topics
+`home-assistant`, `hacs`, `nuheat`, `custom-integration` and the narrow
+`ignore: brands` exception. The action's brands validator checks local icon
+assets or the custom brands list; retaining the existing Core domain does not
+satisfy that lookup. Do not change the domain or runtime files to satisfy it.
+All other checks remain active. This supersedes the initial no-exception/no-new-
+settings starting point above; no branch protection or security settings change.
+
 - Upstream mutable HACS image -> document the resolved evidence available and investigate scheduled failures; do not claim byte-reproducible validation.
 - Bot PR churn -> weekly grouped proposals, finite limits and manual merges; no stale-issue automation.
 - Matched HA dependencies drift -> keep coordinated pins manual and describe the update process.
