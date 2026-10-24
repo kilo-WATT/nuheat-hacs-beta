@@ -11,27 +11,17 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b9 release preparation
+## v0.1.0b9 - Preserve accepted targets during rapid control changes
 
-The branch prepares a fix for a target change immediately followed by Temporary
-hold, Permanent hold or Heat: the mode command keeps the accepted target rather
-than stale cloud readback. **b9 is not published yet.** Installation instructions
-below still select the current published b8 release. No OAuth, migration or
-automatic handoff behavior changes in b9. See [release notes](RELEASE_NOTES.md).
+A temperature change immediately followed by Temporary hold, Permanent hold or
+Heat now keeps the accepted target instead of stale cloud readback. Bounded
+confirmation from b8 remains unchanged. See [release notes](RELEASE_NOTES.md).
 
-## v0.1.0b8 - Bounded mode confirmation
-
-Mode and preset changes now retry readback within a 30-second confirmation
-window. Off's optimistic display clears on confirmation or timeout; rapid target
-changes preserve the latest accepted mode and timed expiry. See
-[validation and limitations](docs/VALIDATION.md).
-
-**Current regular/latest release:** select **v0.1.0b8** in HACS and verify it
-tracks that tag before restarting HA. **Show beta versions is not required** for
-this release. Keep your existing NuHeat entries, credentials, entities, dashboards
-and automations. The integration remains unofficial community beta software.
-The maintainer reported successful b8 hardware testing; this is qualitative
-feedback, not new measured latency or exhaustive model/firmware coverage.
+**Current regular/latest release:** select **v0.1.0b9** in HACS and verify it
+tracks that tag before restarting HA. **Show beta versions is not required.**
+Keep your existing NuHeat entries, credentials, entities, dashboards and automations.
+The maintainer's successful b8 hardware feedback is historical; b9 adds synthetic
+regressions and does not claim a new hardware test.
 
 ## Install
 
@@ -44,12 +34,12 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b8.
-4. In the download/version dialog, explicitly select **v0.1.0b8**, then download.
+3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b9.
+4. In the download/version dialog, explicitly select **v0.1.0b9**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
    information before retrying.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b8**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b9**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -105,7 +95,7 @@ helpers are required. See [hold controls and action examples](docs/PERMANENT_HOL
 
 Commands are sent immediately. Setpoints, all three presets, Heat/Manual, Off,
 and On schedule a follow-up account read about two seconds after the last write.
-Rapid commands coalesce. In v0.1.0b8, setpoints
+Rapid commands coalesce. In v0.1.0b9, setpoints
 and mode commands retry reads every eight seconds within a 30-second confirmation
 window. HA marks accepted but unconfirmed commands as assumed state. Off's
 optimistic display clears when Standby confirms or the deadline expires; other
@@ -115,7 +105,7 @@ repeated. Normal five-minute polling continues. The previous v0.1.0b7 release gi
 
 ## Upgrade
 
-For v0.1.0b8, keep your existing NuHeat entries and credentials. This update adds bounded mode confirmation; OAuth behavior is unchanged from v0.1.0b7. Community sign-in requires
+For v0.1.0b9, keep your existing NuHeat entries and credentials. This update preserves accepted targets during rapid controls; OAuth behavior is unchanged from b8. Community sign-in requires
 My Home Assistant: if you do not use `default_config:`, add `my:` to
 `configuration.yaml` and restart HA. If multiple providers are offered, choose
 **NuHeat community beta** or your own registered application. Existing OAuth
@@ -123,7 +113,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select **v0.1.0b8** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b9** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -132,8 +122,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b8.
-3. Explicitly select the regular release (**v0.1.0b8**), and
+2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b9.
+3. Explicitly select the regular release (**v0.1.0b9**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,

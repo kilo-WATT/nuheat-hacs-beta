@@ -1,5 +1,5 @@
 {
-  "publish_allowed": false,
+  "publish_allowed": true,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -43,7 +43,7 @@
   },
   "version": "0.1.0b9",
   "tag": "v0.1.0b9",
-  "publication_status": "release_preparation_ci_validated",
+  "publication_status": "regular_latest_release_approved",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",

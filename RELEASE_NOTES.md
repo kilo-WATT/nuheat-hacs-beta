@@ -1,8 +1,10 @@
 # v0.1.0b9 - Preserve accepted targets during rapid control changes
 
-Release-preparation candidate. Not published; v0.1.0b8 remains the regular latest
-release. No main update, tag, production change or publication is part of this
-preparation. Keep existing NuHeat entries, entities and Application Credentials.
+Regular/latest GitHub release. In HACS select **v0.1.0b9**, verify it tracks
+that tag, and restart Home Assistant. **Show beta versions is not required.**
+Back up before updating. Keep existing NuHeat entries, entities, Application
+Credentials, dashboards and automations. This remains unofficial community beta
+software. Production HA and the upstream Core PR are not changed by publishing.
 
 ## Fixed
 
@@ -17,7 +19,7 @@ preparation. Keep existing NuHeat entries, entities and Application Credentials.
 
 The local suite passes 305 tests with one existing persistence-stage skip.
 Lint, formatting, strict OpenSpec validation, package and privacy audits pass.
-Final GitHub CI is required on the release-preparation commit. No new hardware
+GitHub CI is verified on the final release commit before publication. No new hardware
 test was performed for this follow-up; prior b8 hardware feedback is historical.
 
 OAuth, migration, entity identity, SDK dependencies and runtime handoff safeguards

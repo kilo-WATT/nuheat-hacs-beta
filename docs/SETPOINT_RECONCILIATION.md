@@ -48,7 +48,7 @@ display latency. Live failure/timeout behavior and a separate live Core-framewor
 run were not exercised. Hardware beyond Signature remains unverified for this
 specific fix; synthetic tests cover the remaining failure and timing scenarios.
 
-## Bounded mode confirmation in v0.1.0b8 (pre-release)
+## Bounded mode confirmation introduced in v0.1.0b8
 
 All accepted presets, Heat/Manual, Auto, Off and On now share the bounded read
 lifecycle: an initial account read about two seconds after completion, then reads
@@ -73,7 +73,14 @@ target/expiry; explicit timed-hold expiry stays intact during target changes.
 Selecting ordinary Temporary hold must not restore a previous timed expiry.
 Unload cancels account callbacks and both kinds of independent deadlines.
 
-v0.1.0b8 is an opt-in pre-release; it is not automatically installed on production. The Core
-port and fresh live hardware validation remain pending; earlier hardware evidence
-above does not validate this new mode-confirmation lifecycle. OAuth, migration,
-identity, dependency pins, and automatic Core handoff allowlisting are unchanged.
+v0.1.0b9 is a regular release. The Core port is already in PR #176586, but
+official Cloud linking and final handoff validation remain pending. Earlier
+hardware evidence above is historical, not a new b9 hardware test. OAuth,
+migration, identity, dependency pins and handoff allowlisting are unchanged.
+
+## Accepted-target follow-up in v0.1.0b9
+
+If a successful target change is followed immediately by Temporary hold,
+Permanent hold or Heat, the mode write carries the pending accepted target.
+Without a pending target it uses reported data. Celsius and Fahrenheit cases
+have regression coverage; failure handling and confirmation deadlines are unchanged.

@@ -61,9 +61,9 @@
     }
   },
   "bounded_mode_confirmation": {
-    "status": "pending",
+    "status": "approved",
     "base_tag": "v0.1.0b7",
-    "reason": "Local accepted-target follow-up using validated Core helper; not approved for publication.",
+    "reason": "User approved publication of b9 accepted-target preservation; runtime source and handoff allowlist unchanged from validated preparation.",
     "previous_sha256": {
       "custom_components/nuheat/climate.py": "e4bfd0ce015eecec5d806d4d31b1822bb0eacd99dbb07d58ad7b16a189409e51",
       "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64"

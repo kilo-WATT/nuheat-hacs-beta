@@ -1,3 +1,17 @@
+# v0.1.0b9 publication approval
+
+The maintainer approved regular/latest publication. The release carries the
+validated accepted-target correction and recovery tests: 305 passed, one existing
+skip. HACS beta visibility is not required; select and verify the b9 tag. Final
+release-commit CI, package fingerprints and published downloads are verified as
+part of publication. No new hardware test, production change or Core PR update
+is included. Official Cloud linking and future handoff eligibility remain pending.
+
+The preparation records below are historical; their unpublished wording records
+the state before this approval.
+
+---
+
 # v0.1.0b9 release-preparation status
 
 The accepted-target correction is implemented in this candidate. Six regression
