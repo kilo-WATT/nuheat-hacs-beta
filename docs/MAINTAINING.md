@@ -1,6 +1,72 @@
 # Maintaining NuHeat Beta
 
+## Read-only release verification
+
+Use the supported verifier after a release is published; it does not publish,
+install dependencies, change Git refs, or access HA:
+
+```sh
+python tools/verify_release.py --repo kilo-WATT/nuheat-hacs-beta --tag v0.1.0b10 --expected-commit 3f77a85f459fb61021ea688d094229f4429fba9c --kind regular --expect-latest
+```
+
+Requires Python 3.14 (the project test environment) and authenticated `gh` read access plus public HTTPS access to
+GitHub and PyPI. Output is versioned JSON on stdout; redirect it only to an
+appropriate review file if wanted. Exit 0 means all required checks passed,
+1 means invalid/mismatched evidence, and 2 means unavailable/incomplete evidence.
+CLI argument errors also exit 2. Raw response bodies and credentials are not
+printed. No account or thermostat data is needed.
+
+The checks independently cover the resolved tag, flags/latest status, newest
+exact-commit results for both validation workflows, manifest/SDK publication,
+checksum sidecar and asset digest, and all package bytes against the tag source.
+Archives are inspected without executing their code or extracting their paths.
+Downloads and expanded archives have finite size and time limits.
+
+`--workflow NAME` overrides the required workflow list; repeat it for each
+workflow. `--kind prerelease` verifies prerelease flags. The default expectation
+is a regular release. `--expect-latest` is optional because historical releases
+need not remain latest.
+
+HACS evidence distinguishes regular-only visibility, explicit-tag source bytes
+and the first regular item in GitHub's raw release list. b10 was marked latest
+while b9 appeared first. That ordering is advisory by default; `--require-default`
+turns it into a required check. The verifier never sorts it away or claims a
+production UI install. Continue to select and verify the explicit tag in HACS.
+
+Run synthetic verifier tests with `python -m pytest -q tests/test_verify_release.py`.
+They require no credentials or network. A successful public verification is
+publication evidence, not a replacement for runtime, migration or hardware tests.
+
 ## Issue intake and triage
+
+Before publishing maintainer changes, use the current privacy audit with an
+external private baseline. JSON baselines are nonempty arrays of known private
+strings; the original Markdown backtick baseline is also supported. Keep it
+outside the checkout, backups, issues and CI. The tool never discovers tokens
+from production storage or executes a credential module.
+
+```sh
+python tools/privacy_check.py --private-baseline /outside/repository/private-values.json --view working-tree --zip artifacts/nuheat-0.1.0b10.zip
+python tools/privacy_check.py --private-baseline /outside/repository/private-values.json --view staged
+```
+
+Working-tree mode reads tracked existing and nonignored untracked files, with
+deleted tracked paths counted as skipped. Staged mode reads the complete index,
+not unstaged edits, and never stages anything. Repeat `--zip PATH` for explicit
+archives; no archive scan is claimed when none are selected. Each ZIP is read
+without extraction and must retain the expected registration and provenance.
+
+Reports contain view/counts/finding categories, never matched strings, content
+or filenames. Exit 0 means the selected evidence passed, 1 means findings and
+2 means incomplete/invalid inputs. Missing or empty baselines and invalid
+registration provenance cannot produce a pass. The known shared registration
+is recognized only at the exact audited runtime path/bytes; account tokens and
+unexpected copies are still checked. Older validation records refer to the
+previous secret-free audit policy and are historical, not the current command.
+
+This targets known baseline values; it does not prove absence of all possible
+secrets or make public sharing automatically safe. Use synthetic baselines for
+tests: `python -m pytest -q tests/test_privacy_check.py`.
 
 Use the [issue chooser](https://github.com/kilo-WATT/nuheat-hacs-beta/issues/new/choose)
 for bugs, feature requests and installation help. Forms become available when
@@ -120,4 +186,6 @@ For runtime changes, use [DEVELOPMENT.md](DEVELOPMENT.md#verification) and the
 relevant regression suites. Keep the [validation index](VALIDATION.md), applicable
 [OpenSpec changes](../openspec/changes) and [release notes](../RELEASE_NOTES.md)
 linked. Branch rules, Discussions, projects, privileged CI, security-reporting
-settings and legacy bootstrap cleanup are separate follow-ups.
+settings remain separate follow-ups. Legacy adaptation and transition entry
+points are now explanatory stubs; see [historical tools](../tools/historical/README.md)
+and the supported-command table in [development](DEVELOPMENT.md#verification).
