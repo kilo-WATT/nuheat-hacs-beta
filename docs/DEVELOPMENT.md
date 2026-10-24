@@ -17,7 +17,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 npm run specs:check
 npm run specs:list
 npm run specs -- list
-npm run specs -- status --change confirm-mode-changes
+npm run specs -- status --change validate-updated-core-handoff
 ```
 
 The wrapper disables telemetry and update checks and keeps CLI configuration in
@@ -83,11 +83,13 @@ hardware observations, production observations, and unverified claims separately
 Never store real accounts, serial numbers, tokens, or callback URLs in OpenSpec
 artifacts or examples. The npm tooling does not authorize publication of secrets.
 
-## Initial refinement proposals
+## Refinement records
 
-1. [Bounded mode confirmation](../openspec/changes/confirm-mode-changes/proposal.md):
-   replace the current one-read mode boundary with bounded confirmation and clear
-   stale Standby assumptions. Shipped in b8; the Core port was pushed to PR #176586. See the change validation record for scope and limits.
+1. [Bounded mode confirmation and accepted-target preservation](../openspec/changes/archive/2026-10-23-confirm-mode-changes/proposal.md):
+   completed and archived after b9 publication. The baseline specs include bounded
+   confirmation, expiring Standby assumptions and preservation of accepted targets
+   during rapid control changes. The Core port is in PR #176586. Archived validation
+   records retain their original testing scope and limits.
 2. [Updated Core handoff validation](../openspec/changes/validate-updated-core-handoff/proposal.md):
    prove identity, OAuth, action, hold, and recovery compatibility before a separate
    allowlist update. Isolated checks are recorded in the change's investigation;

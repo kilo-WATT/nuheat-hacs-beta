@@ -49,6 +49,17 @@ A mode or preset write without a pending setpoint SHALL receive delayed read con
 - **WHEN** the deadline expires without compatible readback
 - **THEN** pending confirmation ends, the unconfirmed outcome is surfaced, and normal polling continues without another write.
 
+### Requirement: Accepted target during follow-up mode writes
+Temporary hold, Permanent hold and Heat commands SHALL carry an accepted pending target rather than stale cloud readback. Without a pending target they SHALL use the reported target. Values SHALL be converted correctly for Celsius and Fahrenheit. Existing failed-write and confirmation deadlines SHALL remain unchanged.
+
+#### Scenario: Target then hold before cloud readback
+- **WHEN** a target write succeeds and a hold or Heat command follows before the API reports it
+- **THEN** the mode write carries the accepted target without resending the setpoint write.
+
+#### Scenario: No pending target remains
+- **WHEN** a mode command follows confirmation or expiry of pending target state
+- **THEN** its temperature comes from current reported thermostat data.
+
 ### Requirement: Failure and lifecycle handling
 A failed or uncertain write SHALL surface its error and schedule reconciliation without inventing success. Unloading the integration SHALL cancel its reconciliation and pending-confirmation timers.
 
