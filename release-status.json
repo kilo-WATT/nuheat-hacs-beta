@@ -1,5 +1,5 @@
 {
-  "publish_allowed": true,
+  "publish_allowed": false,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -26,7 +26,8 @@
     "timed_hold_action_regressions": "passed",
     "all_write_controls_reconciliation": "passed",
     "bounded_mode_confirmation": "passed",
-    "accepted_target_preservation": "passed"
+    "accepted_target_preservation": "passed",
+    "api_resilience": "pending"
   },
   "current_core_handoff_validation": {
     "candidate": "9ab210660371eaf6bda2083a518cf15eea29318f",
@@ -43,7 +44,7 @@
   },
   "version": "0.1.0b9",
   "tag": "v0.1.0b9",
-  "publication_status": "regular_latest_release_approved",
+  "publication_status": "local_api_resilience_candidate",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",

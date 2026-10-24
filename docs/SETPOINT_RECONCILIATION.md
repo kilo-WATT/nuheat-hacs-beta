@@ -84,3 +84,28 @@ If a successful target change is followed immediately by Temporary hold,
 Permanent hold or Heat, the mode write carries the pending accepted target.
 Without a pending target it uses reported data. Celsius and Fahrenheit cases
 have regression coverage; failure handling and confirmation deadlines are unchanged.
+
+
+## Local unpublished API-resilience candidate
+
+This checkout requires the locally built SDK 0.1.3.dev0; this section does not
+describe published b9. Rate limits pause API requests until Retry-After expires.
+Missing or invalid Retry-After uses 60 seconds. One client shares cooldown across
+its thermostats and optional/required endpoints. Other HA processes are independent.
+Reads resume after cooldown; user commands fail promptly and are not queued.
+
+The usual two/eight-second read cadence is deferred while throttled. Pending
+targets/modes still expire after thirty seconds; cooldown never extends optimism.
+Optional v1 throttling retains usable v2 data and its conservative mode state.
+
+SDK requests have a fifteen-second header/body budget. Complete SDK operations
+and HA control calls have thirty-second budgets, including token/lock waits and
+post-write reads. A timeout is a communication failure, not evidence of expired
+credentials. Per-entity locks and responses are released, and unload cancels work.
+Uncertain writes are never automatically repeated. The existing single refresh
+and retry after an explicit HTTP 401 is unchanged.
+
+If HA says a command was not queued, wait and make a fresh choice after cooldown.
+If HA says a write was accepted but readback failed, or its outcome is uncertain,
+check the NuHeat app before repeating it. Timeout does not prove the thermostat
+rejected the write. Keep existing entries and registry associations.

@@ -1,14 +1,22 @@
 """Climate entities for NuHeat thermostats."""
 
-from asyncio import Lock
+from asyncio import CancelledError, Lock, Task, current_task, gather, timeout
+from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
 from datetime import UTC, datetime
-from math import isfinite
+from math import ceil, isfinite
 from zoneinfo import ZoneInfo
 
 import voluptuous as vol
 from typing import Any, override
 
-from chemelex_nuheat import ScheduleMode, Thermostat, ThermostatState
+from chemelex_nuheat import (
+    NuHeatPermissionError,
+    NuHeatRateLimitError,
+    ScheduleMode,
+    Thermostat,
+    ThermostatState,
+)
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
@@ -21,7 +29,7 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv, service
 from homeassistant.util import dt as dt_util
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -39,6 +47,8 @@ from .behavior import (
 )
 from .const import DOMAIN, PRESET_MODES
 from .coordinator import NuHeatCoordinator
+
+CONTROL_OPERATION_TIMEOUT = 30.0
 
 
 async def async_setup_entry(
@@ -96,11 +106,77 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         super().__init__(coordinator)
         self._serial_number = serial_number
         self._setpoint_lock = Lock()
+        self._control_tasks: set[Task[Any]] = set()
+        self._controls_unloading = False
         self._attr_unique_id = serial_number
         self._attr_temperature_unit = coordinator.hass.config.units.temperature_unit
         self._attr_target_temperature_step = (
             0.5 if self._attr_temperature_unit == UnitOfTemperature.CELSIUS else 1.0
         )
+
+    def _check_control_available(self) -> None:
+        if self._controls_unloading or self.coordinator._shutdown_requested:
+            raise HomeAssistantError("NuHeat is unloading")
+        if remaining := self.coordinator.cooldown_remaining:
+            raise NuHeatRateLimitError(remaining)
+
+    @asynccontextmanager
+    async def _control_operation(self) -> AsyncIterator[None]:
+        """Bound queue wait and writes; never sleep through a server cooldown."""
+        task = current_task()
+        try:
+            self._check_control_available()
+            if task is not None:
+                self._control_tasks.add(task)
+            async with timeout(CONTROL_OPERATION_TIMEOUT):
+                async with self._setpoint_lock:
+                    self._check_control_available()
+                    yield
+        except NuHeatRateLimitError as err:
+            if err.write_applied:
+                raise HomeAssistantError(
+                    translation_domain=DOMAIN,
+                    translation_key="write_unconfirmed",
+                ) from err
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="rate_limited",
+                translation_placeholders={"seconds": str(ceil(err.remaining))},
+            ) from err
+        except NuHeatPermissionError as err:
+            if err.write_applied:
+                raise HomeAssistantError(
+                    translation_domain=DOMAIN,
+                    translation_key="write_unconfirmed",
+                ) from err
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="permission_denied",
+            ) from err
+        except TimeoutError as err:
+            self.coordinator.async_schedule_reconciliation()
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="request_timeout",
+            ) from err
+        except CancelledError:
+            if not self._controls_unloading:
+                self.coordinator.async_schedule_reconciliation()
+            raise
+        finally:
+            if task is not None:
+                self._control_tasks.discard(task)
+
+    @override
+    async def async_will_remove_from_hass(self) -> None:
+        """Cancel in-flight controls before removing their listener and timers."""
+        self._controls_unloading = True
+        tasks = self._control_tasks - {current_task()}
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            await gather(*tasks, return_exceptions=True)
+        await super().async_will_remove_from_hass()
 
     @property
     def _optimistic_standby(self) -> bool:
@@ -204,7 +280,9 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     async def async_set_temperature(self, **kwargs: Any) -> None:
         # Serialize setpoints so a slow earlier command cannot replace a newer
         # request with its completion. Keep vendor mode/hold selection unchanged.
-        async with self._setpoint_lock:
+        if kwargs.get(ATTR_TEMPERATURE) is None:
+            return
+        async with self._control_operation():
             await self._async_set_temperature(**kwargs)
 
     async def _async_set_temperature(self, **kwargs: Any) -> None:
@@ -267,7 +345,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         self, temperature: float, hold_until: datetime
     ) -> None:
         """Hold a target until an explicit future time in HA's timezone."""
-        async with self._setpoint_lock:
+        async with self._control_operation():
             temperature_celsius = self._to_celsius(temperature)
             if not isfinite(temperature_celsius) or not (
                 DEFAULT_MIN_TEMP <= temperature_celsius <= DEFAULT_MAX_TEMP
@@ -333,7 +411,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         if hvac_mode is HVACMode.OFF:
             await self.async_turn_off()
             return
-        async with self._setpoint_lock:
+        async with self._control_operation():
             await self._async_set_hvac_mode(hvac_mode)
 
     async def _async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
@@ -357,7 +435,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     @override
     async def async_turn_off(self) -> None:
         """Enter NuHeat's frost-protected Standby state."""
-        async with self._setpoint_lock:
+        async with self._control_operation():
             await self._async_turn_off()
 
     async def _async_turn_off(self) -> None:
@@ -377,7 +455,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
 
     @override
     async def async_set_preset_mode(self, preset_mode: str) -> None:
-        async with self._setpoint_lock:
+        async with self._control_operation():
             await self._async_set_preset_mode(preset_mode)
 
     async def _async_set_preset_mode(self, preset_mode: str) -> None:

@@ -91,3 +91,22 @@ custom credentials also exist. It does not load `my` automatically or override
 legitimate custom applications. Without `default_config:`, enable `my:` in
 `configuration.yaml`, restart HA, and retry the existing entry. These changes first appear in v0.1.0b6. See the
 [reproductions, safeguards, and remaining tester questions](OAUTH_UNAUTHORIZED_CLIENT.md).
+
+
+## Local unpublished permission-error handling
+
+The API-resilience candidate distinguishes HTTP 403 (application permission)
+from HTTP 401 (authorization). A 403 does not force token refresh, delete stored
+credentials or switch providers. Verify the application's endpoint permissions;
+relinking the same application may not fix them. A required read or requested
+Permanent Hold write still fails visibly; it never falls back to Manual.
+
+If v2 reads work but optional v1 details are forbidden, the entity remains based
+on v2 data. Manual/Permanent Hold can remain unresolved, and implicit temperature
+changes requiring that distinction are refused. Do not recreate the thermostat.
+Persistent 401 after the existing single refresh/retry still uses reauthentication.
+
+Rate-limit errors ask users to wait, not relink. Timeout messages report uncertain
+outcomes without exposing vendor response bodies or identifiers. Existing community
+and custom provider associations, PKCE and migration identity checks are unchanged.
+Future official Cloud relinking remains a separate, unimplemented transition.

@@ -7,6 +7,8 @@ from typing import Any, override
 from chemelex_nuheat import (
     NuHeatApiError,
     NuHeatAuthError,
+    NuHeatPermissionError,
+    NuHeatRateLimitError,
     NuHeatClient,
     NuHeatDataError,
 )
@@ -117,6 +119,10 @@ class NuHeatConfigFlow(
             thermostats = await api.list_thermostats()
         except NuHeatAuthError:
             return self.async_abort(reason="invalid_auth")
+        except NuHeatPermissionError:
+            return self.async_abort(reason="permission_denied")
+        except NuHeatRateLimitError:
+            return self.async_abort(reason="rate_limited")
         except NuHeatApiError, NuHeatDataError:
             return self.async_abort(reason="cannot_connect")
 
