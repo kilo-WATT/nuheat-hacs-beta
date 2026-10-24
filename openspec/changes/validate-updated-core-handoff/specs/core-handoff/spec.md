@@ -1,5 +1,14 @@
 # Updated handoff validation delta
 
+## MODIFIED Requirements
+
+### Requirement: Existing configuration continuity
+The validated handoff SHALL retain entries, entity/device associations and user configuration. Official relinking MAY replace the existing entry's community provider association and tokens only after authorizing the same account successfully. Failed or cancelled relinking SHALL preserve recoverable credentials. The handoff SHALL NOT create a second account or new thermostat entities as a shortcut.
+
+#### Scenario: Core starts after retirement
+- **WHEN** the verified official implementation loads after successful same-account relinking
+- **THEN** it uses the preserved entry and registry associations with the official provider's tokens.
+
 ## ADDED Requirements
 
 ### Requirement: Capability-compatible source validation
