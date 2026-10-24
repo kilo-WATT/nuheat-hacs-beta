@@ -102,6 +102,31 @@ def test_pending_publication_blocks_release_build(tmp_path, monkeypatch):
     assert not (tmp_path / "artifacts").exists()
 
 
+def test_development_sdk_cannot_be_released_even_with_approval(tmp_path, monkeypatch):
+    """A local wheel test must not authorize a publicly unavailable dependency."""
+    component = candidate(tmp_path, monkeypatch)
+    path = tmp_path / "release-status.json"
+    status = json.loads(path.read_text())
+    status["publish_allowed"] = True
+    path.write_text(json.dumps(status))
+    path = component / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["requirements"] = ["chemelex-nuheat==0.1.3.dev0"]
+    path.write_text(json.dumps(manifest))
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    provenance["api_resilience"] = {
+        "status": "approved",
+        "sdk_version": "0.1.3.dev0",
+        "sha256": {},
+    }
+    path.write_text(json.dumps(provenance))
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(SystemExit, match="unpublished development SDK"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
+
+
 def test_unexpected_component_file_is_rejected(tmp_path, monkeypatch):
     """An accidentally copied private JSON file must not enter the ZIP."""
     component = candidate(tmp_path, monkeypatch)
@@ -129,6 +154,25 @@ def test_prepared_archive_has_only_allowlisted_files(tmp_path, monkeypatch):
             ]
             == "0.1.0b7"
         )
+
+
+def test_diagnostics_source_drift_is_rejected(tmp_path, monkeypatch):
+    """The explicit new diagnostics file must retain its audited source bytes."""
+    component = candidate(tmp_path, monkeypatch)
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    provenance["diagnostics"] = {
+        "sha256": {
+            "custom_components/nuheat/diagnostics.py": hashlib.sha256(
+                (component / "diagnostics.py").read_bytes()
+            ).hexdigest()
+        }
+    }
+    path.write_text(json.dumps(provenance))
+    (component / "diagnostics.py").write_text("# unexpected diagnostics drift\n")
+    with pytest.raises(AssertionError, match="diagnostics.py"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
 
 
 def test_manifest_and_candidate_version_must_match(tmp_path, monkeypatch):

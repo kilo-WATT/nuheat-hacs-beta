@@ -11,17 +11,17 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b9 - Preserve accepted targets during rapid control changes
+## v0.1.0b10 regular release - API resilience and private diagnostics
 
-A temperature change immediately followed by Temporary hold, Permanent hold or
-Heat now keeps the accepted target instead of stale cloud readback. Bounded
-confirmation from b8 remains unchanged. See [release notes](RELEASE_NOTES.md).
+Adds shared API rate-limit cooldowns, bounded request/control timeouts and clear
+permission errors, plus a local diagnostic download. Existing controls, OAuth
+providers, migrations and Core handoff safeguards are preserved. See
+[release notes](RELEASE_NOTES.md).
 
-**Current regular/latest release:** select **v0.1.0b9** in HACS and verify it
-tracks that tag before restarting HA. **Show beta versions is not required.**
-Keep your existing NuHeat entries, credentials, entities, dashboards and automations.
-The maintainer's successful b8 hardware feedback is historical; b9 adds synthetic
-regressions and does not claim a new hardware test.
+**Current regular/latest release:** select **v0.1.0b10**
+and verify HACS tracks that tag before restarting HA. **Show beta versions is not required.** Keep existing entries, credentials, entities and automations.
+Signature hardware reconciliation and read-only diagnostics checks passed;
+additional thermostat models and vendor-dependent optional features are unverified.
 
 ## Install
 
@@ -34,12 +34,12 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b9.
-4. In the download/version dialog, explicitly select **v0.1.0b9**, then download.
+3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b10.
+4. In the download/version dialog, explicitly select **v0.1.0b10**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
    information before retrying.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b9**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b10**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -70,7 +70,7 @@ Credentials store and Authorization Code + S256 PKCE. Enter your password only
 on Chemelex's login page. Each user authorizes their own NuHeat account; account
 tokens remain in their HA installation. Existing application credentials are
 retained through upgrades and handoff.
-HA installs the pinned `chemelex-nuheat==0.1.2` dependency automatically.
+HA installs the pinned `chemelex-nuheat==0.1.3` dependency automatically.
 The shared client registration is not added to Core or the API library.
 
 ## Set a temporary hold expiry
@@ -101,11 +101,11 @@ window. HA marks accepted but unconfirmed commands as assumed state. Off's
 optimistic display clears when Standby confirms or the deadline expires; other
 modes and scheduled targets come from API readback. An unconfirmed outcome logs a
 warning and returns to reported cloud state. Writes are never automatically
-repeated. Normal five-minute polling continues. The previous v0.1.0b7 release gives mode-only commands one delayed read.
+repeated. Rate-limit cooldowns defer API reads without extending assumed state. Normal five-minute polling continues. The previous v0.1.0b7 release gives mode-only commands one delayed read.
 
 ## Upgrade
 
-For v0.1.0b9, keep your existing NuHeat entries and credentials. This update preserves accepted targets during rapid controls; OAuth behavior is unchanged from b8. Community sign-in requires
+For v0.1.0b10, keep your existing NuHeat entries and credentials. This update adds API resilience and cached diagnostics; existing OAuth provider selection is unchanged. Community sign-in requires
 My Home Assistant: if you do not use `default_config:`, add `my:` to
 `configuration.yaml` and restart HA. If multiple providers are offered, choose
 **NuHeat community beta** or your own registered application. Existing OAuth
@@ -113,7 +113,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select **v0.1.0b9** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b10** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -122,8 +122,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b9.
-3. Explicitly select the regular release (**v0.1.0b9**), and
+2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b10.
+3. Explicitly select the regular release (**v0.1.0b10**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,

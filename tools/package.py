@@ -18,6 +18,7 @@ COMPONENT_FILES = {
     "config_flow.py",
     "const.py",
     "coordinator.py",
+    "diagnostics.py",
     "core-handoff.json",
     "core_handoff.py",
     "manifest.json",
@@ -61,15 +62,21 @@ def main():
         )
     component = ROOT / "custom_components/nuheat"
     manifest = json.loads((component / "manifest.json").read_text())
+    provenance = json.loads((ROOT / "provenance.json").read_text())
+    resilience = provenance.get("api_resilience", {})
+    sdk_version = resilience.get("sdk_version", "0.1.2")
     assert manifest["version"] == status["version"]
     assert status["tag"] == "v" + manifest["version"]
     assert manifest["domain"] == "nuheat"
-    assert manifest["requirements"] == ["chemelex-nuheat==0.1.2"]
+    assert manifest["requirements"] == [f"chemelex-nuheat=={sdk_version}"]
     assert all(
         key in manifest
         for key in ("version", "issue_tracker", "documentation", "codeowners")
     )
-    provenance = json.loads((ROOT / "provenance.json").read_text())
+    if args.release and resilience and resilience.get("status") != "approved":
+        raise SystemExit("RELEASE BLOCKED: API resilience has no publication approval")
+    if args.release and "dev" in sdk_version:
+        raise SystemExit("RELEASE BLOCKED: unpublished development SDK dependency")
     validate_community_registration(
         component, provenance["distributed_community_registration"]["sha256"]
     )
@@ -96,6 +103,7 @@ def main():
     permanent_fixes = {
         **permanent_candidate.get("sha256", {}),
         **mode_candidate.get("sha256", {}),
+        **resilience.get("sha256", {}),
     }
     for relative, expected_digest in permanent_fixes.items():
         assert (
@@ -107,12 +115,19 @@ def main():
         raise SystemExit(
             "RELEASE BLOCKED: OAuth correction has no publication approval"
         )
-    oauth_fixes = oauth_candidate.get("sha256", {})
+    oauth_fixes = {**oauth_candidate.get("sha256", {}), **resilience.get("sha256", {})}
     for relative, expected_digest in oauth_fixes.items():
         assert (
             hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
             == expected_digest
         )
+    for relative, expected_digest in (
+        provenance.get("diagnostics", {}).get("sha256", {}).items()
+    ):
+        assert (
+            hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            == expected_digest
+        ), relative
     for relative, digest in provenance["sha256"].items():
         if relative in permanent_fixes:
             original = (

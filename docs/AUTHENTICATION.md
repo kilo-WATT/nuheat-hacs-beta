@@ -91,3 +91,41 @@ custom credentials also exist. It does not load `my` automatically or override
 legitimate custom applications. Without `default_config:`, enable `my:` in
 `configuration.yaml`, restart HA, and retry the existing entry. These changes first appear in v0.1.0b6. See the
 [reproductions, safeguards, and remaining tester questions](OAUTH_UNAUTHORIZED_CLIENT.md).
+
+
+## Permission-error handling in v0.1.0b10
+
+The integration distinguishes HTTP 403 (application permission)
+from HTTP 401 (authorization). A 403 does not force token refresh, delete stored
+credentials or switch providers. Verify the application's endpoint permissions;
+relinking the same application may not fix them. A required read or requested
+Permanent Hold write still fails visibly; it never falls back to Manual.
+
+If v2 reads work but optional v1 details are forbidden, the entity remains based
+on v2 data. Manual/Permanent Hold can remain unresolved, and implicit temperature
+changes requiring that distinction are refused. Do not recreate the thermostat.
+Persistent 401 after the existing single refresh/retry still uses reauthentication.
+
+Rate-limit errors ask users to wait, not relink. Timeout messages report uncertain
+outcomes without exposing vendor response bodies or identifiers. Existing community
+and custom provider associations, PKCE and migration identity checks are unchanged.
+Future official Cloud relinking remains a separate, unimplemented transition.
+
+## Diagnostics in v0.1.0b10
+
+The v0.1.0b10 regular release adds a NuHeat diagnostic download. Use
+**Settings → Devices & services → NuHeat → the entry's menu → Download diagnostics**.
+The menu may require administrator access.
+
+The integration contributes only version numbers, setup state, device
+availability counts, whether a cooldown is active, and counts of pending target,
+mode and expiry confirmations. The snapshot uses cached state: it does not log
+in, refresh the account, send commands or change configuration. Setup failures
+can still produce a minimal snapshot.
+
+It excludes account/device identifiers, names, locations, URLs, temperatures,
+schedules, tokens, client credentials, raw API responses and exception messages.
+Home Assistant may include its own system metadata or identifiers in the
+download wrapper or filename. Review the complete file and filename before
+sharing it publicly. Screenshots and logs are separate and may contain private
+information; do not attach credentials, callback URLs or thermostat serials.

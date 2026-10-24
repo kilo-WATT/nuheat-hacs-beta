@@ -14,7 +14,9 @@
       "missing_configuration": "[%key:common::config_flow::abort::oauth2_missing_configuration%]",
       "missing_oauth_credentials": "OAuth application credentials are required for this development build. A future official Home Assistant integration should use centrally managed credentials.",
       "reauth_account_mismatch": "The linked NuHeat account does not match the existing account.",
-      "my_required": "NuHeat community sign-in requires My Home Assistant. If you do not use `default_config:`, add `my:` to `configuration.yaml`, restart Home Assistant, and retry linking your existing NuHeat entry. Do not delete the entry. Users with their own OAuth application can select its Application Credentials instead."
+      "my_required": "NuHeat community sign-in requires My Home Assistant. If you do not use `default_config:`, add `my:` to `configuration.yaml`, restart Home Assistant, and retry linking your existing NuHeat entry. Do not delete the entry. Users with their own OAuth application can select its Application Credentials instead.",
+      "permission_denied": "NuHeat denied application permission. Verify the application has access; keep the existing entry and credentials.",
+      "rate_limited": "NuHeat is temporarily rate-limited. Wait for the cooldown and retry linking the existing entry."
     },
     "step": {
       "migration_confirm": {
@@ -72,6 +74,18 @@
     },
     "invalid_hold_temperature": {
       "message": "Choose a finite temperature within the thermostat's supported range, using Home Assistant's temperature unit."
+    },
+    "rate_limited": {
+      "message": "NuHeat is rate-limited. Retry after {seconds} seconds; this command was not queued."
+    },
+    "permission_denied": {
+      "message": "NuHeat denied application permission. Verify application access; relinking the same application may not resolve it."
+    },
+    "request_timeout": {
+      "message": "NuHeat did not finish within the request deadline. The command outcome may be uncertain. Check the app before repeating it."
+    },
+    "write_unconfirmed": {
+      "message": "NuHeat accepted the command, but readback failed. Confirmation is pending; check the app before repeating it."
     }
   },
   "issues": {

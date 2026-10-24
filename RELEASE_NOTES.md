@@ -1,3 +1,51 @@
+# v0.1.0b10 - regular/latest - API resilience and private diagnostics
+
+In HACS, explicitly select **v0.1.0b10**, verify
+HACS tracks the tag, and restart HA. **Show beta versions is not required.**
+This is the regular/latest GitHub release. Back up first and keep existing NuHeat entries,
+Application Credentials, entity/device IDs, dashboards and automations.
+
+## Changed
+
+- SDK 0.1.3 honors Retry-After across one runtime account client. Commands during
+  cooldown fail promptly rather than queue or replay; pending confirmation still
+  expires after thirty seconds.
+- HTTP 403 is permission denial rather than expired login. Optional v1 denial
+  preserves usable conservative v2 state; required operations report errors.
+- Requests have a fifteen-second budget; SDK operations and HA controls have a
+  thirty-second budget including token/lock waits and post-write reads. Uncertain
+  writes are not automatically repeated. Unload cancels pending work.
+- Download diagnostics from the existing entry's menu. NuHeat contributes only
+  allowlisted cached health/version counts, without API requests or credentials,
+  thermostat identifiers, temperatures, schedules or raw errors. Review HA's own
+  wrapper and filename before sharing publicly.
+
+## Validation and limits
+
+348 beta tests passed with one existing skip; 133 SDK tests passed. Lint,
+formatting, SDK typing, packaging, private-data and strict OpenSpec checks pass.
+A Signature hardware test used five commands within the approved bounds:
+entity updates took 0.26-0.71 seconds despite stale immediate cloud readbacks;
+rapid changes confirmed and original target, schedule and hold were restored.
+A separate read-only live diagnostics check added zero API requests or commands.
+Failure injection remains synthetic, not live vendor throttling or stalled writes.
+Final package-index dependency and GitHub CI checks are recorded before publication.
+
+Existing OAuth flow/provider associations, modes, expiry handling, migration,
+entity identity and exact-source Core handoff safeguards are preserved. Core PR
+#176586 and production HA are unchanged. Official Cloud transition validation
+remains separate. New hold-duration enforcement, push updates, energy reporting
+and relative adjustments are not included; vendor questions remain outstanding.
+
+## Recovery
+
+If needed, redownload **v0.1.0b9** in HACS and restart without deleting NuHeat
+entries. Restore the matching full HA backup if the HA framework/storage was
+also upgraded. For an uncertain command, check the NuHeat app before repeating
+it; relinking or repeated writes do not resolve every API error.
+
+---
+
 # v0.1.0b9 - Preserve accepted targets during rapid control changes
 
 Regular/latest GitHub release. In HACS select **v0.1.0b9**, verify it tracks

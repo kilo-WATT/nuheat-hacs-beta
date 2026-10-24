@@ -13,6 +13,8 @@ from chemelex_nuheat import (
     Account,
     HoldUntilStatus,
     NuHeatApiError,
+    NuHeatPermissionError,
+    NuHeatRateLimitError,
     NuHeatAuthError,
     ScheduleMode,
     Thermostat,
@@ -165,6 +167,7 @@ async def coordinator_with(
     entry.add_to_hass(hass)
     entry.mock_state(hass, ConfigEntryState.SETUP_IN_PROGRESS)
     api = AsyncMock()
+    api.cooldown_remaining = 0.0
     api.list_thermostats.return_value = list(thermostats)
     coordinator = NuHeatCoordinator(hass, entry, api)
     await coordinator.async_config_entry_first_refresh()
@@ -400,6 +403,8 @@ async def test_duplicate_provisional_account_migrates_in_place_and_is_rejected(
     [
         (NuHeatAuthError("rejected"), "invalid_auth"),
         (NuHeatApiError("down"), "cannot_connect"),
+        (NuHeatPermissionError("denied", status=403), "permission_denied"),
+        (NuHeatRateLimitError(120), "rate_limited"),
     ],
 )
 async def test_account_lookup_failures(
@@ -644,6 +649,7 @@ async def test_coordinator_auth_failure_triggers_reauthentication(
     entry.add_to_hass(hass)
     entry.mock_state(hass, ConfigEntryState.SETUP_IN_PROGRESS)
     api = AsyncMock()
+    api.cooldown_remaining = 0.0
     api.list_thermostats.side_effect = NuHeatAuthError("rejected")
     coordinator = NuHeatCoordinator(hass, entry, api)
     with pytest.raises(ConfigEntryAuthFailed):

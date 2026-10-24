@@ -1,3 +1,27 @@
+# v0.1.0b10 regular/latest release approval - 2026-10-24
+
+The user approved regular/latest publication. SDK 0.1.3 is published through
+trusted PyPI publishing and its public wheel source matches the validated SDK.
+The complete beta suite passed 348 tests with one existing skip against that
+public wheel; SDK has 133 passing tests and Python 3.13/3.14 CI passed. Both beta
+preparation workflows passed on the code commit recorded in release-status.json.
+Final main-commit CI and published tag/asset/HACS checks are required before
+publication is declared complete. No production or Core changes are included.
+The earlier preparation and hardware records below retain their original scope.
+
+---
+
+# v0.1.0b10 regular release preparation - 2026-10-24
+
+Resilience and cached diagnostics only. Local beta: 348 passed, one skip; SDK:
+133 passed. The isolated Signature test confirmed rapid/stale-read reconciliation
+and restoration; the separate read-only diagnostics check issued zero additional
+API requests or commands. No production or Core changes. Published SDK install
+and exact release-commit CI are required before publication. See RELEASE_NOTES.md
+and the OpenSpec validation records. Optional vendor-dependent features are excluded.
+
+---
+
 # v0.1.0b9 publication approval
 
 The maintainer approved regular/latest publication. The release carries the
