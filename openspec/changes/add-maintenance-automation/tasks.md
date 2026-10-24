@@ -17,7 +17,7 @@
 
 - [x] 3.1 Update specification traceability and record CodeQL default-setup assessment as a deferred follow-up without enabling it; verify every new requirement maps to a configuration check or explicitly pending hosted observation.
 - [x] 3.2 Run `npm run specs:check`, `python -m pytest -q`, `ruff check custom_components tests tools` and `python tools/package.py` in the supported isolated environment; record results and confirm runtime source, SDK/test-stack pins and ZIP runtime membership are unchanged.
-- [ ] 3.3 When separately authorized to push/run GitHub CI, verify exact-commit existing checks and the new HACS check, record the actual reference checked and assess fork/Dependabot compatibility; leave this task pending if remote validation is not authorized or unavailable.
+- [x] 3.3 When separately authorized to push/run GitHub CI, verify exact-commit existing checks and the new HACS check, record the actual reference checked and assess fork/Dependabot compatibility; leave this task pending if remote validation is not authorized or unavailable.
 
 ## Workflow follow-up
 

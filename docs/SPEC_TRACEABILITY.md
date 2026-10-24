@@ -53,8 +53,10 @@ manual/weekly checks, comment suppression, bounded execution and candidate SHA
 selection. `docs/MAINTAINING.md` documents failure triage, mutable upstream image,
 manual release verification and limits on installation/migration claims.
 
-Hosted HACS reference logs, fork/Dependabot execution and the first actual bot
-update check remain pending authorized GitHub validation/adoption. CodeQL default
+Hosted push/PR HACS logs verified the correction's exact SHA and nine enabled
+checks. The approved brands exception preserves the Core domain; topics are set.
+Actual fork/Dependabot execution and the first bot update check remain pending
+default-branch adoption. CodeQL default
 setup assessment is deferred and no scanner is enabled. Local evidence is recorded
 in the change's `validation.md`; these additions do not alter runtime guarantees.
 
