@@ -125,6 +125,14 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
             value, self.temperature_unit, UnitOfTemperature.CELSIUS
         )
 
+    def _command_temperature(self) -> float | None:
+        """Preserve an accepted target while switching mode before readback."""
+        if (
+            pending := self.coordinator.pending_setpoint(self._serial_number)
+        ) is not None:
+            return pending
+        return self.thermostat.target_temperature
+
     @property
     @override
     def available(self) -> bool:
@@ -337,7 +345,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 await self.coordinator.api.set_schedule_mode(
                     self._serial_number,
                     mode,
-                    temperature=self.thermostat.target_temperature,
+                    temperature=self._command_temperature(),
                 )
         except Exception:
             self.coordinator.async_schedule_reconciliation()
@@ -390,7 +398,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 await self.coordinator.api.set_schedule_mode(
                     self._serial_number,
                     mode,
-                    temperature=self.thermostat.target_temperature,
+                    temperature=self._command_temperature(),
                 )
         except Exception:
             self.coordinator.async_schedule_reconciliation()

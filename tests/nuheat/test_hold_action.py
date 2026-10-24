@@ -277,3 +277,21 @@ async def test_action_form_selectors_are_valid():
     assert set(fields) == {"temperature", "hold_until"}
     for field in fields.values():
         selector.validate_selector(field["selector"])
+
+
+@pytest.mark.parametrize("control", ["temporary", "permanent", "heat"])
+@pytest.mark.parametrize("imperial", [False, True])
+async def test_mode_change_preserves_accepted_target_before_readback(
+    hass, control, imperial
+):
+    """A quick mode write must carry the accepted target, not stale cloud data."""
+    if imperial:
+        hass.config.units = US_CUSTOMARY_SYSTEM
+    coordinator, api, _ = await coordinator_with(hass, permanent())
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    await entity.async_set_temperature(temperature=75.2 if imperial else 24)
+    await command(entity, control)
+    assert api.set_schedule_mode.await_args.kwargs["temperature"] == pytest.approx(24)
+    assert api.set_target_temperature.await_count == 1
+    assert api.set_schedule_mode.await_count == 1
+    await coordinator.async_shutdown()

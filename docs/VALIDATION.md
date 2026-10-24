@@ -1,3 +1,23 @@
+# v0.1.0b9 release-preparation status
+
+The accepted-target correction is implemented in this candidate. Six regression
+cases reproduce the b8 stale-target bug and pass with the fix; two added recovery
+tests bring the beta suite to 305 passed, one existing persistence-stage skip.
+Final lint, packaging, privacy and GitHub CI are checked against this preparation
+commit. No new live OAuth or hardware result is claimed. The candidate is not
+published; b8 remains the regular latest release. Earlier records below are
+historical and their pending-beta-fix wording describes that earlier state.
+
+Core's current source is deliberately not allowlisted. The revised transition
+plan requires official Cloud linking to be available and verified, with relinking
+of the same entry while retaining entity and device identity. Earlier community
+provider tests do not establish official linking readiness. No continued community
+OAuth handoff safeguard is being added. If recovery requires downgrading HA,
+restore its matching full pre-upgrade backup; integration files alone cannot
+reverse newer framework storage formats.
+
+---
+
 # Current status - 2026-10-23
 
 v0.1.0b8 is now the regular latest GitHub release. HACS beta visibility is not

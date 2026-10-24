@@ -61,14 +61,18 @@
     }
   },
   "bounded_mode_confirmation": {
-    "status": "approved",
+    "status": "pending",
     "base_tag": "v0.1.0b7",
-    "reason": "Bounded mode confirmation validated synthetically; maintainer approved a new prerelease for hardware testing.",
+    "reason": "Local accepted-target follow-up using validated Core helper; not approved for publication.",
     "previous_sha256": {
       "custom_components/nuheat/climate.py": "e4bfd0ce015eecec5d806d4d31b1822bb0eacd99dbb07d58ad7b16a189409e51",
       "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64"
     },
     "sha256": {
+      "custom_components/nuheat/climate.py": "efe93505ed35a90777b4b7a834093e901e2c8f34a9450a97ae1c96872ddadaaa",
+      "custom_components/nuheat/coordinator.py": "c4b92953be68c6d563570e796a9d57bd1c3ec46b0b8f0792bffb4348f9c75cca"
+    },
+    "published_b8_sha256": {
       "custom_components/nuheat/climate.py": "d1c61058d6fc2356728d295487d62d06a228cceb83bb186e3db241402f494389",
       "custom_components/nuheat/coordinator.py": "c4b92953be68c6d563570e796a9d57bd1c3ec46b0b8f0792bffb4348f9c75cca"
     }

@@ -11,6 +11,14 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
+## v0.1.0b9 release preparation
+
+The branch prepares a fix for a target change immediately followed by Temporary
+hold, Permanent hold or Heat: the mode command keeps the accepted target rather
+than stale cloud readback. **b9 is not published yet.** Installation instructions
+below still select the current published b8 release. No OAuth, migration or
+automatic handoff behavior changes in b9. See [release notes](RELEASE_NOTES.md).
+
 ## v0.1.0b8 - Bounded mode confirmation
 
 Mode and preset changes now retry readback within a 30-second confirmation

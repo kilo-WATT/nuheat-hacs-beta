@@ -14,11 +14,18 @@
 
 ## 3. Compatibility and review evidence
 
-- [ ] 3.1 Prepare the matching Core port in a separately authorized Core scope; verify normalized behavior parity and its tests/lint/types under Core's framework.
+- [x] 3.1 Prepare the matching Core port in a separately authorized Core scope; verify normalized behavior parity and its tests/lint/types under Core's framework.
 - [x] 3.2 Run the full beta regression, lint, packaging, and privacy checks; record exact results and all remaining hardware limits in the validation record.
 - [x] 3.3 Validate spec deltas and documentation against the implementation with npm run specs:check; keep production, publication, and allowlist changes outside this change's implementation scope.
+
+## 4. Accepted-target follow-up release preparation
+
+- [x] 4.1 Prepare v0.1.0b9 manifest, metadata, release notes and validation documentation; keep published b8 and the handoff allowlist unchanged.
+- [x] 4.2 Run the full beta suite, lint, formatting, strict OpenSpec validation, package audit and private-data checks for the exact candidate.
+- [ ] 4.3 Commit and push the reviewed candidate on codex/release-prep-v0.1.0b9 and verify GitHub Actions on that commit; do not update main or publish during preparation.
+- [ ] 4.4 After separate publication approval, verify final main CI and publish the tag/release; verify HACS visibility and published contents.
 
 ## Workflow follow-up
 
 - Present the implementation and evidence for the user's requested release scope before publishing.
-- Beta specs synced for v0.1.0b8. Archive only after the pending Core port is implemented and verified.
+- Beta specs synced for v0.1.0b8. Core port prepared and validated locally; see core-port-validation.md. Review before archiving or submission.

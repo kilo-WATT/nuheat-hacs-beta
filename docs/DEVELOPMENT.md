@@ -90,7 +90,8 @@ artifacts or examples. The npm tooling does not authorize publication of secrets
    stale Standby assumptions. Shipped in b8; the Core port was pushed to PR #176586. See the change validation record for scope and limits.
 2. [Updated Core handoff validation](../openspec/changes/validate-updated-core-handoff/proposal.md):
    prove identity, OAuth, action, hold, and recovery compatibility before a separate
-   allowlist update. Proposed, not executed.
+   allowlist update. Isolated checks are recorded in the change's investigation;
+   automatic retirement/restart and eligibility remain pending.
 
 Task checklists distinguish completed local validation from pending Core and handoff work.
 

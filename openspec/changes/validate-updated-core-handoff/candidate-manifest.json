@@ -1,0 +1,41 @@
+{
+  "core_commit": "9ab210660371eaf6bda2083a518cf15eea29318f",
+  "core_framework": "2026.11.0.dev0",
+  "beta_framework": "2026.10.2",
+  "published_beta_tag": "v0.1.0b8",
+  "published_beta_commit": "804343b755df8a381e52eba8d2746ac9a5224fd6",
+  "core_requirements": [
+    "chemelex-nuheat==0.1.2"
+  ],
+  "current_core_accepted_by_shipped_guard": false,
+  "shipped_guard_sdk_pin": "chemelex-nuheat==0.1.1",
+  "allowlist_sha256": "b32b525dc6ace6caeed0e76780189bd4bdd533fd7742ad782f58c38fea4c5646",
+  "core_source_sha256": {
+    "__init__.py": "8e5c066b4329b5b340cc1adff52da7e28fb41c8f9c42233275e1994c55a9ce9c",
+    "account_identity.py": "cc7e56f6d524db4f3933980997f2869571608f56fda04cd465a2db554c9d2f88",
+    "application_credentials.py": "130520430337bbb8006d6e5a2eb07085e4db42204948e9f5bcb013c668a08dfb",
+    "behavior.py": "7f23c860f88865a77c7a20957d68ff9abc18d1ff70320cd4b399de5b58c8e612",
+    "climate.py": "2d5aecb623a3191dcbe4b62f03aab2099a1eafa1e970b3c39d83d3633fc9be2e",
+    "config_flow.py": "74f2c0423ef74bd7647c6f57577872d1dbfe474078693acabb0e19be63e55fbd",
+    "const.py": "afdf82be239f4773bfad6c77d9e0d984952fb824eb6a0efc3f50a446754260fb",
+    "coordinator.py": "c4b92953be68c6d563570e796a9d57bd1c3ec46b0b8f0792bffb4348f9c75cca",
+    "icons.json": "258cf5dfafa8b054d9555eea1c9b9c9f60d8d5050d3d9fd59102359dc18186b3",
+    "manifest.json": "fcb2abe328cdec7ba54338d24f623bd9f929bb19185b11b1c63e5f5596170d37",
+    "migration.py": "e6d092d0cdbdb137bced48de92380f58a2c370769172f128323e1a38fd75bf41",
+    "registry_migration.py": "122ab446b97faef59759bc6b798f5f005c28789912f44a431c8062808c1525ac",
+    "services.py": "19c05e7d5eada23c84d51e3a3d02b7de4801fa57a9cb170c2a95c8d20e56e05b",
+    "services.yaml": "b64fb4ac05603f40fd54b3f0f355aad008a454e240101e359634be9af271703a",
+    "strings.json": "6def352e552127e814385e96b9048f6f15ae1c0e7123d09d048ebad655d8c31a"
+  },
+  "allowlist_mismatches": [
+    "__init__.py",
+    "behavior.py",
+    "climate.py",
+    "const.py",
+    "coordinator.py"
+  ],
+  "coordinator_identical": true,
+  "accepted_target_helper_ast_identical": true,
+  "core_worktree_clean": true,
+  "production_accessed": false
+}

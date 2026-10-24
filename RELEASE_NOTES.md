@@ -1,3 +1,33 @@
+# v0.1.0b9 - Preserve accepted targets during rapid control changes
+
+Release-preparation candidate. Not published; v0.1.0b8 remains the regular latest
+release. No main update, tag, production change or publication is part of this
+preparation. Keep existing NuHeat entries, entities and Application Credentials.
+
+## Fixed
+
+- A temperature change immediately followed by Temporary hold, Permanent hold
+  or Heat now carries the accepted target rather than an older cloud target.
+  The helper and two write sites match the validated Core implementation.
+- Six regressions cover all three interactions in Celsius and Fahrenheit.
+  Two additional recovery regressions verify rename failure and restoring the
+  preserved beta files after restart-dispatch failure.
+
+## Validation and limits
+
+The local suite passes 305 tests with one existing persistence-stage skip.
+Lint, formatting, strict OpenSpec validation, package and privacy audits pass.
+Final GitHub CI is required on the release-preparation commit. No new hardware
+test was performed for this follow-up; prior b8 hardware feedback is historical.
+
+OAuth, migration, entity identity, SDK dependencies and runtime handoff safeguards
+are unchanged. The revised OpenSpec plan targets official Home Assistant Cloud
+linking after it is available and verified, with relinking of existing entries.
+It does not require continued community OAuth after handoff. That transition is
+not implemented or approved here, and the exact-source allowlist is unchanged.
+
+---
+
 # v0.1.0b8 - Bounded mode confirmation
 
 Promoted to the regular latest GitHub release after maintainer-reported

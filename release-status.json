@@ -1,5 +1,5 @@
 {
-  "publish_allowed": true,
+  "publish_allowed": false,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -25,15 +25,25 @@
     "permanent_hold_mode_comparison": "passed",
     "timed_hold_action_regressions": "passed",
     "all_write_controls_reconciliation": "passed",
-    "bounded_mode_confirmation": "passed"
+    "bounded_mode_confirmation": "passed",
+    "accepted_target_preservation": "passed"
+  },
+  "current_core_handoff_validation": {
+    "candidate": "9ab210660371eaf6bda2083a518cf15eea29318f",
+    "status": "official_cloud_linking_transition_pending",
+    "isolated_validation_tasks_complete": 7,
+    "isolated_validation_tasks_total": 10,
+    "actual_automatic_retirement_restart_verified": false,
+    "shipped_allowlist_changed": false,
+    "official_cloud_linking": "not verified; PR merge alone is not availability evidence"
   },
   "official_release_follow_up": {
     "status": "awaiting_merge",
     "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
   },
-  "version": "0.1.0b8",
-  "tag": "v0.1.0b8",
-  "publication_status": "approved_regular_release",
+  "version": "0.1.0b9",
+  "tag": "v0.1.0b9",
+  "publication_status": "release_preparation_ci_pending",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",

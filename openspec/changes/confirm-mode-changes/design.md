@@ -46,3 +46,20 @@ control names. Validate with synthetic clocks, run packaging, document the new
 mode confirmation window, and obtain the user's requested release/deployment scope
 before any publication or production installation. Hardware validation remains a
 separate optional authorized activity, not a prerequisite silently marked passed.
+
+## Implemented Core port
+
+The separately authorized Core port is prepared locally against
+`094a11a1c251aac5d749d2133fe0852d9093ed17`. It retains Core's accepted-target
+helper, lock dispatch, lifecycle APIs and native temperature properties while
+adding the b8 bounded mode lifecycle. See [validation](core-port-validation.md)
+for exact tests, intentional parity differences and the full-repository hook
+limitation. Beta runtime and automatic handoff eligibility are unchanged.
+
+## Accepted-target beta follow-up
+
+A post-release review found that target-then-preset ordering could reuse stale
+cloud targets in b8 even though preset-then-target was covered. The user authorized
+reopening the preservation and beta validation tasks. The local follow-up copies
+Core's existing `_command_temperature()` helper and uses it for the two mode-write
+temperature arguments. Core source and handoff allowlisting remain unchanged.
