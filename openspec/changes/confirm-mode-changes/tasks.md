@@ -23,7 +23,7 @@
 - [x] 4.1 Prepare v0.1.0b9 manifest, metadata, release notes and validation documentation; keep published b8 and the handoff allowlist unchanged.
 - [x] 4.2 Run the full beta suite, lint, formatting, strict OpenSpec validation, package audit and private-data checks for the exact candidate.
 - [x] 4.3 Commit and push the reviewed candidate on codex/release-prep-v0.1.0b9 and verify GitHub Actions on that commit; do not update main or publish during preparation.
-- [ ] 4.4 After separate publication approval, verify final main CI and publish the tag/release; verify HACS visibility and published contents.
+- [x] 4.4 After separate publication approval, verify final main CI and publish the tag/release; verify HACS visibility and published contents.
 
 ## Workflow follow-up
 
