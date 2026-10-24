@@ -89,5 +89,12 @@
       "custom_components/nuheat/strings.json": "502eeda65f40d967f2e4df71c3144c7c797904361047f867f07373bd97e108a9",
       "custom_components/nuheat/translations/en.json": "f3d0d01ec040398d946b430099357029466d884a2805275541c0172db3782387"
     }
+  },
+  "diagnostics": {
+    "status": "local_review_candidate",
+    "sha256": {
+      "custom_components/nuheat/diagnostics.py": "da008575a987e9f0ac23443b70c0995bb0573d73c23be0b18823ba8cb97a764a"
+    },
+    "behavior": "Allowlisted cached health only; no cloud requests or private identifiers."
   }
 }

@@ -18,6 +18,7 @@ COMPONENT_FILES = {
     "config_flow.py",
     "const.py",
     "coordinator.py",
+    "diagnostics.py",
     "core-handoff.json",
     "core_handoff.py",
     "manifest.json",
@@ -120,6 +121,13 @@ def main():
             hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
             == expected_digest
         )
+    for relative, expected_digest in (
+        provenance.get("diagnostics", {}).get("sha256", {}).items()
+    ):
+        assert (
+            hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            == expected_digest
+        ), relative
     for relative, digest in provenance["sha256"].items():
         if relative in permanent_fixes:
             original = (

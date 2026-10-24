@@ -156,6 +156,25 @@ def test_prepared_archive_has_only_allowlisted_files(tmp_path, monkeypatch):
         )
 
 
+def test_diagnostics_source_drift_is_rejected(tmp_path, monkeypatch):
+    """The explicit new diagnostics file must retain its audited source bytes."""
+    component = candidate(tmp_path, monkeypatch)
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    provenance["diagnostics"] = {
+        "sha256": {
+            "custom_components/nuheat/diagnostics.py": hashlib.sha256(
+                (component / "diagnostics.py").read_bytes()
+            ).hexdigest()
+        }
+    }
+    path.write_text(json.dumps(provenance))
+    (component / "diagnostics.py").write_text("# unexpected diagnostics drift\n")
+    with pytest.raises(AssertionError, match="diagnostics.py"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
+
+
 def test_manifest_and_candidate_version_must_match(tmp_path, monkeypatch):
     """Version metadata cannot silently describe a different candidate."""
     component = candidate(tmp_path, monkeypatch)

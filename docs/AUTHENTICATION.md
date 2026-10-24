@@ -110,3 +110,23 @@ Rate-limit errors ask users to wait, not relink. Timeout messages report uncerta
 outcomes without exposing vendor response bodies or identifiers. Existing community
 and custom provider associations, PKCE and migration identity checks are unchanged.
 Future official Cloud relinking remains a separate, unimplemented transition.
+
+## Local candidate diagnostics
+
+This preparation branch adds a NuHeat diagnostic download. It is not part of
+the published b9 release. Once installed in a compatible release, use
+**Settings → Devices & services → NuHeat → the entry's menu → Download diagnostics**.
+The menu may require administrator access.
+
+The integration contributes only version numbers, setup state, device
+availability counts, whether a cooldown is active, and counts of pending target,
+mode and expiry confirmations. The snapshot uses cached state: it does not log
+in, refresh the account, send commands or change configuration. Setup failures
+can still produce a minimal snapshot.
+
+It excludes account/device identifiers, names, locations, URLs, temperatures,
+schedules, tokens, client credentials, raw API responses and exception messages.
+Home Assistant may include its own system metadata or identifiers in the
+download wrapper or filename. Review the complete file and filename before
+sharing it publicly. Screenshots and logs are separate and may contain private
+information; do not attach credentials, callback URLs or thermostat serials.
