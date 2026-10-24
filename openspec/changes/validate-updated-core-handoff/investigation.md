@@ -168,3 +168,23 @@ Keep the beta active and do not archive this change.
 
 No Core source, production, commit, push, tag, or release change was made. A later
 merged Core revision requires another exact comparison.
+
+## Public availability recheck after maintenance archival
+
+2026-10-24: Core PR #176586 remains OPEN and unmerged, with unchanged head
+`9ab210660371eaf6bda2083a518cf15eea29318f`. Its application-credentials module
+still provides local user-supplied PKCE credentials; that source alone does not
+prove deployed official Cloud linking.
+
+Public maintainer guidance explicitly states Account Linking is added when the
+integration is merged:
+https://github.com/home-assistant/core/pull/176586#issuecomment-5132719796
+No later public enablement confirmation was found in the PR conversation. This
+supports treating enablement as a separate gate, not assuming merge readiness
+from community authorization. The public NuHeat integration page likewise does
+not establish that the new official OAuth path is deployed.
+
+Tasks 1.3, 2.1 and 2.2 remain open. No production, account-based provider query,
+Core edit, beta allowlist change or new official end-to-end authorization was
+performed. The beta remains the active bridge pending verified official linking
+and exact-source transition tests.

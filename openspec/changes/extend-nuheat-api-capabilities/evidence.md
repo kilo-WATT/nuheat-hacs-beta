@@ -86,3 +86,15 @@ This narrows the missing evidence: a v2 duration answer does exist, contrary to
 the earlier record's implication, but conflicts with the guide and does not
 settle exact boundary/clock or retained-expiry policy. Gate H remains unresolved,
 as do P/E/R. No new runtime or thermostat behavior was changed. Awaiting reply.
+
+## Follow-up public-source recheck
+
+2026-10-24, after maintenance archival: the original issue was re-read and no
+comment follows the request at issuecomment-6380330250. No new vendor reply was
+found there. The public guide still describes the v1 23-hour limit, notification
+examples and estimated energy buckets without settling the outstanding contracts.
+A fresh account-free v2 Swagger GET still models `ModeHold.holdUntil` only as
+nullable date-time and describes Relative as adding to current thermostat
+temperature without resolving the target-versus-sensor reference. H/P/E/R remain
+unresolved; none of the twelve dependent tasks was marked complete. No follow-up
+message, account probe, connection or thermostat command was sent.

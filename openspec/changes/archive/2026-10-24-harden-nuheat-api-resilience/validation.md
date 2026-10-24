@@ -95,3 +95,20 @@ validated from a locally built wheel. The standard GitHub integration-test job
 installs dependencies from the package index and cannot pass while that SDK is
 unpublished. This is a dependency-availability gate, not evidence that remote
 integration tests passed. No test is skipped to conceal that gate.
+
+## Publication and archive closure
+
+The preparation-stage development dependency gate above is historical. The
+validated SDK was subsequently published as `chemelex-nuheat==0.1.3`, and the
+beta was released as regular/latest v0.1.0b10 at
+`3f77a85f459fb61021ea688d094229f4429fba9c`. The current manifest, test pins,
+provenance and b10 release records describe that published version; no development
+dependency remains in the beta. Later main validation passed 414 tests with one
+existing skip, lint, packaging and OpenSpec (runtime run 40098398293).
+
+On 2026-10-24 the completed resilience requirements were synced into authentication
+and command-reconciliation specs before archival. Optional API capabilities and
+the official Cloud handoff remain separate unfinished changes. This closure does
+not claim rate-limit faults were induced on hardware, Core was ported, or a later
+official provider/merge was validated. Runtime source and the handoff allowlist
+were not changed by the sync/archive.
