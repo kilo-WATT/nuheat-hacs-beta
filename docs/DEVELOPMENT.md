@@ -63,6 +63,16 @@ upstream Core PR or copy community OAuth registration values into it.
 
 ## Verification
 
+Maintenance configuration contracts run with
+`python -m pytest -q tests/test_maintenance_automation.py` and require no account
+or network access. They cover dependency-update boundaries and HACS workflow
+permissions, events and exact-candidate selection. See
+[maintenance automation](MAINTAINING.md#maintenance-automation) for bot review,
+coordinated manual pin updates, HACS triage and the deferred CodeQL assessment.
+Keep npm package/lock changes together and review generated OpenSpec skills
+separately when changing the pinned tool. Workflow-only checks never authorize
+production access, hardware commands or publication.
+
 Supported maintainer commands:
 
 | Command | Purpose | Side effects |

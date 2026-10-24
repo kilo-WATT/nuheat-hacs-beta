@@ -37,6 +37,62 @@ Run synthetic verifier tests with `python -m pytest -q tests/test_verify_release
 They require no credentials or network. A successful public verification is
 publication evidence, not a replacement for runtime, migration or hardware tests.
 
+## Maintenance automation
+
+Dependabot proposes grouped version updates weekly for GitHub Actions, npm
+development tooling and Ruff, with at most two open version-update PRs per
+ecosystem. Review and merge manually after CI passes; nothing merges or publishes
+automatically. These limits do not govern separately enabled security updates or
+alerts. This configuration does not enable or change those repository settings.
+
+HA, frontend, the HA pytest plugin and the runtime SDK remain coordinated manual
+updates. Check compatible versions together; SDK updates also require the runtime
+manifest, test pin and provenance/package checks. Actions updates do not maintain
+Python/Node version inputs. For OpenSpec updates, review package.json and lockfile
+together and assess whether generated skills need deliberate regeneration. Do not
+run generated-skill updates blindly as part of accepting a bot PR.
+
+The **Validate HACS custom repository** workflow checks PRs, pushes, manual runs
+and Mondays at 07:23 UTC. It uses the ordinary read-only GitHub token, disables PR
+comments and has a ten-minute timeout. PRs validate the source repository at the
+head SHA; other events use the triggering SHA via `REPOSITORY_REF`. The HACS log
+records its repository/reference. No checkout, PAT, NuHeat login, private audit
+baseline, production access or catalog submission is required.
+
+The action source is pinned to `1ebf01c408f29afcb6406bd431bc98fd8cbb15aa`.
+Its definition still uses the mutable `ghcr.io/hacs/action:main` container, so the
+source pin does not freeze the validator image. Preserve run logs/image evidence
+when investigating upstream changes. Only `brands` is ignored: the beta retains
+Core's existing `nuheat` domain, while this action checks the custom brands list
+or local icon assets. The first hosted run confirmed this mismatch. The approved
+exception avoids changing runtime identity or the ZIP solely for that check.
+All other checks remain active, including topics. Repository topics are
+`home-assistant`, `hacs`, `nuheat` and `custom-integration`. Investigate failures
+before adding a narrowly explained exception; never grant a PAT or suppress all
+checks to hide fork/bot failures. Failed/unavailable validation remains a failure.
+
+A pass establishes repository validation for the logged reference, not successful
+UI installation, correct default release ordering, retained entities or hardware
+behavior. Continue explicit-tag installation and independent release verification.
+For releases made after adopting this workflow, append all three options to the
+selected release-verification command (replace tag/commit with the intended release):
+
+```sh
+python tools/verify_release.py --repo kilo-WATT/nuheat-hacs-beta --tag vVERSION --expected-commit COMMIT --kind regular --expect-latest --workflow "Validate unpublished NuHeat candidate" --workflow "Validate NuHeat specifications" --workflow "Validate HACS custom repository"
+```
+
+Repeated `--workflow` options replace the verifier's defaults, so include all three.
+Historical releases retain their original two-workflow expectation; the verifier's
+defaults have not changed. Hosted ordinary push/PR checks passed for the correction
+recorded in the change's validation evidence. Actual fork/bot actor execution and
+Dependabot PR creation remain unverified until observed after default-branch
+adoption. Local configuration tests do not establish those results.
+
+CodeQL is deferred: assess GitHub default setup with Python in a separate reviewed
+change, inspect initial findings, and avoid enabling default and advanced workflows
+together. No scanning, branch protection, automatic issue closure or release setting
+is enabled by these files. These maintainer changes require no runtime release.
+
 ## Issue intake and triage
 
 Before publishing maintainer changes, use the current privacy audit with an

@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 2
+    groups:
+      actions:
+        patterns: ['*']
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 2
+    groups:
+      development-tooling:
+        patterns: ['*']
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 2
+    # HA/frontend/test-plugin and SDK pins require coordinated manual updates.
+    allow:
+      - dependency-name: ruff
+    groups:
+      lint-tooling:
+        patterns: [ruff]

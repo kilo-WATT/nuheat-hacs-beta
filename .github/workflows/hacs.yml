@@ -1,0 +1,24 @@
+name: Validate HACS custom repository
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 7 * * 1'
+permissions:
+  contents: read
+jobs:
+  hacs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Validate candidate with HACS
+        # Source pinned; upstream action still uses a mutable action:main image.
+        uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa
+        env:
+          REPOSITORY_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        with:
+          category: integration
+          comment: 'false'
+          # Retains Core's domain; this action checks custom brands only.
+          ignore: brands

@@ -43,6 +43,23 @@ index, not a substitute for their assertions or results.
 
 ## Completed and proposed refinements
 
+### Maintenance automation candidate
+
+`add-maintenance-automation` adds requirements to maintainer-tools and release
+distribution. `.github/dependabot.yml` and `tests/test_maintenance_automation.py`
+cover weekly grouped proposals, finite limits and the Ruff-only pip scope.
+`.github/workflows/hacs.yml` and the same contract tests cover read-only PR/push/
+manual/weekly checks, comment suppression, bounded execution and candidate SHA
+selection. `docs/MAINTAINING.md` documents failure triage, mutable upstream image,
+manual release verification and limits on installation/migration claims.
+
+Hosted push/PR HACS logs verified the correction's exact SHA and nine enabled
+checks. The approved brands exception preserves the Core domain; topics are set.
+Actual fork/Dependabot execution and the first bot update check remain pending
+default-branch adoption. CodeQL default
+setup assessment is deferred and no scanner is enabled. Local evidence is recorded
+in the change's `validation.md`; these additions do not alter runtime guarantees.
+
 | Change | Proposed acceptance | Current status |
 | --- | --- | --- |
 | [Archived control change](../openspec/changes/archive/2026-10-23-confirm-mode-changes/tasks.md) | Bounded confirmation, accepted-target preservation, failures, rapid commands and cleanup. | 13/13 tasks complete; shipped in b8/b9; baseline specs synced. |
