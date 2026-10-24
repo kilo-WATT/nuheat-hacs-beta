@@ -63,6 +63,29 @@ upstream Core PR or copy community OAuth registration values into it.
 
 ## Verification
 
+Supported maintainer commands:
+
+| Command | Purpose | Side effects |
+| --- | --- | --- |
+| `python tools/package.py` | Validate and build an allowlisted local candidate | Writes local artifacts; never publishes |
+| `python tools/verify_release.py --help` | Verify a selected public release | Public reads and JSON stdout only |
+| `python tools/privacy_check.py --help` | Audit an explicit Git view and selected ZIPs | Local reads and count-only JSON stdout |
+| `npm run specs:check` | Validate OpenSpec structure | No HA/runtime changes |
+
+See [maintaining](MAINTAINING.md) for complete release-verification and privacy
+examples, exit codes, required tools and limitations. Synthetic maintainer tests
+run with `python -m pytest -q tests/test_verify_release.py tests/test_privacy_check.py tests/test_historical_tools.py`.
+No accounts, network, thermostat or private baseline is required for those tests.
+
+`adapt_stable.py`, `transition.py` and `core_handoff.py` at their original tool
+paths are now explanatory stubs. Their former implementations are preserved as
+inert [historical references](../tools/historical/README.md); ordinary invocation
+does not rewrite source or run transition processes. The historical privacy
+implementation is preserved there too. Earlier validation notes retain their
+original command descriptions as historical evidence. Use the active Core
+handoff proposal for new transition work and never claim old fixtures prove
+official Cloud linking is deployed or current Core source is eligible.
+
 `npm run specs:check` runs strict structural validation for all current specs and
 active changes. The specification GitHub workflow runs the same command from a
 clean npm install. A valid document or artifact status of "done" means its shape

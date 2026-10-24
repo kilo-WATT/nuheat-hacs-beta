@@ -1,0 +1,21 @@
+{
+  "source_commit": "3f77a85f459fb61021ea688d094229f4429fba9c",
+  "files": {
+    "adapt_stable": {
+      "source_sha256": "69962c1921fe760cf65603d925472815df50c6c30def03d0ad90bd93a7c0ced2",
+      "ast_sha256": "8cd2d3131b6a7f1b9108c5a7e0af58f914595582187a53b3befbc9ea62501104"
+    },
+    "transition": {
+      "source_sha256": "1c3311caedec16240fbe2def9ee68f8bb3d18749fe79d1628345dd618fe7c5e8",
+      "ast_sha256": "8f0d4985f242139538110bb45913fff28bc3aaad39ca47c70f37fdb51fdc1f92"
+    },
+    "core_handoff": {
+      "source_sha256": "aa8f0f655346a3b9d67c805a25994edeab95703f13075175dd20ebfb7d265ae0",
+      "ast_sha256": "32394bf157a9311f53059be8c374a7deb6792fe6c66b20c67c328fc09800e24f"
+    },
+    "privacy_check": {
+      "source_sha256": "85b0c9eef42b7d8f9a733b80551a5014c5d4330b58d51ed12286cfd7acae0b32",
+      "ast_sha256": "95f5ade4bebbd210e311aff6cbe3f351a00c947103749c0b547f52008c8a136f"
+    }
+  }
+}
