@@ -88,3 +88,23 @@ is commit `4770553899846fe8f71a4af0fdf730c14f7d0d20`; implementation follows as 
 separate commit. Fresh implementation CI and closure evidence will be recorded
 after they complete. No HA release, production access or runtime update is part
 of this authorization.
+
+## Implementation CI and specification closure
+
+Implementation commit `e768f2fab7a8e455d698bcf1d56bd709ff06dbf7` passed both
+GitHub workflows for its push and PR #4. Successful runs:
+
+- https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40093611845
+- https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40093611870
+- https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40093648364
+- https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40093648342
+
+After those checks, the completed change's three maintainer-tool requirements
+and three release-verification requirements were synced into baseline specs.
+Existing release purpose/requirements and the new capability's authored purpose
+were preserved; every delta requirement was compared against the main specs.
+Strict baseline validation passed for all nine capabilities. All seven tracked
+implementation tasks are complete. The change is archived under
+`2026-10-24-repeatable-maintainer-checks` in a documentation-only closure commit.
+Final closure CI and the main merge are verified separately after publication;
+this record does not claim future checks have already run.
