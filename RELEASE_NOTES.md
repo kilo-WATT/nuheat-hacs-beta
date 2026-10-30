@@ -1,4 +1,21 @@
-# v0.1.0b10 - regular/latest - API resilience and private diagnostics
+# v0.1.0b11 - regular/latest - automation compatibility
+
+- Accept `Run Schedule`, `Temporary Hold`, and `Permanent Hold` alongside the
+  existing snake_case action aliases. All six appear in the preset list.
+- **State comparison change:** reported preset values use the title-case names.
+  Snake_case action calls remain valid; update template and state-trigger
+  comparisons using the [upgrade guide](docs/PERMANENT_HOLD.md#automation-compatibility-update).
+- Use a shared 5–35°C / 41–95°F target range for normal controls and timed holds.
+  A 5°C target preserves mode/expiry; explicit Off retains Standby behavior.
+- Clarify account-scoped multi-thermostat migration and retry guidance without
+  changing ownership checks, entity identity, OAuth, or Core handoff behavior.
+
+Select **v0.1.0b11** in HACS and verify the installed tag before restarting HA.
+Beta visibility is not required. Keep existing entries and credentials. Validation:
+452 tests passed with one existing skip; lint, packaging, privacy and specs passed.
+No new live hardware test was performed for this update; other models remain unverified.
+
+# v0.1.0b10 - historical release - API resilience and private diagnostics
 
 In HACS, explicitly select **v0.1.0b10**, verify
 HACS tracks the tag, and restart HA. **Show beta versions is not required.**

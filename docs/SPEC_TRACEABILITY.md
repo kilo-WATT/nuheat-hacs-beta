@@ -43,7 +43,7 @@ index, not a substitute for their assertions or results.
 
 ## Completed and proposed refinements
 
-### Maintenance automation candidate
+### Completed maintenance automation
 
 `add-maintenance-automation` adds requirements to maintainer-tools and release
 distribution. `.github/dependabot.yml` and `tests/test_maintenance_automation.py`
@@ -55,12 +55,15 @@ manual release verification and limits on installation/migration claims.
 
 Hosted push/PR HACS logs verified the correction's exact SHA and nine enabled
 checks. The approved brands exception preserves the Core domain; topics are set.
-Actual fork/Dependabot execution and the first bot update check remain pending
-default-branch adoption. CodeQL default
-setup assessment is deferred and no scanner is enabled. Local evidence is recorded
-in the change's `validation.md`; these additions do not alter runtime guarantees.
+Main validation passed after PR #5 merged. Initial Dependabot update checks ran
+successfully and opened PR #6; its bot-authored push/PR checks passed, it was
+reviewed and merged, and all three main workflows passed again. Actual fork-user
+execution remains unobserved. CodeQL setup is deferred and no scanner is enabled.
+Evidence is retained in the archived change; runtime guarantees are unchanged.
 
 | Change | Proposed acceptance | Current status |
 | --- | --- | --- |
 | [Archived control change](../openspec/changes/archive/2026-10-23-confirm-mode-changes/tasks.md) | Bounded confirmation, accepted-target preservation, failures, rapid commands and cleanup. | 13/13 tasks complete; shipped in b8/b9; baseline specs synced. |
+| [Archived maintenance automation](../openspec/changes/archive/2026-10-24-add-maintenance-automation/tasks.md) | Bounded dependency proposals and independent HACS validation. | 10/10 tasks complete; merged; baseline specs synced. First actual bot PR reviewed and merged. |
+| [Archived API resilience](../openspec/changes/archive/2026-10-24-harden-nuheat-api-resilience/tasks.md) | Cooldown-aware reconciliation, bounded operations and permission classification. | 12/12 tasks complete; shipped in b10; baseline specs synced. Optional capabilities and official handoff remain separate. |
 | [Updated Core handoff](../openspec/changes/validate-updated-core-handoff/tasks.md) | Stable identities while moving community users to verified official Cloud linking, plus action continuity and recovery. | 7/10 tasks complete. Official-provider checks remain open; allowlist unchanged. |

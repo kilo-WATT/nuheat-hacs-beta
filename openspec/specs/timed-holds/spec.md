@@ -13,7 +13,7 @@ The beta SHALL provide a Set temporary hold action targeting an existing NuHeat 
 - **THEN** the integration sends an explicit timed-hold command using that entity.
 
 ### Requirement: Temperature and time validation
-The action SHALL use HA's configured temperature unit and validate the supported range and finiteness. Offset-free times SHALL use HA's timezone. Past, nonexistent, and ambiguous local times SHALL be rejected before a write; an explicit valid UTC offset SHALL disambiguate a repeated hour.
+The action SHALL use HA's configured temperature unit and validate finiteness and the same inclusive 5–35°C range as ordinary temperature controls. Offset-free times SHALL use HA's timezone. Past, nonexistent, and ambiguous local times SHALL be rejected before a write; an explicit valid UTC offset SHALL disambiguate a repeated hour.
 
 #### Scenario: Fahrenheit target
 - **WHEN** HA uses Fahrenheit and a valid Fahrenheit target is supplied
@@ -22,6 +22,14 @@ The action SHALL use HA's configured temperature unit and validate the supported
 #### Scenario: Repeated daylight-saving hour
 - **WHEN** an offset-free expiry falls in a repeated local hour
 - **THEN** no write occurs and the user is asked for an unambiguous expiry.
+
+#### Scenario: Lower-bound timed hold
+- **WHEN** a timed-hold action requests 5°C or 41°F with a valid future expiry
+- **THEN** range validation accepts it and the requested expiry is retained.
+
+#### Scenario: Invalid numeric target
+- **WHEN** the target is nonfinite or outside the supported range
+- **THEN** validation rejects it without a write.
 
 ### Requirement: Preserve an accepted timed expiry
 Changing the target SHALL retain an active explicit expiry, including while a newly accepted timed hold awaits cloud confirmation. A different explicit control SHALL supersede pending hold intent. Pending intent SHALL use the existing bounded confirmation deadline.

@@ -81,3 +81,20 @@ repository and exact head SHA, requires only the ordinary read-only token, and
 uses no private secrets, write APIs or privileged trigger. Hosted ordinary PR
 execution passed under these permissions. Actual fork/bot actor execution and
 the first default-branch Dependabot update remain unobserved post-adoption work.
+
+## Post-adoption and archive closure
+
+2026-10-24: PR #5 merged as `70239acea3f8e28dcc4be8ec89c972fa5149f269`.
+Main runtime, OpenSpec and HACS runs 40098100330, 40098100401 and 40098100474
+all passed. Initial Actions/npm/pip bot update checks completed successfully.
+Dependabot opened PR #6, head `910a9e5e72e3da18c993c932e7da1fcec40f3c22`;
+all three push/PR workflows passed for that bot-authored update, establishing
+actual Dependabot actor execution in addition to the earlier compatibility
+assessment. It changed only official Actions versions after human-authorized
+review, not runtime source, interpreter pins or publication behavior.
+
+PR #6 merged as `90ef86bfed347c2703f2a3481c4dd1373190d1d0`. Main runtime,
+OpenSpec and HACS runs 40098398293, 40098398218 and 40098398181 all passed.
+Fork-user execution remains unobserved and CodeQL remains deferred. Specifications
+were synced and this completed change archived on 2026-10-24. No release or
+production change was needed for the maintenance work or archive.

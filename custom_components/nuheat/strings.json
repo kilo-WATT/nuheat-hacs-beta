@@ -44,6 +44,9 @@
         "state_attributes": {
           "preset_mode": {
             "state": {
+              "Run Schedule": "Run schedule",
+              "Temporary Hold": "Temporary hold",
+              "Permanent Hold": "Permanent hold",
               "run_schedule": "Run schedule",
               "temporary_hold": "Temporary hold",
               "permanent_hold": "Permanent hold"

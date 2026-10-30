@@ -189,7 +189,7 @@ async def test_invalid_or_dst_ambiguous_expiry_never_writes(hass, freezer, until
     await coordinator.async_shutdown()
 
 
-@pytest.mark.parametrize("temperature", [float("nan"), float("inf"), 6, 36])
+@pytest.mark.parametrize("temperature", [float("nan"), float("inf"), 4.9, 36])
 async def test_invalid_timed_hold_target_never_writes(hass, temperature):
     coordinator, api, _ = await coordinator_with(hass, permanent())
     entity = NuHeatClimateEntity(coordinator, "ABC123")

@@ -51,9 +51,9 @@
     "reason": "Verified Permanent Hold, explicit timed-hold action with bounded expiry preservation, and delayed readback for all thermostat writes.",
     "sha256": {
       "custom_components/nuheat/__init__.py": "37a42f17a27db8bab0aed201a05e804cc425387360411486ea05b69ed6218535",
-      "custom_components/nuheat/behavior.py": "eb15a8ba89dc17befb48a40b03d2313737db66d43e21ddac02ac2464136c93db",
+      "custom_components/nuheat/behavior.py": "dd98c17123bd490fc49fe0dca38c9f04f4bad42b5473ab019d580bec9ccec55b",
       "custom_components/nuheat/climate.py": "e4bfd0ce015eecec5d806d4d31b1822bb0eacd99dbb07d58ad7b16a189409e51",
-      "custom_components/nuheat/const.py": "afdf82be239f4773bfad6c77d9e0d984952fb824eb6a0efc3f50a446754260fb",
+      "custom_components/nuheat/const.py": "2c3d567c7d959b5e0c982db31c0f2fe36dd771e7212db776ec313cc82f717e78",
       "custom_components/nuheat/strings.json": "a29d73b83d6cf8d4d794a674139ad39c5f431619c77969fa903bd960b299b079",
       "custom_components/nuheat/translations/en.json": "1fd59f9be3a71a801b10676a67e252b81758bf78853fd9a967f154b6d931fc79",
       "custom_components/nuheat/coordinator.py": "a57e4451b9387142929288ec657a076219eb59023867cacc709a7d92cdb05c64",
@@ -84,10 +84,10 @@
     "sha256": {
       "custom_components/nuheat/__init__.py": "ed080bab0f7391f441add74edaf5e77e85cc8d7ec6c902558b163d6f1886cac4",
       "custom_components/nuheat/coordinator.py": "ae676c8d9618466d80d6e745e096f96a09692647d44438d9f174bf21b34c5a22",
-      "custom_components/nuheat/climate.py": "04a28c9ba9dd4b2541151f7d90cd7858dc83a364e199d57712c4884edb1896c5",
+      "custom_components/nuheat/climate.py": "1a75214a130224a8044dcfb78c7e2dfc22c8c7893db04d3a992fca622e560023",
       "custom_components/nuheat/config_flow.py": "1babb1fc05f84114227f016c2206369cb1042682a8771d6ba2e3a8b5ecf09887",
-      "custom_components/nuheat/strings.json": "502eeda65f40d967f2e4df71c3144c7c797904361047f867f07373bd97e108a9",
-      "custom_components/nuheat/translations/en.json": "f3d0d01ec040398d946b430099357029466d884a2805275541c0172db3782387"
+      "custom_components/nuheat/strings.json": "de198978c8eeec2c9f28a3889fa06490b010e01938a5df47eba9675154f04b03",
+      "custom_components/nuheat/translations/en.json": "5442641050a1e3c2d64b6c7ba645f0c6db0fa67c251391b768edeea8c3f90ee9"
     },
     "sdk_release": {
       "version": "0.1.3",

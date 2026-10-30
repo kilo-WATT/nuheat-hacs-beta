@@ -168,3 +168,38 @@ Keep the beta active and do not archive this change.
 
 No Core source, production, commit, push, tag, or release change was made. A later
 merged Core revision requires another exact comparison.
+
+## Public availability recheck after maintenance archival
+
+2026-10-24: Core PR #176586 remains OPEN and unmerged, with unchanged head
+`9ab210660371eaf6bda2083a518cf15eea29318f`. Its application-credentials module
+still provides local user-supplied PKCE credentials; that source alone does not
+prove deployed official Cloud linking.
+
+Public maintainer guidance explicitly states Account Linking is added when the
+integration is merged:
+https://github.com/home-assistant/core/pull/176586#issuecomment-5132719796
+No later public enablement confirmation was found in the PR conversation. This
+supports treating enablement as a separate gate, not assuming merge readiness
+from community authorization. The public NuHeat integration page likewise does
+not establish that the new official OAuth path is deployed.
+
+Tasks 1.3, 2.1 and 2.2 remain open. No production, account-based provider query,
+Core edit, beta allowlist change or new official end-to-end authorization was
+performed. The beta remains the active bridge pending verified official linking
+and exact-source transition tests.
+
+## New submitted candidate after the resilience port
+
+2026-10-24: The separately reviewed resilience/diagnostics port was committed and
+pushed to the existing Core PR as `d70d43b22ae84d0e2d3f33705162ee0efc9f25b9`,
+using published SDK 0.1.3. Its isolated NuHeat suite passed 305 tests, the SDK suite
+passed 133, and scoped/commit-time hooks passed; repository-wide pylint remained
+incomplete as documented in the parity change.
+
+This is a newer submitted candidate, not a transition-tested replacement for the
+older candidate manifest. Prior migration/retirement results retain their original
+source scope. The shipped beta handoff allowlist is unchanged. Re-resolve and
+validate this or the eventual merged source, official provider enablement and
+same-entry relinking before making it eligible for retirement. No final automatic
+transition or deployed official OAuth success is claimed by the port.

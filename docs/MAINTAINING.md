@@ -84,9 +84,10 @@ python tools/verify_release.py --repo kilo-WATT/nuheat-hacs-beta --tag vVERSION 
 Repeated `--workflow` options replace the verifier's defaults, so include all three.
 Historical releases retain their original two-workflow expectation; the verifier's
 defaults have not changed. Hosted ordinary push/PR checks passed for the correction
-recorded in the change's validation evidence. Actual fork/bot actor execution and
-Dependabot PR creation remain unverified until observed after default-branch
-adoption. Local configuration tests do not establish those results.
+recorded in the archived change's validation evidence. Initial update checks ran
+and Dependabot opened PR #6, whose push/PR validation passed before review and
+merge. Actual fork-user execution remains unobserved. Local configuration tests
+alone do not establish hosted results.
 
 CodeQL is deferred: assess GitHub default setup with Python in a separate reviewed
 change, inspect initial findings, and avoid enabling default and advanced workflows
