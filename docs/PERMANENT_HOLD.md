@@ -1,15 +1,15 @@
-# Permanent Hold - v0.1.0b7
+# Hold controls and automation compatibility - v0.1.0b11
 
-Regular latest GitHub release using `chemelex-nuheat==0.1.2`. Beta visibility
-is not required in HACS. Explicitly select v0.1.0b7 and keep your existing NuHeat
+Regular latest GitHub release using `chemelex-nuheat==0.1.3`. Beta visibility
+is not required in HACS. Explicitly select v0.1.0b11 and keep your existing NuHeat
 entries. The integration remains unofficial community beta software.
 
 ## Home Assistant controls
 
-### Upcoming automation compatibility update
+### Automation compatibility update
 
-This section describes the prepared, **unreleased** update. Published v0.1.0b10
-still reports snake_case states and uses the previous 7°C lower limit.
+This section describes v0.1.0b11. Earlier v0.1.0b10
+reports snake_case states and uses the previous 7°C lower limit.
 
 The update accepts all six exact preset action values below. Preferred names
 appear first in the preset list; compatibility aliases also appear, so the menu

@@ -89,7 +89,7 @@ async def test_diagnostics_before_setup_and_without_sdk_metadata(hass):
     ):
         result = await async_get_config_entry_diagnostics(hass, entry)
     assert result == {
-        "versions": {"integration": "0.1.0b10", "sdk": None},
+        "versions": {"integration": "0.1.0b11", "sdk": None},
         "entry_state": "not_loaded",
         "runtime": None,
     }

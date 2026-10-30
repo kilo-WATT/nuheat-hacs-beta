@@ -1,3 +1,16 @@
+# v0.1.0b11 regular/latest release preparation - 2026-10-29
+
+The user approved publication. The automation compatibility implementation passed
+452 tests with one existing skip, lint, packaging and privacy checks. All three
+GitHub workflows passed for ba21cab8b350927fc0dae83331bb4fd52fa93bc4.
+Version/docs preparation and final main commit require exact-commit CI before
+tag publication, followed by published asset and HACS discovery verification.
+OpenSpec baselines were synced and the completed proposal archived. No new live
+hardware validation is claimed. Other thermostat models remain unverified.
+Core, production, credentials, migration logic and handoff allowlists are unchanged.
+
+---
+
 # v0.1.0b10 regular/latest release approval - 2026-10-24
 
 The user approved regular/latest publication. SDK 0.1.3 is published through

@@ -1,6 +1,6 @@
-# Authentication in beta 0.1.0b7
+# Authentication in beta 0.1.0b11
 
-OAuth behavior is unchanged from v0.1.0b6. v0.1.0b7 is a regular GitHub release, visible by default in HACS.
+OAuth behavior is unchanged from v0.1.0b6. v0.1.0b11 is a regular GitHub release, visible by default in HACS.
 Explicitly select its tag; beta visibility is not required.
 
 This unofficial beta intentionally includes the temporary shared community OAuth

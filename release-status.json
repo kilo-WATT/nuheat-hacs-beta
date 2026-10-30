@@ -45,8 +45,8 @@
     "status": "awaiting_merge",
     "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
   },
-  "version": "0.1.0b10",
-  "tag": "v0.1.0b10",
+  "version": "0.1.0b11",
+  "tag": "v0.1.0b11",
   "publication_status": "regular_latest_release_approved",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
@@ -75,6 +75,27 @@
     ]
   },
   "release_preparation_ci": {
+    "code_commit": "ba21cab8b350927fc0dae83331bb4fd52fa93bc4",
+    "runs": [
+      {
+        "workflowName": "Validate unpublished NuHeat candidate",
+        "conclusion": "success",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40980133882"
+      },
+      {
+        "workflowName": "Validate NuHeat specifications",
+        "conclusion": "success",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40980133884"
+      },
+      {
+        "workflowName": "Validate HACS custom repository",
+        "conclusion": "success",
+        "url": "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/40980133877"
+      }
+    ],
+    "final_main_commit_ci": "must pass before tag publication; verified externally to avoid self-referential commit metadata"
+  },
+  "previous_b10_preparation_ci": {
     "code_commit": "4b8f40f15cb99e7e644d0f3ce93e5d30fa458689",
     "runs": [
       {
@@ -111,5 +132,12 @@
       }
     ],
     "final_main_commit_ci": "must pass before tag publication; verified externally to avoid self-referential commit metadata"
+  },
+  "automation_compatibility": {
+    "status": "publication_approved",
+    "synthetic_tests": "452 passed, 1 existing skip",
+    "live_hardware": "not performed for this change; other models unverified",
+    "state_comparison_upgrade": "title-case preset state values; snake_case action aliases retained",
+    "core_and_production_modified": false
   }
 }
