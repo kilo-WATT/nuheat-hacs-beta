@@ -6,6 +6,64 @@ entries. The integration remains unofficial community beta software.
 
 ## Home Assistant controls
 
+### Upcoming automation compatibility update
+
+This section describes the prepared, **unreleased** update. Published v0.1.0b10
+still reports snake_case states and uses the previous 7°C lower limit.
+
+The update accepts all six exact preset action values below. Preferred names
+appear first in the preset list; compatibility aliases also appear, so the menu
+contains duplicate choices for the same three operations.
+
+| Preferred action and reported state | Accepted action alias |
+| --- | --- |
+| `Run Schedule` | `run_schedule` |
+| `Temporary Hold` | `temporary_hold` |
+| `Permanent Hold` | `permanent_hold` |
+
+Existing snake_case **action calls** keep working. Reported `preset_mode` values
+use the preferred title-case strings regardless of which action spelling was
+used. Update snake_case **state triggers and template comparisons** after upgrading;
+the integration does not rewrite automations. These are exact state values,
+not the translated labels displayed by the card. Keep your existing entity ID.
+
+For example, this existing action remains valid:
+
+```yaml
+action: climate.set_preset_mode
+target:
+  entity_id: climate.your_existing_thermostat
+data:
+  preset_mode: permanent_hold
+```
+
+Change a template comparison from
+`state_attr('climate.your_existing_thermostat', 'preset_mode') == 'permanent_hold'`
+to `state_attr('climate.your_existing_thermostat', 'preset_mode') == 'Permanent Hold'`.
+Likewise, a state trigger should use:
+
+```yaml
+trigger: state
+entity_id: climate.your_existing_thermostat
+attribute: preset_mode
+to: "Permanent Hold"
+```
+
+Ordinary temperature actions and **NuHeat: Set temporary hold** accept the same
+inclusive **5–35°C / 41–95°F** range, using HA's configured unit. Setting 5°C
+does not select Off: the intended heating mode and active hold expiry are
+preserved. Explicit Off still selects the existing frost-protected Standby.
+The minimum reflects Signature behavior and existing 5°C Standby support;
+Swagger specifies no hardware limits, and other models are not newly verified.
+Vendor rejections are reported without clipping the target or sending a fallback
+mode command. The 35°C maximum is unchanged.
+
+No entry deletion, new entities, or OAuth setup is needed for this update.
+If rolling back, restore any state comparisons to the older snake_case values;
+the older version's 7°C minimum also returns.
+
+### Existing control meanings
+
 * Off / Standby: existing frost-protected 5 C / 41 F behavior, not hard power off.
 * Run schedule: follow the thermostat schedule.
 * Temporary hold: hold until the next scheduled event. Existing explicit hold

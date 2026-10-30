@@ -20,8 +20,6 @@ from chemelex_nuheat import (
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
     ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
@@ -45,7 +43,7 @@ from .behavior import (
     preset_for_thermostat,
     setpoint_command_mode,
 )
-from .const import DOMAIN, PRESET_MODES
+from .const import DOMAIN, MAX_TEMP_C, MIN_TEMP_C, PRESET_MODES
 from .coordinator import NuHeatCoordinator
 
 CONTROL_OPERATION_TIMEOUT = 30.0
@@ -240,13 +238,13 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     @override
     def min_temp(self) -> float:
         # OpenAPI v2 does not expose the thermostat's native minimum.
-        return self._from_celsius(DEFAULT_MIN_TEMP)
+        return self._from_celsius(MIN_TEMP_C)
 
     @property
     @override
     def max_temp(self) -> float:
         # OpenAPI v2 does not expose the thermostat's native maximum.
-        return self._from_celsius(DEFAULT_MAX_TEMP)
+        return self._from_celsius(MAX_TEMP_C)
 
     @property
     @override
@@ -320,6 +318,8 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 translation_placeholders={"state": self.thermostat.state},
             ) from err
         temperature_celsius = self._to_celsius(float(temperature))
+        if not isfinite(temperature_celsius):
+            raise ServiceValidationError("Temperature must be finite")
         hold_until = None
         if (
             pending_mode is None
@@ -348,7 +348,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         async with self._control_operation():
             temperature_celsius = self._to_celsius(temperature)
             if not isfinite(temperature_celsius) or not (
-                DEFAULT_MIN_TEMP <= temperature_celsius <= DEFAULT_MAX_TEMP
+                MIN_TEMP_C <= temperature_celsius <= MAX_TEMP_C
             ):
                 raise ServiceValidationError(
                     translation_domain=DOMAIN,

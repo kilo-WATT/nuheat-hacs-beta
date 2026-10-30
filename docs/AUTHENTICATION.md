@@ -30,6 +30,24 @@ authorization codes, callback URLs, backups or thermostat identifiers in issues.
 
 ## Login and callback
 
+### Multiple legacy thermostats
+
+For several thermostats on one NuHeat account, start **Reauthenticate / Reconnect
+NuHeat** from any matching legacy entry belonging to the account you intend to
+authorize. Sign in once on a desktop browser. Migration verifies ownership and
+consolidates the matching entries into one account entry, reusing an existing
+account entry where applicable. Existing entity IDs and registry associations
+are retained; do not delete and recreate NuHeat entries.
+
+Entries from another account, or devices not returned and verified during that
+attempt, are retained. A cleanup retry can also leave repair prompts temporarily.
+Retry the affected prompt after the account/device is available. If it persists,
+request help with sanitized details; do not bypass ownership checks or delete
+entries to clear the prompt. Signing in to the wrong account does not authorize
+transferring those thermostats.
+
+### Complete authorization
+
 Use a desktop browser to reconnect the existing NuHeat entry. Mobile browsers
 and the Home Assistant app can hand the link to the installed NuHeat phone app
 and interrupt the return to HA. This was observed during production setup;

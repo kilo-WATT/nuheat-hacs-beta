@@ -707,8 +707,8 @@ async def add_entity_state(
 @pytest.mark.parametrize(
     ("imperial", "unit", "current", "target", "minimum", "maximum", "write", "celsius"),
     [
-        (False, UnitOfTemperature.CELSIUS, 21.5, 23.0, 7.0, 35.0, 24.0, 24.0),
-        (True, UnitOfTemperature.FAHRENHEIT, 71.0, 73.0, 45.0, 95.0, 75.2, 24.0),
+        (False, UnitOfTemperature.CELSIUS, 21.5, 23.0, 5.0, 35.0, 24.0, 24.0),
+        (True, UnitOfTemperature.FAHRENHEIT, 71.0, 73.0, 41.0, 95.0, 75.2, 24.0),
     ],
 )
 async def test_climate_state_and_writes_follow_ha_unit(
@@ -1027,6 +1027,9 @@ async def test_legacy_hvac_command_support_remains_separate_from_read_state(
     assert entity.preset_modes == [
         PRESET_RUN,
         PRESET_TEMPORARY_HOLD,
+        "Permanent Hold",
+        "run_schedule",
+        "temporary_hold",
         "permanent_hold",
     ]
 
@@ -1192,6 +1195,9 @@ def test_climate_preset_translations() -> None:
     ]["state"] == {
         PRESET_RUN: "Run schedule",
         PRESET_TEMPORARY_HOLD: "Temporary hold",
+        "Permanent Hold": "Permanent hold",
+        "run_schedule": "Run schedule",
+        "temporary_hold": "Temporary hold",
         "permanent_hold": "Permanent hold",
     }
 

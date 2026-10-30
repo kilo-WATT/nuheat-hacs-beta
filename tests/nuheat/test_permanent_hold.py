@@ -38,6 +38,9 @@ async def test_preset_menu_and_app_driven_permanent_hold(hass):
         PRESET_RUN,
         PRESET_TEMPORARY_HOLD,
         PRESET_PERMANENT_HOLD,
+        "run_schedule",
+        "temporary_hold",
+        "permanent_hold",
     ]
     assert entity.preset_mode == PRESET_PERMANENT_HOLD
     assert entity.hvac_mode is HVACMode.AUTO

@@ -25,6 +25,12 @@ additional thermostat models and vendor-dependent optional features are unverifi
 
 ## Install
 
+**Upcoming compatibility changes (not yet released):** the prepared update accepts
+both title-case and snake_case preset actions, reports title-case preset states,
+and lowers the supported target minimum to 5°C / 41°F. See the
+[upgrade guidance](docs/PERMANENT_HOLD.md#upcoming-automation-compatibility-update)
+before updating templates or state triggers. The published b10 behavior is unchanged.
+
 [![Open your Home Assistant and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=kilo-WATT&repository=nuheat-hacs-beta&category=integration)
 
 HACS must already be installed. The button opens the repository in your own
@@ -64,6 +70,13 @@ After setup, normal thermostat use through the HA mobile app is supported.
 
 Matching legacy thermostats may consolidate into one account entry while
 retaining registry identities. Unmatched entries remain for a later attempt.
+If you have several thermostats on the same account, start reconnecting from
+**any matching legacy entry belonging to the account you will sign in to**.
+After ownership verification, migration covers the matching entries on that
+account; you do not need a separate login for each thermostat. An existing account
+entry may be reused. Other accounts and unverified entries remain untouched.
+Repair prompts can remain if a device was not returned or cleanup needs a retry.
+Keep those entries and retry; see [migration help](docs/AUTHENTICATION.md#multiple-legacy-thermostats).
 
 No manual pip installation is needed. The beta uses HA's standard Application
 Credentials store and Authorization Code + S256 PKCE. Enter your password only

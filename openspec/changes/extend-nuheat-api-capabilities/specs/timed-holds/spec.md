@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Temperature and time validation
-The action SHALL use HA's configured temperature unit and validate the supported range and finiteness. Offset-free times SHALL use HA's timezone. Past, nonexistent, and ambiguous local times SHALL be rejected before a write; an explicit valid UTC offset SHALL disambiguate a repeated hour. Once verified for v2, the vendor's maximum duration SHALL also be enforced without silent clipping.
+The action SHALL use HA's configured temperature unit and validate finiteness and the same inclusive 5–35°C range as ordinary temperature controls. Offset-free times SHALL use HA's timezone. Past, nonexistent, and ambiguous local times SHALL be rejected before a write; an explicit valid UTC offset SHALL disambiguate a repeated hour. Once verified for v2, the vendor's maximum duration SHALL also be enforced without silent clipping.
 
 #### Scenario: Fahrenheit target
 - **WHEN** HA uses Fahrenheit and a valid Fahrenheit target is supplied
@@ -16,6 +16,14 @@ The action SHALL use HA's configured temperature unit and validate the supported
 #### Scenario: Expiry exceeds the confirmed maximum
 - **WHEN** a new explicit expiry exceeds the maximum verified for the v2 endpoint
 - **THEN** the action rejects before a thermostat write, states the supported limit and does not clamp the supplied time.
+
+#### Scenario: Lower-bound timed hold
+- **WHEN** a timed-hold action requests 5°C or 41°F with a valid future expiry
+- **THEN** range validation accepts it and the requested expiry is retained.
+
+#### Scenario: Invalid numeric target
+- **WHEN** the target is nonfinite or outside the supported range
+- **THEN** validation rejects it without a write.
 
 #### Scenario: Duration crosses a clock change
 - **WHEN** a valid offset-aware expiry crosses a daylight-saving transition

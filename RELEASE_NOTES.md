@@ -1,3 +1,18 @@
+# Unreleased - automation compatibility
+
+- Accept `Run Schedule`, `Temporary Hold`, and `Permanent Hold` alongside the
+  existing snake_case action aliases. All six appear in the preset list.
+- **State comparison change:** reported preset values use the title-case names.
+  Snake_case action calls remain valid; update template and state-trigger
+  comparisons using the [upgrade guide](docs/PERMANENT_HOLD.md#upcoming-automation-compatibility-update).
+- Use a shared 5–35°C / 41–95°F target range for normal controls and timed holds.
+  A 5°C target preserves mode/expiry; explicit Off retains Standby behavior.
+- Clarify account-scoped multi-thermostat migration and retry guidance without
+  changing ownership checks, entity identity, OAuth, or Core handoff behavior.
+
+This candidate has not been published or hardware-tested. v0.1.0b10 remains the
+current published release; no version or release tag changes are included here.
+
 # v0.1.0b10 - regular/latest - API resilience and private diagnostics
 
 In HACS, explicitly select **v0.1.0b10**, verify

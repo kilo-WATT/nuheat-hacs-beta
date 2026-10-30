@@ -4,7 +4,7 @@ from chemelex_nuheat import ScheduleMode, Thermostat, ThermostatState
 
 from homeassistant.components.climate import HVACMode
 
-from .const import PRESET_PERMANENT_HOLD, PRESET_RUN, PRESET_TEMPORARY_HOLD
+from .const import PRESET_ALIASES, PRESET_PERMANENT_HOLD, PRESET_RUN, PRESET_TEMPORARY_HOLD
 
 STATE_TO_PRESET = {
     ThermostatState.SCHEDULED: PRESET_RUN,
@@ -26,7 +26,7 @@ def preset_for_thermostat(thermostat: Thermostat) -> str | None:
 def api_mode_for_preset(preset: str) -> ScheduleMode:
     """Map schedule, temporary hold, and the verified v1 Permanent Hold command."""
     try:
-        return PRESET_TO_MODE[preset]
+        return PRESET_TO_MODE[PRESET_ALIASES.get(preset, preset)]
     except KeyError as err:
         raise ValueError(f"Unsupported preset mode: {preset}") from err
 
