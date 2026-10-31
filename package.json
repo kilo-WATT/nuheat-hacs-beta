@@ -13,6 +13,6 @@
     "specs:list": "node tools/openspec.mjs list --specs"
   },
   "devDependencies": {
-    "@fission-ai/openspec": "1.14.3"
+    "@fission-ai/openspec": "1.15.0"
   }
 }
