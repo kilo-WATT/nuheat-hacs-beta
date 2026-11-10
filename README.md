@@ -11,24 +11,19 @@ Requires **Home Assistant 2026.10.2 or later**. Testing covers stable 2026.10.2
 and the pinned Core candidate on its matching framework. Live hardware testing
 used a Signature thermostat; broader hardware coverage is not claimed.
 
-## v0.1.0b11 regular release - automation compatibility
+## v0.1.0b12
 
-Accepts title-case and snake_case preset actions, reports title-case preset states,
-and supports targets down to 5°C / 41°F. Existing controls, OAuth
-providers, migrations and Core handoff safeguards are preserved. See
-[release notes](RELEASE_NOTES.md).
+Optional push updates refresh thermostat state while five-minute polling continues.
+Enable push in the NuHeat integration options. For temporary holds, use whole-minute
+expiry times and see the tested Signature limitations in the release notes.
 
-**Current regular/latest release:** select **v0.1.0b11**
-and verify HACS tracks that tag before restarting HA. **Show beta versions is not required.** Keep existing entries, credentials, entities and automations.
-Signature hardware reconciliation and read-only diagnostics checks passed;
-additional thermostat models and vendor-dependent optional features are unverified.
+Select **v0.1.0b12** and verify HACS tracks that tag before restarting HA.
+**Show beta versions is not required.** Keep your existing entries, credentials,
+entities and automations. See the [release notes](RELEASE_NOTES.md).
 
 ## Install
 
-The unpublished [v0.1.0b12 candidate](docs/API_CONTRACT_CANDIDATE.md)
-pins SDK 0.1.5. The instructions below apply to the current v0.1.0b11 release.
-
-**Automation compatibility in b11:** this update accepts
+**Automation compatibility introduced in b11:** the integration accepts
 both title-case and snake_case preset actions, reports title-case preset states,
 and lowers the supported target minimum to 5°C / 41°F. See the
 [upgrade guidance](docs/PERMANENT_HOLD.md#automation-compatibility-update)
@@ -43,12 +38,12 @@ selection and verification steps below before restarting or reconnecting NuHeat.
 1. Create and retain a complete Home Assistant backup.
 2. In HACS > Custom repositories, add
    `https://github.com/kilo-WATT/nuheat-hacs-beta` as **Integration**.
-3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b11.
-4. In the download/version dialog, explicitly select **v0.1.0b11**, then download.
+3. Open **NuHeat Beta**. **Show beta versions is not required** for v0.1.0b12.
+4. In the download/version dialog, explicitly select **v0.1.0b12**, then download.
    **Do not select `main`.** If the tag is missing, refresh the repository
    information before retrying.
 5. Verify that **HACS's installed version** shows the selected release tag,
-   such as **v0.1.0b11**, rather than `main` or a short commit hash such as
+   such as **v0.1.0b12**, rather than `main` or a short commit hash such as
    `a813aac`. The integration's own version number alone is not sufficient:
    a branch download can contain the same version. If HACS still shows a hash,
    follow [Switch from a branch install](#switch-from-a-branch-install).
@@ -121,7 +116,7 @@ repeated. Rate-limit cooldowns defer API reads without extending assumed state. 
 
 ## Upgrade
 
-For v0.1.0b11, keep your existing NuHeat entries and credentials. Update preset state comparisons to the title-case values in the upgrade guide; existing snake_case action calls and OAuth provider selection are preserved. Community sign-in requires
+For v0.1.0b12, keep your existing NuHeat entries and credentials. Update preset state comparisons to the title-case values in the upgrade guide; existing snake_case action calls and OAuth provider selection are preserved. Community sign-in requires
 My Home Assistant: if you do not use `default_config:`, add `my:` to
 `configuration.yaml` and restart HA. If multiple providers are offered, choose
 **NuHeat community beta** or your own registered application. Existing OAuth
@@ -129,7 +124,7 @@ entries retain their associated provider. Reconnect the existing entry only if
 needed; do not delete entries or Application Credentials. See
 [release notes](RELEASE_NOTES.md) and [authentication](docs/AUTHENTICATION.md).
 
-Back up and select **v0.1.0b11** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
+Back up and select **v0.1.0b12** in HACS; **Show beta versions is not required** for this regular release. After downloading, verify HACS shows that release tag as the
 installed version, restart HA, and verify your existing entities. If prompted,
 reauthenticate the existing account. Keep its config entry.
 
@@ -138,8 +133,8 @@ reauthenticate the existing account. Keep its config entry.
 If HACS shows `main` or a short commit hash as the installed version:
 
 1. Create a complete HA backup and open **NuHeat Beta** in HACS.
-2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b11.
-3. Explicitly select the regular release (**v0.1.0b11**), and
+2. Open **Redownload**. **Show beta versions is not required** for v0.1.0b12.
+3. Explicitly select the regular release (**v0.1.0b12**), and
    download it. Do not select `main`, uninstall the repository, or delete any
    NuHeat integration entries.
 4. Confirm HACS now shows the release tag as the installed version, restart HA,

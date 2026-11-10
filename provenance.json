@@ -103,7 +103,7 @@
     "behavior": "Allowlisted cached health only; no cloud requests or private identifiers."
   },
   "vendor_contract_proof": {
-    "status": "release_preparation",
+    "status": "approved",
     "reason": "Isolated timed-hold and opt-in push validation complete on the tested thermostat",
     "sdk_test_candidate": {
       "commit": "0c006cdd5ced9a71b4009c413c917aa6e2d94913",
@@ -118,6 +118,12 @@
       "custom_components/nuheat/strings.json": "fc3a2ecae10a8258ceb16e358fdb428e78fc1ff890dfe26a31e82eff21709405",
       "custom_components/nuheat/translations/en.json": "75e4d1d9fb952ec2b032e3124e21ef64c3cf22bffc179475b9041fedaaa4d8fb"
     },
-    "sdk_version": "0.1.5"
+    "sdk_version": "0.1.5",
+    "sdk_release": {
+      "version": "0.1.5",
+      "tag_commit": "0c006cdd5ced9a71b4009c413c917aa6e2d94913",
+      "wheel_sha256": "fcc0a5c4f82ff9fa1817e8d6ef373a20e34f9e6b10723e964d70d5310351a596",
+      "pypi_workflow": "https://github.com/kilo-WATT/chemelex-nuheat/actions/runs/42924943751"
+    }
   }
 }

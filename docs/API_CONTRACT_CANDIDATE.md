@@ -1,13 +1,11 @@
-# Stage A/B local candidate â€” not a published release
+# Timed holds and optional push in v0.1.0b12
 
 This implements the approved isolated proof following
 [Chemelex's clarification](https://github.com/home-assistant/core/issues/175923#issuecomment-6737221965).
 A separately approved isolated read-only live Stage B check passed; see
 [measured results](../openspec/changes/extend-nuheat-api-capabilities/live-stage-b-validation.md).
-It has not been deployed to production or published.
-The candidate pins `chemelex-nuheat==0.1.5` and the public beta remains v0.1.0b11.
-The new SDK must be available on PyPI before the beta is distributed. The Core
-PR independently pins `chemelex-nuheat==0.1.4`.
+The beta pins `chemelex-nuheat==0.1.5`. The Core PR independently pins
+`chemelex-nuheat==0.1.4`.
 
 ## Stage A: timed holds and retry certainty
 
@@ -36,10 +34,9 @@ timeouts, server failures or failed post-write readback never repeat a write.
 
 ## Stage B: optional push-triggered refresh
 
-For a future matched installation, the existing NuHeat entry's options contain
+The existing NuHeat entry's options contain
 **Enable push-triggered updates (experimental)**, off by default. No new thermostat
-entry, credentials, helper or dashboard change is needed. This local proof must
-not be enabled on production under its current unpublished SDK dependency.
+entry, credentials, helper or dashboard change is needed.
 
 When explicitly enabled in the isolated proof, one listener per account uses the
 existing OAuth provider and sends its bearer token in the request header, never
@@ -92,7 +89,7 @@ retains every requested duration or precision.
 
 For predictable holds on the tested setup, choose a whole-minute expiry and avoid
 longer-than-23-hour holds until the vendor explains this behavior. Do not rely on
-the initial API echo as device confirmation. The candidate does not silently
+the initial API echo as device confirmation. The integration does not silently
 round, clip or replay requests. A differing expiry remains unconfirmed until the
 bounded pending intent expires; the reported expiry is then the retained state
 for a later deliberate temperature adjustment. No thermostat entries need removal.
