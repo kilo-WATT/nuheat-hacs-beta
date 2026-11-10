@@ -25,6 +25,9 @@ additional thermostat models and vendor-dependent optional features are unverifi
 
 ## Install
 
+The unpublished [v0.1.0b12 candidate](docs/API_CONTRACT_CANDIDATE.md)
+pins SDK 0.1.5. The instructions below apply to the current v0.1.0b11 release.
+
 **Automation compatibility in b11:** this update accepts
 both title-case and snake_case preset actions, reports title-case preset states,
 and lowers the supported target minimum to 5°C / 41°F. See the

@@ -8,14 +8,14 @@ are verified, preserving existing absolute controls and thermostat hold intent.
 ## ADDED Requirements
 
 ### Requirement: Explicit verified adjustment
-A relative-temperature action SHALL be exposed only after the vendor reference temperature, signed scaling, supported modes, expiry behavior and range validation are verified. Ordinary set-temperature SHALL remain absolute. Unverified combinations SHALL be rejected before writing rather than silently converted to Manual or guessed absolute targets.
+Relative SHALL mean the last cloud-reported measured room temperature plus a signed hundredths-Celsius delta, not an increment to the target setpoint. Ordinary set-temperature SHALL remain absolute. The initial proof SHALL expose no relative HA action. A later action SHALL require explicit supported endpoint/mode and range policy rather than guessing resulting targets.
 
-#### Scenario: Unknown reference temperature
-- **WHEN** the API's relative base or mode preservation is unverified
-- **THEN** no relative control is exposed as supported and the existing absolute controls remain unchanged.
+#### Scenario: Target differs from room temperature
+- **WHEN** room temperature is 23°C, target is 18°C or 26°C, and Relative +100 is submitted in a supported later-stage SDK test
+- **THEN** the expected resulting target is 24°C in both cases, with no promise that stale cached room data is authoritative.
 
 ### Requirement: Correct delta units and mode intent
-Adjustment SHALL accept finite deltas in HA's configured units and convert temperature differences without absolute-temperature offsets. It SHALL preserve verified mode/preset and explicit hold expiry, including accepted pending expiry. Standby, unknown states and unsupported Permanent Hold combinations SHALL be rejected without writes.
+Adjustment SHALL convert finite temperature differences without absolute-temperature offsets. The selected endpoint SHALL determine mode. A timed Hold SHALL resend its exact explicit expiry, including accepted pending expiry, to retain it. Manual and Hold without expiry SHALL NOT be described as expiry-preserving. Unknown, Standby and unsupported v1 Permanent Hold combinations SHALL be rejected without implicit mode conversion.
 
 #### Scenario: Fahrenheit adjustment
 - **WHEN** a supported thermostat receives a +1.8°F adjustment
@@ -24,6 +24,10 @@ Adjustment SHALL accept finite deltas in HA's configured units and convert tempe
 #### Scenario: Pending timed hold
 - **WHEN** a relative adjustment follows an accepted timed-hold command before cloud confirmation
 - **THEN** the accepted expiry is preserved and the command does not silently become next-schedule hold or physical Manual.
+
+#### Scenario: Manual or Hold without expiry
+- **WHEN** the caller explicitly chooses Manual or Hold without an expiry
+- **THEN** the documented endpoint semantics apply and no existing timed expiry is claimed to survive automatically.
 
 ### Requirement: Nonreplayed bounded adjustment
 Relative writes SHALL obey the existing per-entity serialization, cooldown, operation timeout and confirmation deadline. They SHALL NOT retry after uncertain acceptance, invent a resulting target from stale state, or let an older read confirm newer intent. Unload SHALL cancel pending work.
@@ -35,6 +39,10 @@ Relative writes SHALL obey the existing per-entity serialization, cooldown, oper
 #### Scenario: Accepted write with failed readback
 - **WHEN** a relative PUT may have succeeded but subsequent GET fails
 - **THEN** HA surfaces an unconfirmed outcome and schedules bounded reads without reapplying the delta.
+
+#### Scenario: Definite unauthorized write versus readback
+- **WHEN** a relative PUT returns a definite HTTP 401
+- **THEN** one forced-refresh retry of that rejected PUT is permitted, while a 401 on GET after a successful PUT can retry only the GET.
 
 #### Scenario: Cooldown, timeout or unload
 - **WHEN** adjustment is attempted during cooldown, exceeds its operation budget or is unloaded

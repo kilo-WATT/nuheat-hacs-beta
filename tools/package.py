@@ -64,7 +64,10 @@ def main():
     manifest = json.loads((component / "manifest.json").read_text())
     provenance = json.loads((ROOT / "provenance.json").read_text())
     resilience = provenance.get("api_resilience", {})
-    sdk_version = resilience.get("sdk_version", "0.1.2")
+    contract_proof = provenance.get("vendor_contract_proof", {})
+    if args.release and contract_proof and contract_proof.get("status") != "approved":
+        raise SystemExit("RELEASE BLOCKED: API contract candidate requires matching SDK publication, pin and approval")
+    sdk_version = contract_proof.get("sdk_version", resilience.get("sdk_version", "0.1.2"))
     assert manifest["version"] == status["version"]
     assert status["tag"] == "v" + manifest["version"]
     assert manifest["domain"] == "nuheat"
@@ -104,6 +107,7 @@ def main():
         **permanent_candidate.get("sha256", {}),
         **mode_candidate.get("sha256", {}),
         **resilience.get("sha256", {}),
+        **contract_proof.get("sha256", {}),
     }
     for relative, expected_digest in permanent_fixes.items():
         assert (
@@ -115,7 +119,10 @@ def main():
         raise SystemExit(
             "RELEASE BLOCKED: OAuth correction has no publication approval"
         )
-    oauth_fixes = {**oauth_candidate.get("sha256", {}), **resilience.get("sha256", {})}
+    oauth_fixes = {
+        **oauth_candidate.get("sha256", {}), **resilience.get("sha256", {}),
+        **contract_proof.get("sha256", {}),
+    }
     for relative, expected_digest in oauth_fixes.items():
         assert (
             hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
@@ -225,6 +232,7 @@ def main():
         ROOT / "docs/SETPOINT_RECONCILIATION.md",
         ROOT / "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
         ROOT / "docs/PERMANENT_HOLD.md",
+        ROOT / "docs/API_CONTRACT_CANDIDATE.md",
     ]
     suffix = ".zip" if args.release else "-UNRELEASED.zip"
     artifact = ROOT / "artifacts" / ("nuheat-" + manifest["version"] + suffix)

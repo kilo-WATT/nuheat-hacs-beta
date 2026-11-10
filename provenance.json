@@ -101,5 +101,23 @@
       "custom_components/nuheat/diagnostics.py": "da008575a987e9f0ac23443b70c0995bb0573d73c23be0b18823ba8cb97a764a"
     },
     "behavior": "Allowlisted cached health only; no cloud requests or private identifiers."
+  },
+  "vendor_contract_proof": {
+    "status": "release_preparation",
+    "reason": "Isolated timed-hold and opt-in push validation complete on the tested thermostat",
+    "sdk_test_candidate": {
+      "commit": "0c006cdd5ced9a71b4009c413c917aa6e2d94913",
+      "wheel_sha256": "691a876447f4edf7994382e17409eca2d52d1d01590832ef92fd0d4bbf2159da"
+    },
+    "sha256": {
+      "custom_components/nuheat/__init__.py": "337e23b6574fd56583b3400de10eab728969f1a02e32236a8762b5bd3e85fc88",
+      "custom_components/nuheat/climate.py": "35e2f1bbf7a7b9c45b0b2a0da2634a1d50154638d6ac0468a0e5e24e4a420dd4",
+      "custom_components/nuheat/config_flow.py": "904e0a27e81e9012a356857b56385b110dd37a899346dc0f6e9341a9e7c11cde",
+      "custom_components/nuheat/const.py": "fda49359fa923470b0d69ad53574609a85b1ab451b385398053265abe85de281",
+      "custom_components/nuheat/coordinator.py": "9a133b3d56d62c8be3f36afdf40662ae570e914f6448a886ca9b67448ab11c66",
+      "custom_components/nuheat/strings.json": "fc3a2ecae10a8258ceb16e358fdb428e78fc1ff890dfe26a31e82eff21709405",
+      "custom_components/nuheat/translations/en.json": "75e4d1d9fb952ec2b032e3124e21ef64c3cf22bffc179475b9041fedaaa4d8fb"
+    },
+    "sdk_version": "0.1.5"
   }
 }

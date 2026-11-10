@@ -1,7 +1,7 @@
 """Data coordinator for NuHeat."""
 
 from collections.abc import Callable
-from asyncio import Lock
+from asyncio import Lock, Task, gather
 from dataclasses import dataclass
 from datetime import datetime
 import logging
@@ -34,6 +34,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
+    from chemelex_nuheat.notifications import NuHeatNotifications
     from . import NuHeatConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
@@ -87,18 +88,68 @@ class NuHeatCoordinator(DataUpdateCoordinator[dict[str, Thermostat]]):
         self._cooldown_read_due = False
         self._read_lock = Lock()
         self._read_generation = 0
+        self._push_listener: NuHeatNotifications | None = None
+        self._push_refresh_task: Task[None] | None = None
+        self._cancel_push_refresh: Callable[[], None] | None = None
+        self._push_due = False
+        self._push_after_read = False
+        self._push_stopping = False
 
     @property
     def cooldown_remaining(self) -> float:
         """Return SDK-owned cooldown shared across every account endpoint."""
         return self.api.cooldown_remaining
 
-    async def _async_coalesced_refresh(self, *, scheduled: bool = False) -> None:
+    async def _async_coalesced_refresh(self, *, scheduled: bool = False, force: bool = False) -> None:
         """Share a completed sample when poll and reconciliation overlap."""
         generation = self._read_generation
         async with self._debounced_refresh.async_lock():
-            if generation == self._read_generation:
+            if force or generation == self._read_generation:
                 await self._async_refresh(log_failures=True, scheduled=scheduled)
+
+    @callback
+    def async_start_push(self) -> None:
+        """Start one explicitly enabled listener using the existing account."""
+        if self._push_listener is None and not self._push_stopping:
+            self._push_listener = self.api.create_notifications(
+                lambda: set(self.data or {}), self.async_request_push_refresh
+            )
+            self._push_listener.start()
+
+    @callback
+    def async_request_push_refresh(self) -> None:
+        """Retain one due invalidation; repeated events never postpone its timer."""
+        if self._push_stopping or self._shutdown_requested:
+            return
+        self._push_due = True
+        self._push_after_read |= self._read_lock.locked()
+        if self._cancel_push_refresh or self._push_refresh_task:
+            return
+        self._cancel_push_refresh = async_call_later(
+            self.hass, min(86400, max(.25, self.cooldown_remaining)),
+            self._start_push_refresh,
+        )
+
+    @callback
+    def _start_push_refresh(self, _now: datetime) -> None:
+        self._cancel_push_refresh = None
+        if not self._push_stopping:
+            self._push_refresh_task = self.hass.async_create_task(
+                self._async_push_refresh(), "nuheat-push-refresh"
+            )
+
+    async def _async_push_refresh(self) -> None:
+        try:
+            if self.cooldown_remaining:
+                return
+            force = self._push_after_read
+            self._push_after_read = False
+            self._push_due = False
+            await self._async_coalesced_refresh(force=force)
+        finally:
+            self._push_refresh_task = None
+            if self._push_due and not self._push_stopping:
+                self.async_request_push_refresh()
 
     @override
     async def async_refresh(self) -> None:
@@ -268,6 +319,18 @@ class NuHeatCoordinator(DataUpdateCoordinator[dict[str, Thermostat]]):
     @override
     async def async_shutdown(self) -> None:
         """Cancel reconciliation and independent optimism deadlines on unload."""
+        self._push_stopping = True
+        if self._push_listener is not None:
+            await self._push_listener.close()
+            self._push_listener = None
+        if self._cancel_push_refresh:
+            self._cancel_push_refresh()
+            self._cancel_push_refresh = None
+        if self._push_refresh_task:
+            self._push_refresh_task.cancel()
+            await gather(self._push_refresh_task, return_exceptions=True)
+            self._push_refresh_task = None
+        self._push_due = False
         if self._cancel_reconcile:
             self._cancel_reconcile()
             self._cancel_reconcile = None
