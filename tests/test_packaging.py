@@ -62,6 +62,7 @@ def candidate(tmp_path: Path, monkeypatch) -> Path:
         "docs/SETPOINT_RECONCILIATION.md",
         "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
         "docs/PERMANENT_HOLD.md",
+        "docs/API_CONTRACT_CANDIDATE.md",
     ):
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -98,6 +99,23 @@ def test_pending_publication_blocks_release_build(tmp_path, monkeypatch):
     candidate(tmp_path, monkeypatch)
     monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
     with pytest.raises(SystemExit, match="RELEASE BLOCKED"):
+        package.main()
+    assert not (tmp_path / "artifacts").exists()
+
+
+def test_contract_candidate_requires_matching_sdk_approval(tmp_path, monkeypatch):
+    """Generic publication approval cannot release an unpinned local proof."""
+    candidate(tmp_path, monkeypatch)
+    path = tmp_path / "release-status.json"
+    status = json.loads(path.read_text())
+    status["publish_allowed"] = True
+    path.write_text(json.dumps(status))
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    provenance["vendor_contract_proof"] = {"status": "local_only", "sha256": {}}
+    path.write_text(json.dumps(provenance))
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(SystemExit, match="matching SDK publication"):
         package.main()
     assert not (tmp_path / "artifacts").exists()
 

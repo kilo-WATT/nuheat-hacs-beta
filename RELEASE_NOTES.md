@@ -1,3 +1,17 @@
+# NuHeat Beta v0.1.0b12
+
+- Optional push updates can refresh thermostat state sooner. Enable them in the
+  NuHeat integration options. Five-minute polling remains active.
+- Temporary holds validate their explicit expiry just before submission. A target
+  adjustment resends the expiry so the hold can keep its end time.
+- On the Signature setup tested, a roughly 22-hour hold with a whole-minute expiry
+  retained its exact end time after a target change. NuHeat shortened a 25-hour
+  request to about 23 hours and removed seconds from a separate expiry. Use
+  whole-minute times and shorter holds on affected setups.
+
+Back up Home Assistant before updating through HACS. Keep your existing NuHeat
+entries and credentials. The beta requires `chemelex-nuheat==0.1.5`.
+
 # v0.1.0b11 - regular/latest - automation compatibility
 
 - Accept `Run Schedule`, `Temporary Hold`, and `Permanent Hold` alongside the

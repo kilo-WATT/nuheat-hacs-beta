@@ -101,7 +101,7 @@ def thermostat(
     *,
     mode: int = 2,
     raw_target_temperature: float | None = 2300,
-    hold_until: datetime | None = datetime(2026, 7, 8, 1, tzinfo=UTC),
+    hold_until: datetime | None = datetime(2030, 7, 8, 1, tzinfo=UTC),
     hold_until_status: HoldUntilStatus = HoldUntilStatus.VALUE,
     heating: bool = True,
     online: bool = True,
@@ -750,7 +750,7 @@ async def test_climate_state_and_writes_follow_ha_unit(
         "ABC123",
         pytest.approx(celsius),
         mode=ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE,
-        hold_until=datetime(2026, 7, 8, 1, tzinfo=UTC),
+        hold_until=datetime(2030, 7, 8, 1, tzinfo=UTC),
     )
     assert api.list_thermostats.await_count == 2
     await entity.async_will_remove_from_hass()

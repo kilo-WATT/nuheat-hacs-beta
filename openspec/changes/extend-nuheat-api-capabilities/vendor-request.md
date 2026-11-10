@@ -1,3 +1,5 @@
+> Historical record: the public Chemelex reply reviewed on 2026-11-10 supersedes the unresolved-contract statements below. See [current assessment](assessment.md) and the revised proposal/design/tasks. This file retains its original evidence; do not resend the historical request or infer that new features were implemented.
+
 # Vendor request — posted on GitHub
 
 Posted to @PatrickHendrickx on 2026-10-24 at the user's explicit request:

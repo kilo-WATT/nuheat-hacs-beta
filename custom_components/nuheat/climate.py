@@ -12,10 +12,12 @@ from typing import Any, override
 
 from chemelex_nuheat import (
     NuHeatPermissionError,
+    NuHeatHoldTimeError,
     NuHeatRateLimitError,
     ScheduleMode,
     Thermostat,
     ThermostatState,
+    validate_hold_until,
 )
 
 from homeassistant.components.climate import (
@@ -386,6 +388,13 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         hold_until: datetime | None = None,
     ) -> None:
         """Share the existing write, optimism and reconciliation contract."""
+        if hold_until is not None:
+            try:
+                hold_until = validate_hold_until(hold_until, now=dt_util.utcnow())
+            except ValueError as err:
+                raise ServiceValidationError(
+                    translation_domain=DOMAIN, translation_key="invalid_hold_time"
+                ) from err
         command_kwargs: dict[str, Any] = {"mode": mode}
         if hold_until is not None:
             command_kwargs["hold_until"] = hold_until
@@ -395,6 +404,10 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 temperature_celsius,
                 **command_kwargs,
             )
+        except NuHeatHoldTimeError as err:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="invalid_hold_time"
+            ) from err
         except Exception:
             # The library also GETs after PUT: an exception need not mean that
             # the write failed. Read later, without retrying or assuming success.
