@@ -21,6 +21,14 @@ Select **v0.1.0b12** and verify HACS tracks that tag before restarting HA.
 **Show beta versions is not required.** Keep your existing entries, credentials,
 entities and automations. See the [release notes](RELEASE_NOTES.md).
 
+## v0.1.0b13 release preparation
+
+The unpublished b13 candidate removes duplicate presets using snake_case values and
+translated labels. Before upgrading, update any title-case values adopted in b11/b12
+using the [climate compatibility guide](docs/CLIMATE_UI_COMPATIBILITY.md).
+The candidate also adopts HA's native temperature API. Published b12 instructions
+below apply to the current release.
+
 ## Install
 
 **Automation compatibility introduced in b11:** the integration accepts

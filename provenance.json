@@ -125,5 +125,20 @@
       "wheel_sha256": "fcc0a5c4f82ff9fa1817e8d6ef373a20e34f9e6b10723e964d70d5310351a596",
       "pypi_workflow": "https://github.com/kilo-WATT/chemelex-nuheat/actions/runs/42924943751"
     }
+  },
+  "climate_ui_compatibility": {
+    "status": "local_only",
+    "issues": [
+      11,
+      13
+    ],
+    "sha256": {
+      "custom_components/nuheat/climate.py": "a994870ae883729b0401c73fd256b155a84720bce61354a5449149d3718ba15d",
+      "custom_components/nuheat/const.py": "6cafce2de00ecf50703e132cb51f38ace2d6e093b1f87e45fb3b197c51ae64a2",
+      "custom_components/nuheat/behavior.py": "eb15a8ba89dc17befb48a40b03d2313737db66d43e21ddac02ac2464136c93db",
+      "custom_components/nuheat/strings.json": "d269140f3f470e6299ca9e73d869e1b8733a3210f07ea3a60c0771331aad83db",
+      "custom_components/nuheat/translations/en.json": "72a830ebdcf1e6d83d3dffd107b0ba802cfff978503639543087d597c8cae83b"
+    },
+    "preset_contract": "three snake_case identifiers with translated labels"
   }
 }

@@ -4,6 +4,13 @@ Regular latest GitHub release using `chemelex-nuheat==0.1.3`. Beta visibility
 is not required in HACS. Explicitly select v0.1.0b11 and keep your existing NuHeat
 entries. The integration remains unofficial community beta software.
 
+## Upcoming three-choice preset menu
+
+The local candidate following b12 uses three snake_case preset values with
+translated labels. Title-case action and state values adopted in b11/b12 need updating. See the
+[replacement mapping and example](CLIMATE_UI_COMPATIBILITY.md).
+The b11 compatibility section below records the published six-input behavior.
+
 ## Home Assistant controls
 
 ### Automation compatibility update

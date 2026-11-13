@@ -6,28 +6,26 @@ from chemelex_nuheat import HoldUntilStatus, NuHeatApiError, ScheduleMode
 import pytest
 
 from homeassistant.components.climate import HVACMode
-from homeassistant.components.climate.services import _async_service_temperature_set
-from homeassistant.core import ServiceCall
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 
 from custom_components.nuheat.behavior import api_mode_for_preset
 from custom_components.nuheat.climate import NuHeatClimateEntity
 
+from .helpers import temperature_service
 from .test_integration import add_entity_state, coordinator_with, thermostat
 from .test_permanent_hold import permanent
 
 PRESETS = [
-    ("Run Schedule", "run_schedule", ScheduleMode.AUTO),
-    ("Temporary Hold", "temporary_hold", ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE),
-    ("Permanent Hold", "permanent_hold", ScheduleMode.PERMANENT_HOLD),
+    ("run_schedule", ScheduleMode.AUTO),
+    ("temporary_hold", ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE),
+    ("permanent_hold", ScheduleMode.PERMANENT_HOLD),
 ]
 
 
-@pytest.mark.parametrize(("canonical", "alias", "mode"), PRESETS)
-@pytest.mark.parametrize("use_alias", [False, True])
-async def test_preset_framework_accepts_all_six_and_reports_canonical(
-    hass, canonical, alias, mode, use_alias
+@pytest.mark.parametrize(("canonical", "mode"), PRESETS)
+async def test_preset_framework_accepts_three_and_reports_canonical(
+    hass, canonical, mode
 ):
     coordinator, api, _ = await coordinator_with(hass, permanent(operating=2))
     entity = NuHeatClimateEntity(coordinator, "ABC123")
@@ -41,7 +39,7 @@ async def test_preset_framework_accepts_all_six_and_reports_canonical(
             ScheduleMode.PERMANENT_HOLD: permanent(),
         }[mode]
     ]
-    value = alias if use_alias else canonical
+    value = canonical
     assert api_mode_for_preset(value) is mode
     await entity.async_handle_set_preset_mode_service(value)
     expected = {} if mode is ScheduleMode.AUTO else {"temperature": 23}
@@ -62,13 +60,6 @@ async def test_invalid_preset_framework_rejects_without_write(hass):
         api_mode_for_preset("Permanent hold")
     api.set_schedule_mode.assert_not_awaited()
     await coordinator.async_shutdown()
-
-
-async def temperature_service(hass, entity, temperature):
-    await _async_service_temperature_set(
-        entity,
-        ServiceCall(hass, "climate", "set_temperature", {"temperature": temperature}),
-    )
 
 
 @pytest.mark.parametrize("imperial", [False, True])
@@ -100,7 +91,7 @@ async def test_temperature_service_boundaries_preserve_intent(
     )
     api.set_standby.assert_not_awaited()
     assert entity.hvac_mode is not HVACMode.OFF
-    assert entity.target_temperature == pytest.approx(target)
+    assert entity.native_target_temperature == pytest.approx(target_c)
     await coordinator.async_shutdown()
 
 
@@ -166,4 +157,63 @@ async def test_vendor_rejection_at_lower_bound_does_not_substitute_or_assume(has
     api.set_schedule_mode.assert_not_awaited()
     assert entity.target_temperature == 23
     assert not entity.assumed_state
+    await coordinator.async_shutdown()
+
+
+@pytest.mark.parametrize("preset", ["Run Schedule", "Temporary Hold", "Permanent Hold"])
+async def test_retired_display_label_rejected_by_framework_and_parser(hass, preset):
+    coordinator, api, _ = await coordinator_with(hass, permanent())
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    with pytest.raises(ServiceValidationError):
+        await entity.async_handle_set_preset_mode_service(preset)
+    with pytest.raises(ValueError):
+        api_mode_for_preset(preset)
+    api.set_schedule_mode.assert_not_awaited()
+    api.set_target_temperature.assert_not_awaited()
+    await coordinator.async_shutdown()
+
+
+async def test_advertised_presets_have_exactly_three_choices(hass):
+    coordinator, _, _ = await coordinator_with(hass, permanent())
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    state = await add_entity_state(hass, entity, "climate.synthetic_three_presets")
+    assert state.attributes["preset_modes"] == [
+        "run_schedule",
+        "temporary_hold",
+        "permanent_hold",
+    ]
+    await entity.async_will_remove_from_hass()
+    await coordinator.async_shutdown()
+
+
+async def test_three_preset_values_resolve_readable_ha_translations(hass):
+    """Verify state identifiers and UI labels using HA's translation loader."""
+    from homeassistant.helpers.translation import async_get_translations
+
+    translations = await async_get_translations(hass, "en", "entity", {"nuheat"})
+    prefix = (
+        "component.nuheat.entity.climate.thermostat.state_attributes.preset_mode.state."
+    )
+    expected = {
+        "run_schedule": "Run schedule",
+        "temporary_hold": "Temporary hold",
+        "permanent_hold": "Permanent hold",
+    }
+    assert {
+        key.removeprefix(prefix): value
+        for key, value in translations.items()
+        if key.startswith(prefix)
+    } == expected
+    coordinator, _, _ = await coordinator_with(hass, permanent())
+    entity = NuHeatClimateEntity(coordinator, "ABC123")
+    state = await add_entity_state(hass, entity, "climate.synthetic_translated_presets")
+    assert state.attributes["preset_modes"] == list(expected)
+    assert state.attributes["preset_mode"] == "permanent_hold"
+    assert (
+        len(
+            {translations[prefix + value] for value in state.attributes["preset_modes"]}
+        )
+        == 3
+    )
+    await entity.async_will_remove_from_hass()
     await coordinator.async_shutdown()

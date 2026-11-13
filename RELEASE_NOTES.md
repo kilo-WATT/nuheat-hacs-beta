@@ -1,3 +1,16 @@
+# NuHeat Beta v0.1.0b13 release candidate
+
+- Show three translated preset choices backed by run_schedule, temporary_hold
+  and permanent_hold identifiers.
+- **Breaking preset value change:** replace Run Schedule, Temporary Hold and
+  Permanent Hold with run_schedule, temporary_hold and permanent_hold in action
+  data, preset state comparisons, scripts and templates adopted in b11/b12.
+  Older snake_case calls keep working.
+- Adopt HA's native temperature interface with Celsius/Fahrenheit conversion
+  coverage and minimum-framework compatibility.
+
+See [upgrade guidance](docs/CLIMATE_UI_COMPATIBILITY.md).
+
 # NuHeat Beta v0.1.0b12
 
 - Optional push updates can refresh thermostat state sooner. Enable them in the

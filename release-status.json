@@ -1,5 +1,5 @@
 {
-  "publish_allowed": true,
+  "publish_allowed": false,
   "source_sha": "c45837c18b59ebddf4a2ce40a1732f5beec360fd",
   "target_homeassistant": "2026.10.2",
   "gates": {
@@ -30,8 +30,10 @@
     "api_resilience": "passed",
     "cached_diagnostics": "passed",
     "published_sdk_0_1_3": "passed",
-    "release_preparation_ci": "passed",
-    "matching_published_stage_ab_sdk": "passed"
+    "release_preparation_ci": "pending",
+    "matching_published_stage_ab_sdk": "passed",
+    "climate_ui_compatibility": "passed",
+    "native_temperature_current_framework": "passed"
   },
   "current_core_handoff_validation": {
     "candidate": "9ab210660371eaf6bda2083a518cf15eea29318f",
@@ -46,9 +48,9 @@
     "status": "awaiting_merge",
     "policy": "Validate final merged integration code before allowing source not already listed in core-handoff.json."
   },
-  "version": "0.1.0b12",
-  "tag": "v0.1.0b12",
-  "publication_status": "approved_pending_final_main_ci",
+  "version": "0.1.0b13",
+  "tag": "v0.1.0b13",
+  "publication_status": "climate_compatibility_release_preparation",
   "github_release_prerelease": false,
   "bounded_mode_validation": {
     "synthetic_suite": "passed",
@@ -147,7 +149,17 @@
     ],
     "final_main_commit_ci": "must pass before tag publication; verified externally to avoid self-referential commit metadata"
   },
-  "release_preparation_ci": {
+  "climate_ui_validation": {
+    "host_homeassistant": "2026.10.2",
+    "sdk": "0.1.5",
+    "full_suite": "482 passed, 1 existing skip",
+    "native_framework_method": "verified official native climate API source overlay",
+    "native_source_tests": "161 passed",
+    "full_2026_11_2_installation_tested": false,
+    "publication_approved": false,
+    "preset_contract": "snake_case identifiers and translated readable labels"
+  },
+  "previous_b12_preparation_ci": {
     "code_commit": "92b2553abb3b2eb6688f7dfc4debfa11ed6e7e36",
     "runs": [
       "https://github.com/kilo-WATT/nuheat-hacs-beta/actions/runs/42924214795",
@@ -156,5 +168,9 @@
     ],
     "published_sdk_tests": "472 passed, 1 skipped",
     "final_main_commit_ci": "Verify externally before creating release tag"
+  },
+  "release_preparation_ci": {
+    "status": "pending",
+    "policy": "Exact-commit GitHub candidate, HACS and specification checks must pass before publication review."
   }
 }

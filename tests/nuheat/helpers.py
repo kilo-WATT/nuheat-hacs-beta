@@ -131,3 +131,15 @@ async def complete_oauth_flow(
         assert response.status == 200
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         return await hass.config_entries.flow.async_configure(result["flow_id"])
+
+
+async def temperature_service(hass, entity, temperature):
+    """Exercise the real climate service's display-to-native conversion."""
+    from homeassistant.components.climate.services import _async_service_temperature_set
+    from homeassistant.core import ServiceCall
+
+    entity.hass = hass
+    await _async_service_temperature_set(
+        entity,
+        ServiceCall(hass, "climate", "set_temperature", {"temperature": temperature}),
+    )
