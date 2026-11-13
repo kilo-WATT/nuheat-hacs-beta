@@ -1,4 +1,4 @@
-# NuHeat Beta v0.1.0b13 release candidate
+# NuHeat Beta v0.1.0b13
 
 - Show three translated preset choices backed by run_schedule, temporary_hold
   and permanent_hold identifiers.

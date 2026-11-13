@@ -127,7 +127,7 @@
     }
   },
   "climate_ui_compatibility": {
-    "status": "local_only",
+    "status": "approved",
     "issues": [
       11,
       13

@@ -1,15 +1,15 @@
-# Hold controls and automation compatibility - v0.1.0b11
+# Hold controls and automation compatibility — v0.1.0b13
 
-Regular latest GitHub release using `chemelex-nuheat==0.1.3`. Beta visibility
-is not required in HACS. Explicitly select v0.1.0b11 and keep your existing NuHeat
-entries. The integration remains unofficial community beta software.
+Select regular release v0.1.0b13 in HACS and retain your existing NuHeat entries.
+This version uses `chemelex-nuheat==0.1.5`.
 
-## Upcoming three-choice preset menu
+## Three translated presets
 
-The local candidate following b12 uses three snake_case preset values with
-translated labels. Title-case action and state values adopted in b11/b12 need updating. See the
-[replacement mapping and example](CLIMATE_UI_COMPATIBILITY.md).
-The b11 compatibility section below records the published six-input behavior.
+Preset values use run_schedule, temporary_hold and permanent_hold. HA displays
+readable translated labels. Update title-case action and state values adopted in
+b11/b12 using the [replacement mapping and example](CLIMATE_UI_COMPATIBILITY.md).
+
+The b11 section below records the earlier published compatibility behavior.
 
 ## Home Assistant controls
 
