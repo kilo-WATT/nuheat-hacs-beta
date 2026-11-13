@@ -35,9 +35,10 @@ SOURCE_BLOBS = [
 ]
 
 
-def main() -> int:
+def ensure_sources(root: Path) -> None:
+    """Verify cached or fetched official blobs before persisting or loading them."""
     for entry in SOURCE_BLOBS:
-        path = HERE / entry["path"]
+        path = root / entry["path"]
         downloaded = not path.exists()
         if downloaded:
             url = (
@@ -62,6 +63,14 @@ def main() -> int:
             raise RuntimeError(
                 "Official source blob verification failed: " + entry["path"]
             )
+
+        if downloaded:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+
+
+def main() -> int:
+    ensure_sources(HERE)
 
     # Load the installed integration first, then supply the official native entity
     # and its exact const/deprecation dependencies without editing site-packages.

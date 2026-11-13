@@ -77,3 +77,12 @@ https://contributors.home-assistant.io/core/integrations/translations/
 The translation-loader regression checks the raw state identifiers independently
 of the readable labels, correcting the earlier tests that mirrored the initial
 title-case design assumption. EGM was not run in that earlier planning pass.
+
+## b13 release-preparation follow-up
+
+Versioned candidate 0.1.0b13 passed 485 tests with one existing skip. CI exposed
+that the source verifier validated downloads without persisting them on a clean
+checkout. The helper now writes only verified bytes, with three regressions for
+fresh download, cache reuse and rejected mismatching cached/downloaded source.
+Native API verification remains a required candidate CI step. Publication is
+pending review of the final preparation commit and its GitHub checks.

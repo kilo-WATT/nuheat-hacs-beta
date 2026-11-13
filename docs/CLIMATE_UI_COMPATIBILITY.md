@@ -45,7 +45,7 @@ setpoint, hold-confirmation and failure handling safeguards continue to apply.
 
 ## Verification status
 
-The local candidate passed 482 tests with one existing skip on HA 2026.10.2,
+The local candidate passed 485 tests with one existing skip on HA 2026.10.2,
 and 161 affected-control tests against verified official native climate API
 source. Tests cover Celsius/Fahrenheit display and commands, exact hold expiry,
 three preset choices, rejected legacy inputs and deprecation log output.

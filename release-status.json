@@ -152,7 +152,7 @@
   "climate_ui_validation": {
     "host_homeassistant": "2026.10.2",
     "sdk": "0.1.5",
-    "full_suite": "482 passed, 1 existing skip",
+    "full_suite": "485 passed, 1 existing skip",
     "native_framework_method": "verified official native climate API source overlay",
     "native_source_tests": "161 passed",
     "full_2026_11_2_installation_tested": false,
