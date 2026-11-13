@@ -14,6 +14,7 @@ from custom_components.nuheat.const import (
     PRESET_RUN,
     PRESET_TEMPORARY_HOLD,
 )
+from .helpers import temperature_service
 from .test_integration import coordinator_with, thermostat, add_entity_state
 
 
@@ -38,9 +39,6 @@ async def test_preset_menu_and_app_driven_permanent_hold(hass):
         PRESET_RUN,
         PRESET_TEMPORARY_HOLD,
         PRESET_PERMANENT_HOLD,
-        "run_schedule",
-        "temporary_hold",
-        "permanent_hold",
     ]
     assert entity.preset_mode == PRESET_PERMANENT_HOLD
     assert entity.hvac_mode is HVACMode.AUTO
@@ -74,11 +72,11 @@ async def test_setpoint_change_stays_permanent_and_is_optimistic(hass, imperial)
     coordinator, api, _ = await coordinator_with(hass, permanent())
     entity = NuHeatClimateEntity(coordinator, "ABC123")
     requested = 75.2 if imperial else 24
-    await entity.async_set_temperature(temperature=requested)
+    await temperature_service(hass, entity, requested)
     api.set_target_temperature.assert_awaited_once_with(
         "ABC123", 24, mode=ScheduleMode.PERMANENT_HOLD
     )
-    assert entity.target_temperature == pytest.approx(requested)
+    assert entity.native_target_temperature == pytest.approx(24)
     assert entity.assumed_state
     assert entity.preset_mode == PRESET_PERMANENT_HOLD
     await coordinator.async_shutdown()

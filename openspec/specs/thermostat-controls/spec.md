@@ -53,27 +53,20 @@ An accepted Off command's optimistic display SHALL stop being assumed when Stand
 - **WHEN** a later successful poll reports scheduled or held operation
 - **THEN** an obsolete Standby assumption does not keep HA displaying Off.
 
-### Requirement: Compatible preset inputs and canonical output
-The beta SHALL advertise and accept `Run Schedule`, `Temporary Hold`, `Permanent Hold`, `run_schedule`, `temporary_hold`, and `permanent_hold`, with title-case choices first. Each alias SHALL invoke the same control as its title-case equivalent. Reported preset state SHALL use the title-case value independently of the input spelling.
-
-#### Scenario: Framework accepts every supported spelling
-- **WHEN** an HA preset action supplies any of the six advertised values
-- **THEN** framework validation accepts it and the corresponding schedule or hold control is invoked.
-
-#### Scenario: Confirmed state after an alias
-- **WHEN** an alias command is accepted and subsequent API data confirms the requested preset
-- **THEN** reported preset state uses its title-case equivalent and existing bounded confirmation behavior remains in effect before confirmation.
-
-#### Scenario: Unsupported spelling
-- **WHEN** an action supplies an unadvertised preset
-- **THEN** it fails validation without a thermostat write.
-
 ### Requirement: Preset state transition guidance
-Upgrade instructions SHALL explain that snake_case action calls remain accepted while state-trigger and template comparisons must use the reported title-case values. The integration SHALL NOT rewrite user automations or create replacement entities for this transition.
+Upgrade instructions SHALL provide exact snake_case replacements for title-case action inputs, preset state comparisons and templates introduced by b11/b12. Existing snake_case inputs SHALL remain valid. The integration SHALL preserve entity references and SHALL NOT rewrite user automations automatically.
 
 #### Scenario: Existing state comparison
-- **WHEN** an automation compares preset state with `permanent_hold`
-- **THEN** documentation directs the user to compare with `Permanent Hold` while preserving the existing entity reference.
+- **WHEN** an automation compares preset state with Permanent Hold
+- **THEN** documentation directs the user to compare with permanent_hold while preserving the existing entity reference.
+
+#### Scenario: Existing action call
+- **WHEN** an automation calls climate.set_preset_mode with Run Schedule, Temporary Hold or Permanent Hold
+- **THEN** upgrade guidance maps the value to run_schedule, temporary_hold or permanent_hold respectively.
+
+#### Scenario: Readable labels through HA translations
+- **WHEN** HA resolves English translations for the three advertised preset identifiers
+- **THEN** it finds exactly Run schedule, Temporary hold and Permanent hold, while stored preset_mode and preset_modes use snake_case identifiers.
 
 ### Requirement: Explicit beta temperature bounds
 The beta SHALL advertise and accept targets from 5°C through 35°C inclusive, equivalently 41°F through 95°F. Temperature actions SHALL preserve their intended mode and active hold expiry. A 5°C target SHALL NOT itself select Off. Existing explicit Off behavior SHALL remain unchanged, and vendor rejection SHALL surface without clipping or fallback writes.
@@ -89,3 +82,56 @@ The beta SHALL advertise and accept targets from 5°C through 35°C inclusive, e
 #### Scenario: Device rejects an in-range target
 - **WHEN** the vendor rejects an otherwise valid target
 - **THEN** existing failure handling reports the failure without claiming successful confirmation or issuing a substitute mode command.
+
+### Requirement: Canonical preset choices
+The beta SHALL advertise and accept exactly run_schedule, temporary_hold and permanent_hold and report those values as preset state. Entity translations SHALL display Run schedule, Temporary hold and Permanent hold. Each value SHALL retain its control meaning. Retired title-case action values SHALL fail validation before a thermostat write.
+
+#### Scenario: Three visible choices
+- **WHEN** HA obtains preset_modes for a NuHeat climate entity
+- **THEN** exactly the three canonical values are advertised, once each.
+
+#### Scenario: Framework accepts canonical values
+- **WHEN** an HA preset action supplies any of the three canonical values
+- **THEN** framework validation accepts it and invokes the existing schedule or hold command.
+
+#### Scenario: Confirmed state after a command
+- **WHEN** a canonical command is accepted and subsequent API data confirms its preset
+- **THEN** the reported state is its canonical snake_case identifier and existing bounded confirmation applies before confirmation.
+
+#### Scenario: Unsupported or retired spelling
+- **WHEN** an action supplies an unadvertised value including a retired title-case input
+- **THEN** framework validation rejects it before any thermostat write.
+
+### Requirement: Current climate temperature compatibility
+The beta SHALL use the supported native temperature interface on current HA without emitting temperature deprecation warnings during setup, state reporting or controls. The advertised minimum HA version SHALL retain working temperature display and services through its supported interface.
+
+#### Scenario: Current-framework setup
+- **WHEN** the NuHeat climate entity is set up on HA with the native temperature interface
+- **THEN** setup and normal temperature controls produce no integration temperature deprecation warnings.
+
+#### Scenario: Minimum-supported framework
+- **WHEN** the entity loads on HA 2026.10.2
+- **THEN** display and controls remain functional in both Celsius and Fahrenheit.
+
+### Requirement: Single temperature conversion boundary
+Displayed temperatures and limits SHALL match the configured units. Ordinary climate actions and the custom timed-hold action SHALL each convert their user input to the SDK Celsius value exactly once, retaining intended mode, pending intent and explicit expiry.
+
+#### Scenario: Fahrenheit ordinary temperature command
+- **WHEN** an ordinary climate action requests 77 Fahrenheit
+- **THEN** the SDK receives 25 Celsius with the existing mode and hold selection.
+
+#### Scenario: Fahrenheit explicit hold action
+- **WHEN** the NuHeat hold action requests 77 Fahrenheit with a valid explicit expiry
+- **THEN** the SDK receives 25 Celsius and that exact canonical expiry.
+
+#### Scenario: Pending target after successful write
+- **WHEN** a Fahrenheit command succeeds and the cloud still returns the earlier target
+- **THEN** HA displays the accepted requested target while existing bounded confirmation is pending.
+
+#### Scenario: Write failure and shutdown
+- **WHEN** a write fails or the entity unloads during temperature control
+- **THEN** existing failure handling, no-replay behavior and timer cleanup remain effective.
+
+#### Scenario: Limits and Standby
+- **WHEN** HA advertises bounds or a user sets 5 Celsius or 41 Fahrenheit
+- **THEN** bounds remain 5 through 35 Celsius or 41 through 95 Fahrenheit and an ordinary target request retains its intended mode.
