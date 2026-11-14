@@ -20,6 +20,7 @@ from custom_components.nuheat.const import (
     PRESET_PERMANENT_HOLD,
     SCAN_INTERVAL,
 )
+from .helpers import temperature_service
 from .test_integration import coordinator_with, thermostat
 from .test_permanent_hold import permanent
 
@@ -152,7 +153,7 @@ async def test_real_action_dispatch_units_local_timezone_and_expiry_preserved(
         "ABC123", 24, mode=ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE, hold_until=expected
     )
     assert entity.assumed_state
-    assert entity.target_temperature == pytest.approx(75.2 if imperial else 24)
+    assert entity.native_target_temperature == pytest.approx(24)
     api.list_thermostats.return_value = [
         thermostat(raw_target_temperature=2400, hold_until=expected)
     ]
@@ -161,7 +162,7 @@ async def test_real_action_dispatch_units_local_timezone_and_expiry_preserved(
     await hass.async_block_till_done()
     assert entity.preset_mode == PRESET_TEMPORARY_HOLD
     assert not entity.assumed_state
-    await entity.async_set_temperature(temperature=77 if imperial else 25)
+    await temperature_service(hass, entity, 77 if imperial else 25)
     assert api.set_target_temperature.await_args.kwargs["hold_until"] == expected
     assert entity.entity_id == original_id and entity.unique_id == "ABC123"
     await platform.async_reset()
@@ -289,7 +290,7 @@ async def test_mode_change_preserves_accepted_target_before_readback(
         hass.config.units = US_CUSTOMARY_SYSTEM
     coordinator, api, _ = await coordinator_with(hass, permanent())
     entity = NuHeatClimateEntity(coordinator, "ABC123")
-    await entity.async_set_temperature(temperature=75.2 if imperial else 24)
+    await temperature_service(hass, entity, 75.2 if imperial else 24)
     await command(entity, control)
     assert api.set_schedule_mode.await_args.kwargs["temperature"] == pytest.approx(24)
     assert api.set_target_temperature.await_count == 1

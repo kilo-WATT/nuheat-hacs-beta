@@ -12,6 +12,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from custom_components.nuheat.climate import NuHeatClimateEntity
 
+from .helpers import temperature_service
 from .test_integration import add_entity_state, coordinator_with, thermostat
 
 
@@ -33,8 +34,8 @@ async def test_stale_readback_then_delayed_confirmation(
     entity = NuHeatClimateEntity(coordinator, "ABC123")
     await add_entity_state(hass, entity, "climate.reconcile")
     api.set_target_temperature.return_value = None
-    await entity.async_set_temperature(temperature=requested)
-    assert entity.target_temperature == pytest.approx(requested)
+    await temperature_service(hass, entity, requested)
+    assert entity.native_target_temperature == pytest.approx(24)
     assert hass.states.get(entity.entity_id).attributes[
         ATTR_TEMPERATURE
     ] == pytest.approx(round(requested) if imperial else requested)
@@ -44,7 +45,7 @@ async def test_stale_readback_then_delayed_confirmation(
     api.list_thermostats.return_value = [thermostat(raw_target_temperature=2400)]
     await advance(hass, freezer, 2)
     assert api.list_thermostats.await_count == 3
-    assert entity.target_temperature == pytest.approx(requested)
+    assert entity.native_target_temperature == pytest.approx(24)
     assert not entity.assumed_state
     await advance(hass, freezer, 40)
     assert api.list_thermostats.await_count == 3

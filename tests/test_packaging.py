@@ -63,6 +63,7 @@ def candidate(tmp_path: Path, monkeypatch) -> Path:
         "docs/OAUTH_UNAUTHORIZED_CLIENT.md",
         "docs/PERMANENT_HOLD.md",
         "docs/API_CONTRACT_CANDIDATE.md",
+        "docs/CLIMATE_UI_COMPATIBILITY.md",
     ):
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -272,5 +273,37 @@ def test_mode_candidate_source_drift_is_rejected(tmp_path, monkeypatch):
         "sha256": {"custom_components/nuheat/climate.py": "0" * 64},
     }
     provenance_path.write_text(json.dumps(provenance))
+    with pytest.raises(AssertionError):
+        package.main()
+
+
+def test_climate_candidate_requires_verification_and_approval(tmp_path, monkeypatch):
+    candidate(tmp_path, monkeypatch)
+    path = tmp_path / "release-status.json"
+    status = json.loads(path.read_text())
+    status["publish_allowed"] = True
+    path.write_text(json.dumps(status))
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    provenance["climate_ui_compatibility"] = {"status": "local_only", "sha256": {}}
+    path.write_text(json.dumps(provenance))
+    monkeypatch.setattr(sys, "argv", ["package.py", "--release"])
+    with pytest.raises(SystemExit, match="climate compatibility"):
+        package.main()
+
+
+def test_climate_candidate_source_drift_is_rejected(tmp_path, monkeypatch):
+    component = candidate(tmp_path, monkeypatch)
+    path = tmp_path / "provenance.json"
+    provenance = json.loads(path.read_text())
+    relative = "custom_components/nuheat/climate.py"
+    provenance["climate_ui_compatibility"] = {
+        "status": "local_only",
+        "sha256": {
+            relative: hashlib.sha256((tmp_path / relative).read_bytes()).hexdigest()
+        },
+    }
+    path.write_text(json.dumps(provenance))
+    (component / "climate.py").write_text("# drift\n")
     with pytest.raises(AssertionError):
         package.main()
