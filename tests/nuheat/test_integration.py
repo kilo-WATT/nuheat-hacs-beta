@@ -23,6 +23,8 @@ from chemelex_nuheat import (
 from freezegun.api import FrozenDateTimeFactory
 import pytest
 
+from .helpers import temperature_service
+
 from homeassistant.components.application_credentials import ClientCredential
 from homeassistant.components.climate import (
     ATTR_CURRENT_TEMPERATURE,
@@ -101,7 +103,7 @@ def thermostat(
     *,
     mode: int = 2,
     raw_target_temperature: float | None = 2300,
-    hold_until: datetime | None = datetime(2026, 7, 8, 1, tzinfo=UTC),
+    hold_until: datetime | None = datetime(2030, 7, 8, 1, tzinfo=UTC),
     hold_until_status: HoldUntilStatus = HoldUntilStatus.VALUE,
     heating: bool = True,
     online: bool = True,
@@ -734,7 +736,9 @@ async def test_climate_state_and_writes_follow_ha_unit(
     entity = NuHeatClimateEntity(coordinator, "ABC123")
     state = await add_entity_state(hass, entity, "climate.nuheat_test")
 
-    assert entity.temperature_unit == unit
+    assert entity.native_current_temperature == 21.5
+    assert entity.native_target_temperature == 23
+    assert entity._attr_native_temperature_unit == UnitOfTemperature.CELSIUS
     assert state.attributes[ATTR_CURRENT_TEMPERATURE] == pytest.approx(current)
     assert state.attributes[ATTR_TEMPERATURE] == pytest.approx(target)
     assert state.attributes["min_temp"] == pytest.approx(minimum)
@@ -745,12 +749,12 @@ async def test_climate_state_and_writes_follow_ha_unit(
     assert entity.supported_features & ClimateEntityFeature.TURN_OFF
     assert entity.supported_features & ClimateEntityFeature.TURN_ON
 
-    await entity.async_set_temperature(temperature=write)
+    await temperature_service(hass, entity, write)
     api.set_target_temperature.assert_awaited_once_with(
         "ABC123",
         pytest.approx(celsius),
         mode=ScheduleMode.HOLD_UNTIL_NEXT_SCHEDULE,
-        hold_until=datetime(2026, 7, 8, 1, tzinfo=UTC),
+        hold_until=datetime(2030, 7, 8, 1, tzinfo=UTC),
     )
     assert api.list_thermostats.await_count == 2
     await entity.async_will_remove_from_hass()
@@ -1027,9 +1031,6 @@ async def test_legacy_hvac_command_support_remains_separate_from_read_state(
     assert entity.preset_modes == [
         PRESET_RUN,
         PRESET_TEMPORARY_HOLD,
-        "Permanent Hold",
-        "run_schedule",
-        "temporary_hold",
         "permanent_hold",
     ]
 
@@ -1193,9 +1194,6 @@ def test_climate_preset_translations() -> None:
     assert strings["entity"]["climate"]["thermostat"]["state_attributes"][
         "preset_mode"
     ]["state"] == {
-        PRESET_RUN: "Run schedule",
-        PRESET_TEMPORARY_HOLD: "Temporary hold",
-        "Permanent Hold": "Permanent hold",
         "run_schedule": "Run schedule",
         "temporary_hold": "Temporary hold",
         "permanent_hold": "Permanent hold",

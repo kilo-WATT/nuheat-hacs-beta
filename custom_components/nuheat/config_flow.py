@@ -12,9 +12,10 @@ from chemelex_nuheat import (
     NuHeatClient,
     NuHeatDataError,
 )
-from probatio import Schema
+from probatio import Optional, Schema
 
-from homeassistant.config_entries import SOURCE_REAUTH, ConfigFlowResult
+from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntry, ConfigFlowResult, OptionsFlow
+from homeassistant.core import callback
 from homeassistant.const import CONF_ACCESS_TOKEN, CONF_TOKEN
 from homeassistant.helpers import config_entry_oauth2_flow
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -27,7 +28,7 @@ from .account_identity import (
     account_subject_from_entry_data,
 )
 from .application_credentials import CommunityOAuth2Implementation
-from .const import DOMAIN, OAUTH_SCOPES
+from .const import CONF_PUSH_UPDATES, DOMAIN, OAUTH_SCOPES
 from .oauth_setup import async_ensure_community_credentials
 from .migration import (
     OAUTH_CONFIG_ENTRY_VERSION,
@@ -47,6 +48,12 @@ class NuHeatConfigFlow(
 
     DOMAIN = DOMAIN
     VERSION = OAUTH_CONFIG_ENTRY_VERSION
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        """Offer optional push without modifying account credentials."""
+        return NuHeatOptionsFlow()
 
     @override
     async def async_step_user(
@@ -213,7 +220,6 @@ class NuHeatConfigFlow(
                 description_placeholders={"thermostat": entry.title},
             )
         return await self.async_step_user()
-
     async def async_step_reauth_confirm(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -226,3 +232,22 @@ class NuHeatConfigFlow(
                 description_placeholders={"account": entry.title},
             )
         return await self.async_step_user()
+
+
+class NuHeatOptionsFlow(OptionsFlow):
+    """Configure only the optional account listener."""
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(
+                title="", data={**self.config_entry.options, **user_input}
+            )
+        return self.async_show_form(
+            step_id="init",
+            data_schema=Schema({Optional(
+                CONF_PUSH_UPDATES,
+                default=self.config_entry.options.get(CONF_PUSH_UPDATES, False),
+            ): bool}),
+        )

@@ -12,10 +12,12 @@ from typing import Any, override
 
 from chemelex_nuheat import (
     NuHeatPermissionError,
+    NuHeatHoldTimeError,
     NuHeatRateLimitError,
     ScheduleMode,
     Thermostat,
     ThermostatState,
+    validate_hold_until,
 )
 
 from homeassistant.components.climate import (
@@ -47,6 +49,7 @@ from .const import DOMAIN, MAX_TEMP_C, MIN_TEMP_C, PRESET_MODES
 from .coordinator import NuHeatCoordinator
 
 CONTROL_OPERATION_TIMEOUT = 30.0
+NATIVE_TEMPERATURE_API = hasattr(ClimateEntity, "native_temperature_unit")
 
 
 async def async_setup_entry(
@@ -88,6 +91,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     """A NuHeat radiant-floor thermostat."""
 
     _attr_has_entity_name = True
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_name = None
     _attr_translation_key = "thermostat"
     _attr_hvac_modes = [HVACMode.AUTO, HVACMode.HEAT, HVACMode.OFF]
@@ -107,9 +111,13 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         self._control_tasks: set[Task[Any]] = set()
         self._controls_unloading = False
         self._attr_unique_id = serial_number
-        self._attr_temperature_unit = coordinator.hass.config.units.temperature_unit
+        if not NATIVE_TEMPERATURE_API:
+            self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_target_temperature_step = (
-            0.5 if self._attr_temperature_unit == UnitOfTemperature.CELSIUS else 1.0
+            0.5
+            if coordinator.hass.config.units.temperature_unit
+            == UnitOfTemperature.CELSIUS
+            else 1.0
         )
 
     def _check_control_available(self) -> None:
@@ -189,14 +197,12 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         """Return the latest thermostat state."""
         return self.coordinator.data[self._serial_number]
 
-    def _from_celsius(self, value: float) -> float:
+    def _hold_temperature_celsius(self, value: float) -> float:
+        """Convert the custom action's HA-unit input to the SDK Celsius unit."""
         return TemperatureConverter.convert(
-            value, UnitOfTemperature.CELSIUS, self.temperature_unit
-        )
-
-    def _to_celsius(self, value: float) -> float:
-        return TemperatureConverter.convert(
-            value, self.temperature_unit, UnitOfTemperature.CELSIUS
+            value,
+            self.coordinator.hass.config.units.temperature_unit,
+            UnitOfTemperature.CELSIUS,
         )
 
     def _command_temperature(self) -> float | None:
@@ -216,35 +222,47 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
 
     @property
     @override
-    def current_temperature(self) -> float | None:
+    def native_current_temperature(self) -> float | None:
         if (temperature := self.thermostat.current_temperature) is None:
             return None
-        return self._from_celsius(temperature)
+        return temperature
 
     @property
     @override
-    def target_temperature(self) -> float | None:
+    def native_target_temperature(self) -> float | None:
         if (
             pending := self.coordinator.pending_setpoint(self._serial_number)
         ) is not None:
-            return self._from_celsius(pending)
+            return pending
         if self._optimistic_standby or self.thermostat.state is ThermostatState.STANDBY:
             return None
         if (temperature := self.thermostat.target_temperature) is None:
             return None
-        return self._from_celsius(temperature)
+        return temperature
 
     @property
     @override
     def min_temp(self) -> float:
         # OpenAPI v2 does not expose the thermostat's native minimum.
-        return self._from_celsius(MIN_TEMP_C)
+        return MIN_TEMP_C
 
     @property
     @override
     def max_temp(self) -> float:
         # OpenAPI v2 does not expose the thermostat's native maximum.
-        return self._from_celsius(MAX_TEMP_C)
+        return MAX_TEMP_C
+
+    if not NATIVE_TEMPERATURE_API:
+
+        @property
+        def current_temperature(self) -> float | None:
+            """Adapt native readings to the minimum supported HA interface."""
+            return self.native_current_temperature
+
+        @property
+        def target_temperature(self) -> float | None:
+            """Adapt pending and reported targets on the older HA interface."""
+            return self.native_target_temperature
 
     @property
     @override
@@ -317,7 +335,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 translation_key="unsupported_state",
                 translation_placeholders={"state": self.thermostat.state},
             ) from err
-        temperature_celsius = self._to_celsius(float(temperature))
+        temperature_celsius = float(temperature)
         if not isfinite(temperature_celsius):
             raise ServiceValidationError("Temperature must be finite")
         hold_until = None
@@ -346,7 +364,7 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
     ) -> None:
         """Hold a target until an explicit future time in HA's timezone."""
         async with self._control_operation():
-            temperature_celsius = self._to_celsius(temperature)
+            temperature_celsius = self._hold_temperature_celsius(temperature)
             if not isfinite(temperature_celsius) or not (
                 MIN_TEMP_C <= temperature_celsius <= MAX_TEMP_C
             ):
@@ -386,6 +404,13 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
         hold_until: datetime | None = None,
     ) -> None:
         """Share the existing write, optimism and reconciliation contract."""
+        if hold_until is not None:
+            try:
+                hold_until = validate_hold_until(hold_until, now=dt_util.utcnow())
+            except ValueError as err:
+                raise ServiceValidationError(
+                    translation_domain=DOMAIN, translation_key="invalid_hold_time"
+                ) from err
         command_kwargs: dict[str, Any] = {"mode": mode}
         if hold_until is not None:
             command_kwargs["hold_until"] = hold_until
@@ -395,6 +420,10 @@ class NuHeatClimateEntity(CoordinatorEntity[NuHeatCoordinator], ClimateEntity):
                 temperature_celsius,
                 **command_kwargs,
             )
+        except NuHeatHoldTimeError as err:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="invalid_hold_time"
+            ) from err
         except Exception:
             # The library also GETs after PUT: an exception need not mean that
             # the write failed. Read later, without retrying or assuming success.

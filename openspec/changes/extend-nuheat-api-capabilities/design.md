@@ -2,175 +2,71 @@
 
 ## Context
 
-See proposal.md for the observed gaps and public sources. The existing beta has
-one climate platform, a fixed package-file allowlist, explicit timed-hold action,
-shared runtime API cooldown and bounded command reconciliation. The SDK candidate
-adds permission/rate-limit errors and request/operation budgets. None of the four
-optional capabilities is implemented. No vendor answer or push/energy/relative
-live observation is available in this proposal.
+See proposal.md and assessment.md. The old vendor gates are superseded by the public Chemelex reply. Beta v0.1.0b11 and SDK 0.1.3 already support the required REST failure classification and basic explicit holds. The local library candidate is 0.1.4; its version must not silently replace the beta pin. Diagnostics is complete. The user approved A and B for isolated implementation; C and D remain subject to separate approval. See stage-ab-validation.md for the local result.
 
 ## Goals / Non-Goals
 
-**Goals:** independently testable stages; a concrete evidence gate before each
-vendor-dependent runtime addition; additive entities/actions that preserve the
-existing account/device model; reliable fallback and privacy by construction.
+**Goals:** prove expiry correctness and optional push-triggered REST refresh in separately testable stages, preserving identity, provider associations, existing controls and bounded reconciliation.
 
-**Non-Goals:** user-facing alerts, dashboard changes, schedule editing, price or
-load-setting writes, inferred measured power, unverified Energy dashboard totals,
-replacing OAuth, expanding handoff eligibility, changing Core in this request,
-or treating API documentation as proof of live protocol compatibility.
+**Non-Goals for the initial proof:** energy entities/statistics/backfill, relative HA actions, setpoint-increment semantics, user alerts, new OAuth applications, Core changes, live vendor connectivity, production access or publication. No EGM run is needed for this bounded proposal; a broader statistics/action architecture would need its own design approval.
 
 ## Decisions
 
-### 1. Separate evidence gates from implementation
+### A. Correct expiry semantics before adding a new transport
 
-Use four explicit gates, with timestamped public sources or a paraphrased vendor
-answer stripped of private correspondence. A gate fails closed if evidence is
-missing. Implementation of another independent stage can continue, but its
-completion does not complete blocked tasks. Changing a gate's intended behavior
-requires revising this plan before coding, not guessing during apply.
+Normalize an explicit expiry to UTC and drop fractional seconds before validating, serializing or retaining pending intent. A shared SDK helper can define the canonical value; the beta must use that same value for exact confirmation. Keep explicit timezone-aware SDK inputs; HA continues resolving offset-free input in its configured timezone before calling the SDK. The vendor's offset-free-as-UTC rule does not justify changing HA's documented local-time UI or accepting offset-free API responses silently.
 
-| Gate | Required evidence | If unresolved |
-| --- | --- | --- |
-| H: hold duration | v2 applicability of 23 hours; inclusive/exclusive boundary; server clock basis; retained longer-hold policy | Document restriction and question; no new runtime cap or long hold test |
-| P: push | hub/protocol version, token transport, Subscribe contract, account/device filtering, expiration and disconnect behavior | Keep push disabled; retain polling |
-| E: energy | timezone/DST, bucket identity, units, revision/reset behavior, configured load and zero validity | Keep sensors unexposed; no energy-statistics import |
-| R: relative | 0/1 enum already documented; additionally reference temperature, signed delta scaling, range, mode/expiry behavior | Keep existing SDK rejection and absolute controls |
+There is no v2 upper hold limit. Do not implement the old proposed 23/24-hour cap. Validate the canonical future expiry with at least the documented two-second lead time near each actual submission, after lock and authorization waits, including a definite-401 retry. Do not add time or move the user's expiry forward. Local validation cannot guarantee server-clock or transit timing; surface a server 400 without retrying or clipping. Use an injectable clock for synthetic tests. An inherited expiry that is too close to send must fail visibly instead of losing its hold mode.
 
-Draft outreach in vendor-questions.md; do not send it under planning/apply
-authority alone. Use synthetic responses for implementation first. Additional
-read-only account probes, long holds, reconnect testing on real credentials or
-hardware writes require their own explicit live scope. Prior six-command live
-approval applied to the completed resilience test, not these new features.
+Every timed retarget sends the explicit expiry again, including accepted pending expiry. Selecting the ordinary Temporary Hold preset remains a deliberate next-schedule control; selecting Manual or another preset intentionally supersedes prior expiry. Permanent Hold remains the existing v1 path, with no invented relative v1 support.
 
-The alternative is shipping all documented fields immediately. It is rejected:
-the schemas omit details that affect thermostat state and historical statistics.
+Keep one forced refresh and one retry for a definite HTTP 401. That response means the rejected request did not reach the thermostat. A 401 on the GET after an accepted PUT retries only that GET. No retry for uncertain PUT acceptance, disconnect, timeout, 5xx, or failed post-write read. Shared cooldown and total operation budgets still apply.
 
-### 2. Diagnostics is the first independent implementation
+### B. Small optional SignalR proof with the existing transport dependency
 
-Add the standard entry diagnostics handler in `diagnostics.py`, returning a
-constructed schema, not a recursively dumped config entry or SDK dataclass.
-Include integration/SDK versions, coarse setup/availability, cooldown-active
-status and pending-confirmation categories/counts. Omit temperatures, schedules,
-times of user activity, names, paths, serials, IDs, host URLs, entry data/options,
-raw messages and all credential material. No opaque serialized exception objects.
+Use one default-off adapter per runtime account, based on existing aiohttp WebSocket support. Implement only the documented ASP.NET Core SignalR JSON v1 subset: record-separator framing, handshake/response, Subscribe completion, Notify invocation, application Ping and Close. Handle split/coalesced records, bounded buffers and unknown messages. Do not add an unreviewed third-party SignalR dependency or general-purpose hub framework.
 
-Tests seed private markers in keys and values at every nesting depth, verify
-only the allowlisted schema appears, and assert no session/token/API methods
-were called. No extra dependencies are needed. Register the new file explicitly
-in package allowlist/provenance; do not broaden the allowlist to arbitrary files.
+Use the documented `/v2/notificationsHost` hub path on the configured trusted API origin, distinct from REST's `/api/v2/...` path prefix. Prefer direct WSS; skip negotiation because Chemelex reports intermittent negotiate 404. Validate the synthetic URL construction. Exact deployed routing remains untested until separately authorized live validation. Do not add query-string tokens, cross-origin redirects or fallback transports in the proof.
 
-### 3. Hold validation is conditional on gate H
+Obtain authorization through the existing token callback and send only an Authorization Bearer header. An established socket need not be cycled merely at the token's sixty-minute age; obtain a valid token on reconnect. A definite connection 401 permits the existing single forced-refresh attempt. Optional hub failure must leave REST polling usable; persistent REST authorization failure follows the existing account reauthentication path.
 
-After confirmation, put a shared duration policy in the SDK and invoke the same
-policy from the HA action after timezone normalization. Compare elapsed UTC time
-using an injectable clock. Validate near submission inside the existing command
-budget so lock wait cannot make an already expired request valid. Return a
-translated error with the supported window; do not clamp or send a trial write.
+Send Subscribe with a connection-local invocation ID and thermostat type 2. UserAccount type 1 is reserved for a later justified use; the initial proof does not need it. Wait for successful completion, resubscribe after reconnect, and request one full account GET after each successful initial connection/reconnect. No subscription persistence or exactly-once delivery is assumed.
 
-Do not add a maximum to readback parsing: older holds must remain representable.
-Retargeting a longer hold uses the policy confirmed by the vendor; if disallowed,
-reject the new command without modifying its existing expiry. Keep preset
-next-schedule Hold and Permanent Hold independent from explicit-expiry bounds.
-Tests cover limit minus one second, exact limit, plus one second, expired input,
-timezone offsets/DST, Celsius/Fahrenheit, queue delay and no-write failures.
+Validate recognized Notify messages against devices already known to that account. Parse offset-aware timestamps and track the newest change time per known device; ignore duplicates and older events. Keep deduplication state bounded by the known-device set. Notifications never contain authoritative thermostat values and never confirm an accepted command. The reconnect GET handles missed events and clock/timestamp anomalies independently of deduplication.
 
-### 4. Push invalidates; existing scheduler reads and confirms
+Use a separate coalesced invalidation request path into the coordinator's shared read lock and account cooldown. Do not repeatedly call the existing write-reconciliation rescheduler from push: it resets its initial delay and could starve reads under bursts. A burst must retain one due read and a notification arriving during a read must cause at most one necessary follow-up. Neither push nor reconnect extends the original thirty-second confirmation deadline or resends a thermostat command.
 
-After gate P, use an optional transport adapter owned by the SDK, with one
-connection per runtime account. Beta owns setup/unload and a default-off option
-for initial rollout. Do not start a connection merely to validate config flow.
-Choose a maintained async implementation only after protocol, license and
-dependency compatibility are verified; aiohttp is already present but does not
-by itself prove SignalR framing/subscription compatibility.
+Retain five-minute polling regardless of connection status. Bound connection/handshake/Subscribe attempts; use cancellable exponential backoff with jitter (initial 5 seconds, cap 300 seconds), respect server cooldown/Retry-After, and avoid concurrent account connections. Handle SignalR application pings separately from WebSocket control pings; document finite server-silence detection (proposed 45 seconds, allowing margin over reported 15-second pings). SDK lifetime is not one thirty-second REST operation: only each connection attempt has a finite budget. Unload cancels the socket, listener, backoff, heartbeat, subscription wait and deferred callbacks.
 
-Push carries invalidations rather than trusted climate values. Account events
-refresh the account; known thermostat events also use the account refresh path.
-Unknown devices never create identity associations from a notification alone.
-Coalesce with normal polls and command reconciliation before their shared lock;
-use existing cooldowns and do not extend thirty-second confirmation deadlines.
-Keep five-minute polling as a safety net even when push is connected. Bound
-connect/subscription to the SDK operation budget; exponential reconnect backoff
-from 5 to 300 seconds with jitter, cancellable on unload. Authentication uses
-the existing token callback and failure classification, with no provider switch.
+No raw frames, identifiers, timestamps, access tokens or vendor errors go into logs/diagnostics. New runtime modules require explicit package allowlist and provenance changes. Keep the current iot_class until actual implemented behavior and HA validation justify updating it. Disable push to roll back; all climate and polling behavior remains available.
 
-Never log token-bearing transport URLs or raw frames. Tests cover duplicate,
-out-of-order/malformed and unknown events, two accounts, missed-event fallback,
-refresh overlap, disconnect during a command, quota, auth refresh and shutdown.
-Update `iot_class` only after implemented behavior supports the change and HA
-validation passes; it is not changed by this proposal.
+Send SignalR application Ping on an otherwise idle connection at a bounded interval (proposed 15 seconds), independently of WebSocket control pings, and cancel that task on unload. Pings never schedule REST reads or extend command confirmation deadlines.
 
-### 5. Period energy models precede optional sensors
+### C. Later energy model proof, not HA statistics
 
-After gate E, add SDK models and GET methods for the documented day/week/month
-endpoints. Use stable period keys and replace corrected values, never sum
-overlapping day/week/month datasets. Parse explicit units and missing/invalid
-values strictly. Do not derive power by sampling relay state or use price fields
-without a verified currency contract.
+Vendor contracts are now known: day queries cover UTC midnight to midnight with 24 hourly buckets, newest first; values are floating-point estimated Wh, derived from heating time and current configured load. Conductor and Signature share the v1 endpoints. Historical values may change after load edits, not just while an hour is active.
 
-Use a separate reporting coordinator/cache sharing the same runtime client and
-cooldown. Requests run only when reporting entities are enabled, never on the
-climate command path. Start with a bounded fifteen-minute cache for enabled
-current-period reports and no automatic historical backfill; increase cadence
-only from documented need. Optional 403/404/405 or malformed reporting data
-affects sensors, not climate availability; genuine 401 retains the existing
-account authorization rules. Respect common 429 and operation budgets.
+Choose hourly UTC intervals as one storage granularity. Identify a bucket by device and UTC period start; replace revised values, allow decreases, and sum distinct buckets only. Do not add overlapping Day/Week/Month results or mark period estimates total_increasing. Convert Wh to kWh explicitly if a later display needs it. Refresh recent periods but disclose that a bounded window cannot repair arbitrarily old load-driven revisions; no automatic historical import is proposed.
 
-Add disabled-by-default runtime and estimated-energy sensor descriptions with
-deterministic unique IDs derived from the existing device identity plus metric.
-Periods must be explicit in names/attributes. Do not declare a cumulative
-`total_increasing` sensor for a resetting or corrected period series. Initial
-Energy dashboard eligibility remains off until reset/correction semantics and
-HA statistics tests justify a separately reviewed representation. All data is
-vendor-estimated; there is no measured-power or cost sensor in this stage.
+A returned zero cannot distinguish no heating, unconfigured load or offline reporting. Preserve raw estimated zero with unknown quality; do not call it verified no-consumption or fabricate a way to distinguish those cases. Missing/invalid consumption remains unavailable. No cost, floor-load writes, measured power or Energy dashboard statistics in the initial proof. Later optional sensors/cache need separate approval and preserve existing device links.
 
-### 6. Relative is an explicit action, never an implicit fallback
+### D. Later room-relative controls, not setpoint increments
 
-After gate R, add typed temperature interpretation to the SDK, preserve existing
-absolute method defaults, and expose `nuheat.adjust_temperature` on existing
-climate entities with a signed finite delta. For differences, 1.8°F maps to 1°C;
-never apply the absolute Fahrenheit offset. Do not invent a client-side
-read/modify/write substitute that races against cloud changes.
+Relative means last cloud-reported measured room temperature plus a signed delta in hundredths Celsius. It does not add to the target. Represent that contract explicitly in SDK types/names and docs; absolute calls stay unchanged. Temperature differences convert 1.8°F to 1°C without a 32-degree offset.
 
-Support only verified endpoint/mode combinations. Physical Manual, explicit
-timed hold and next-schedule hold must preserve their confirmed contract;
-reject Standby, unresolved classification and unsupported Permanent Hold or
-scheduled combinations. Reuse the entity lock, operation budget and pending
-expiry rules. Relative PUTs are non-idempotent: persistent authorization handling
-must not replay a request whose acceptance is uncertain. Preserve SDK's known
-401-before-acceptance contract; no retry on transport/readback uncertainty.
+The endpoint selects mode. Manual removes expiry; Hold without holdUntil does not retain an existing timed expiry; Hold with holdUntil uses exactly the sent expiry. Resend the prior explicit expiry to retain it. No Relative support is established for the separate v1 Permanent Hold path. Do not silently map Schedule, Standby or Permanent Hold into another mode.
 
-Do not optimistically fabricate an absolute target from stale local data. Keep
-an operation generation/deadline for relative intent and use only verified
-post-command readback for a resulting target. If read ordering cannot establish
-compatible confirmation, expire as unconfirmed. Tests cover positive/negative
-deltas, quantization, ranges, pending expiry, rapid commands, stale API data,
-failure after accepted PUT, quota/lock waits and unload.
+If a later user feature means increment-the-target, that is a separate read/absolute-write operation with race semantics, not temperatureType=Relative. It is not part of this proof. Do not invent optimistic absolute results from cached room readings. Preserve one definite-401 retry but never replay a relative operation after uncertain acceptance. Remaining resulting-target clamp/validation behavior at device limits is not specified by the reply and needs synthetic policy plus separately approved evidence before exposing a relative HA action.
 
 ## Risks / Trade-offs
 
-- Legacy guide versus v2 behavior → gate H and explicit boundary evidence.
-- More cloud requests and reconnect storms → disabled optional reporting/push,
-  bounded caches/backoff, account cooldown and read coalescing.
-- Energy-history corruption → no unverified statistics or overlapping summation.
-- Delta applied twice → never retry uncertain writes; generation-based readback.
-- Token leakage through websocket URLs → URL/frame log suppression and marker tests.
-- Extra SDK dependency and unpublished current candidate → validate/publish each
-  SDK independently with authorization before selecting a releasable beta pin.
-- Optional features enlarge a pending Core PR → provide a port map, not an
-  upstream change; Core maintainers can review independent follow-up work.
+- Local expiry checks versus server time/transit → validate at submission, retain exact expiry, surface 400; no guaranteed arrival margin.
+- Small in-house protocol subset → bound and exhaustively exercise the documented framing; polling remains independent.
+- Push storms/read starvation → separate due-read coalescing, bounded deduplication, shared cooldown, no deadline resets.
+- Optional hub authentication failure → REST remains authoritative for working account availability; no provider replacement.
+- Revised energy history → replace buckets, no cumulative/statistics claim or silent historical finality.
+- Room-relative confusion → explicit naming, no setpoint-increment alias or guessed result.
 
 ## Migration Plan
 
-No config-entry version bump or migration rewrite is planned. Options are
-additive with disabled defaults; reporting sensors share existing devices and
-do not replace climate entities. Rollback disables optional features and keeps
-thermostat/account identities and credentials. No conversion of an existing
-hold or deletion of entries is permitted. Runtime file additions require exact
-packaging/provenance updates and separate publication authorization.
-
-Implement in order: diagnostics, hold evidence/policy, push gate/adapter, energy
-gate/models/sensors, relative gate/action. Synthetic validation comes first;
-hardware or production tests stay separately authorized. Verify Core native
-temperature properties, lifecycle APIs and official OAuth separately when a
-port is approved. The handoff guard and shipped allowlist stay unchanged.
+No domain, config-entry migration, credentials, entities or registry changes. Initial push is opt-in/default-off and owned by the existing runtime account. Keep accepted intent, cooldown, cleanup and handoff safeguards. Core is excluded. Implement and review A before B; C and D require separate approval. A fake local hub proves client behavior, not Chemelex reachability. Any future live connection, write, SDK release, pin change, beta deployment, commit or push needs explicit authorization.

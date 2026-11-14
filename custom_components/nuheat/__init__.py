@@ -28,7 +28,7 @@ from .account_identity import (
     InvalidAccountSubjectError,
     account_subject_from_entry_data,
 )
-from .const import DOMAIN
+from .const import CONF_PUSH_UPDATES, DOMAIN
 from .coordinator import NuHeatCoordinator
 from .migration import (
     OAUTH_CONFIG_ENTRY_VERSION,
@@ -114,6 +114,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: NuHeatConfigEntry) -> bo
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     if not migration_reload_active():
         await async_resume_migration_cleanup(hass, entry)
+    enabled = entry.options.get(CONF_PUSH_UPDATES, False) is True
+    if enabled:
+        coordinator.async_start_push()
+
+    async def options_updated(hass: HomeAssistant, updated: NuHeatConfigEntry) -> None:
+        if (updated.options.get(CONF_PUSH_UPDATES, False) is True) != enabled:
+            await hass.config_entries.async_reload(updated.entry_id)
+
+    entry.async_on_unload(entry.add_update_listener(options_updated))
     return True
 
 

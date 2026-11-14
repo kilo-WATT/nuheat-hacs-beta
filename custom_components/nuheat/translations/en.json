@@ -44,9 +44,6 @@
         "state_attributes": {
           "preset_mode": {
             "state": {
-              "Run Schedule": "Run schedule",
-              "Temporary Hold": "Temporary hold",
-              "Permanent Hold": "Permanent hold",
               "run_schedule": "Run schedule",
               "temporary_hold": "Temporary hold",
               "permanent_hold": "Permanent hold"
@@ -73,7 +70,7 @@
       "message": "NuHeat reported thermostat state {state}, which cannot be controlled safely. Refresh before retrying."
     },
     "invalid_hold_time": {
-      "message": "Choose a future hold expiry. Ambiguous or nonexistent local times require a valid explicit UTC offset."
+      "message": "Choose a hold expiry at least two seconds in the future. Fractions of a second are dropped; network delay can still cause rejection. Ambiguous or nonexistent local times require a valid explicit UTC offset."
     },
     "invalid_hold_temperature": {
       "message": "Choose a finite temperature within the thermostat's supported range, using Home Assistant's temperature unit."
@@ -117,6 +114,17 @@
         "hold_until": {
           "name": "Hold until",
           "description": "Future expiry in Home Assistant's timezone. Use an explicit UTC offset for ambiguous local times."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "NuHeat updates",
+        "description": "Optional experimental push notifications trigger a fresh cloud read after changes in the NuHeat app or thermostat. Five-minute polling remains enabled. Turn this off to return to polling only.",
+        "data": {
+          "enable_push_updates": "Enable push-triggered updates (experimental)"
         }
       }
     }

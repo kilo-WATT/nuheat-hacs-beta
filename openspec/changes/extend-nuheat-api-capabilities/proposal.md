@@ -2,85 +2,40 @@
 
 ## Why
 
-The Swagger review identified useful API capabilities that the integration does
-not expose and a documented temporary-hold limit it does not enforce. Resolve
-the vendor-specific uncertainties before expanding working thermostat controls.
+The [Chemelex clarification](https://github.com/home-assistant/core/issues/175923#issuecomment-6737221965) resolves the main API contract questions. Update the earlier plan to those facts and prove the smallest useful additions with synthetic transports before implementation or live testing is approved.
 
 ## Observed behavior and evidence
 
-Checked public vendor guide and v1/v2 Swagger on 2026-10-24; no account access:
+Reviewed 2026-11-10: beta v0.1.0b11 pins SDK 0.1.3; the separate local SDK checkout is 0.1.4. Current source and fake-session probes are recorded in assessment.md. No vendor/account connection was opened.
 
-- The guide describes explicit hold expiry within the following 23 hours. The
-  v2 `ModeHold.holdUntil` schema has no maximum-duration constraint. Current
-  `async_set_temporary_hold` checks future/timezone validity but no upper bound.
-- v2 `eTemperatureType` explicitly documents 0 = Absolute and 1 = Relative,
-  adding to the current thermostat temperature. The SDK still rejects explicit
-  `temperature_type`; the exact reference temperature, scaling and mode effects
-  for safe relative controls remain unverified. Earlier wording that enum
-  meanings are wholly undocumented is outdated.
-- The guide documents SignalR thermostat/account change notifications. The
-  beta currently polls every five minutes and reconciles its own commands; it
-  has no notification client. Notifications here mean API push invalidations,
-  not mobile alerts or messages to users.
-- v1 energy logs expose relay-on minutes, estimated kWh and estimated charge
-  per period. Timezone, DST, reset/correction rules, load configuration and the
-  meaning of zero estimates need confirmation before HA energy statistics.
-- There is no NuHeat diagnostics module, sensor platform, or relative action
-  in the reviewed beta. This is an opportunity, not a proven outage.
+- Five-minute polling, delayed reconciliation, expiry retention, one forced refresh on definite HTTP 401, and no replay after transport/readback uncertainty already exist.
+- No hold upper cap exists, which matches v2. A real mismatch is fractional expiry: SDK sends microseconds, vendor drops them, and the coordinator compares exact datetimes. The local guard also lacks the vendor's two-second server-receipt lead-time rule.
+- There is no SignalR adapter, energy-log API/model, or exposed relative action. Rejecting relative input is currently safe, but the SDK's explanation that the meanings are unverified is now stale.
+- Diagnostics already shipped. Earlier statements that it was absent or SDK 0.1.3 was unpublished are historical, not current blockers.
 
 ## What Changes
 
-- Establish a vendor-confirmation record and draft questions for v2 hold
-  duration, boundary semantics and existing longer holds. Enforce a confirmed
-  limit locally, with actionable errors and no silent expiry clipping.
-- Add locally generated, allowlisted and redacted HA diagnostics with no cloud
-  request, thermostat command, token or account/device identifiers.
-- Investigate and, after its compatibility gate passes, add bounded SignalR
-  push-triggered refresh with polling fallback and shared cooldown/coalescing.
-- After energy-data semantics are verified, add optional, disabled-by-default
-  runtime/estimated-energy sensors on existing devices. Do not claim measured
-  power, cost or Energy dashboard compatibility without the required contract.
-- After relative-command semantics are verified, add an explicit temperature
-  adjustment action in HA's configured units, preserving mode and timed expiry.
-  Do not repurpose standard set-temperature or change standard-card controls.
-- Deliver in independent stages. Vendor-dependent stages remain blocked when
-  their evidence is absent; diagnostics need not wait on those stages.
+- **Stage A, proposed first:** normalize explicit expiry once to whole-second UTC for payload and pending confirmation; retain no v2 upper cap; validate near submission and preserve the exact expiry during target changes. Add explicit PUT-401, GET-401, uncertain-write and deadline regressions without broadening retry behavior.
+- **Stage B, proposed second:** build a default-off SignalR JSON/WebSocket proof using the existing aiohttp dependency. Header-only bearer authorization, bounded handshake/subscription/reconnect, timestamp deduplication, and REST invalidation flow must work against a local fake hub before any opt-in integration use. Retain five-minute polling and command deadlines.
+- **Later stage C:** typed UTC hourly estimated-Wh energy models and replaceable historical buckets, initially with synthetic fixtures only. No HA energy sensors, statistics import or Energy dashboard claim in the initial proof.
+- **Later stage D:** explicit measured-room-relative SDK controls and tests. Do not present them as setpoint increments or expose an HA action in the initial proof. Endpoint mode and explicit expiry must be deliberate.
+- Retain completed diagnostics and earlier verification as historical evidence; new runtime validation remains unchecked.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `diagnostics`: redacted local support snapshots without extra API traffic.
-- `change-notifications`: account-scoped push invalidations with safe fallback.
-- `energy-reporting`: optional period-based runtime and estimated-energy data.
-- `relative-temperature-controls`: explicit relative adjustment with safe units,
-  mode/expiry preservation and bounded confirmation.
+- `diagnostics`: already implemented local private snapshots; retained delta is unchanged.
+- `change-notifications`: optional timestamp-deduplicated invalidations and polling fallback.
+- `energy-reporting`: later UTC bucket models and optional reporting; outside initial proof approval.
+- `relative-temperature-controls`: later explicit room-relative adjustment; outside initial proof approval.
 
 ### Modified Capabilities
 
-- `timed-holds`: confirmed vendor-duration validation, boundaries and preservation
-  of existing hold readback without clipping or modifying existing configuration.
+- `timed-holds`: whole-second UTC expiry, minimum lead-time handling, no upper cap, and explicit retention. Existing temperature range and HA timezone interpretation remain.
 
 ## Impact
 
-SDK: typed energy models, optional notification transport and verified relative
-commands; preserve existing public calls. Beta: diagnostics, optional sensor and
-notification lifecycle, climate action/time validation, strings/services,
-packaging allowlist/provenance and regression tests. Core: alignment plan only;
-any port is separately authorized and excludes beta registration values.
+Initial implementation, if approved, affects only the SDK's expiry handling/notification adapter and related tests, plus beta climate/coordinator lifecycle, opt-in configuration, documentation and exact packaging/provenance as required. Detailed candidate files and findings are in assessment.md. Core source, OAuth registrations/providers, migration, entity identity and handoff eligibility are outside scope.
 
-Build on `harden-nuheat-api-resilience`, whose SDK dependency is still unpublished.
-Do not combine this feature plan with that dependency's publication or rewrite
-its validated controls. Keep domain, entries, OAuth provider association,
-migration, entity/device identities and Core handoff guard/allowlist unchanged.
-
-This request authorizes planning only: no runtime changes, vendor messages,
-credentials, production/hardware access, commits, pushes or publication.
-No unsupported SignalR library or new runtime dependency is selected yet.
-
-## Sources
-
-- https://api.nam.mynuheat.com/ — Validation / Mode: Hold; Energy log; Change Notifications.
-- https://api.nam.mynuheat.com/swagger/v1/swagger.json — EnergyUsageModel and EnergyUsageEntryModel.
-- https://api.nam.mynuheat.com/swagger/v2/swagger.json — ModeHold, ModeManual and eTemperatureType.
-- Beta source `d72bb6066158dd5b0eb006561afd02244a2b6145`; local SDK 0.1.3.dev0.
+The user approved stages A and B for isolated implementation and synthetic tests. The local result and exact validation are recorded in stage-ab-validation.md. Stages C and D remain deferred. No production access, live API/hardware testing, deployment, messages, commits, pushes or publishing are authorized. Vendor statements are protocol evidence, not a completed live compatibility test.
